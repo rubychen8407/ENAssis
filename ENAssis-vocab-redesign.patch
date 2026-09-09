@@ -1,16 +1,8 @@
 diff --git a/src/components/VocabularyManager.tsx b/src/components/VocabularyManager.tsx
-index 77d7677..48b2d17 100644
+index 77d7677..40e2825 100644
 --- a/src/components/VocabularyManager.tsx
 +++ b/src/components/VocabularyManager.tsx
-@@ -2,7 +2,6 @@ import React, { useMemo, useRef, useState } from 'react';
- import {
-   BookOpen,
-   Volume2,
--  Plus,
-   Trash2,
-   CheckCircle2,
-   Sparkles,
-@@ -19,6 +18,10 @@ import {
+@@ -19,6 +19,10 @@ import {
    Brain,
    Layers3,
    Pencil,
@@ -21,7 +13,7 @@ index 77d7677..48b2d17 100644
  } from 'lucide-react';
  import { VocabWord, SkillTab } from '../types';
  import { speakText } from '../utils/speech';
-@@ -41,6 +44,34 @@ interface Props {
+@@ -41,6 +45,34 @@ interface Props {
  type FilterLevel = 'all' | 'new' | 'learning' | 'mastered' | 'review';
  type StudyMode = 'study' | 'exam';
  type ImportSource = 'clipboard' | 'file' | 'website';
@@ -56,7 +48,7 @@ index 77d7677..48b2d17 100644
  
  const formatAddedTimeAgo = (dateStr?: string): string => {
    if (!dateStr) return '';
-@@ -71,12 +102,94 @@ export const VocabularyManager: React.FC<Props> = ({
+@@ -71,12 +103,137 @@ export const VocabularyManager: React.FC<Props> = ({
    const [isAnalyzing, setIsAnalyzing] = useState(false);
    const [isFetchingUrl, setIsFetchingUrl] = useState(false);
    const [analysisError, setAnalysisError] = useState<string | null>(null);
@@ -66,6 +58,49 @@ index 77d7677..48b2d17 100644
    const [isCheckModalOpen, setIsCheckModalOpen] = useState(false);
    const fileInputRef = useRef<HTMLInputElement | null>(null);
  
++  // Floating action button (speed-dial): collapsed = single entry button, expanded = action menu
++  const [fabOpen, setFabOpen] = useState(false);
++  const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
++  const [singleWordInput, setSingleWordInput] = useState('');
++  const [isSingleLoading, setIsSingleLoading] = useState(false);
++
++  const handleAddSingleWord = async (e: React.FormEvent) => {
++    e.preventDefault();
++    const raw = singleWordInput.trim();
++    if (!raw) return;
++    setIsSingleLoading(true);
++    setAnalysisError(null);
++    try {
++      const res = await fetch('/api/gemini/quick-lookup', {
++        method: 'POST',
++        headers: { 'Content-Type': 'application/json' },
++        body: JSON.stringify({ word: raw }),
++      });
++      if (!res.ok) throw new Error('單字查詢失敗，請確認網路或 API 設置');
++      const data = await res.json();
++      addWordToVocabulary({
++        word: data.word || raw,
++        phonetic: data.phonetic || '',
++        partOfSpeech: data.partOfSpeech || 'n.',
++        translation: toTraditionalChinese(data.translation || '查詢結果'),
++        definitionEn: data.definitionEn || '',
++        collocations: (data.collocations || []).map(toTraditionalChinese),
++        exampleEn: data.exampleEn || `Using ${raw} in everyday communication.`,
++        exampleZh: toTraditionalChinese(data.exampleZh || ''),
++        grammarNotes: toTraditionalChinese(data.grammarNotes || ''),
++        masteryLevel: 'new',
++        tags: ['Quick-Add'],
++      });
++      setSingleWordInput('');
++      setIsQuickAddOpen(false);
++      onWordsChange();
++    } catch (error: any) {
++      setAnalysisError(error?.message || '查詢失敗');
++    } finally {
++      setIsSingleLoading(false);
++    }
++  };
++
 +  // Inline AI practice panel (造句 / 口說 / 聽力) — generated fresh each time, no tab navigation
 +  const [openPractice, setOpenPractice] = useState<{ wordId: string; type: PracticeType } | null>(null);
 +  const [practiceLoading, setPracticeLoading] = useState(false);
@@ -153,7 +188,7 @@ index 77d7677..48b2d17 100644
    const setMode = (mode: StudyMode) => {
      setStudyMode(mode);
      localStorage.setItem('linguacraft-vocab-mode', mode);
-@@ -139,42 +252,6 @@ export const VocabularyManager: React.FC<Props> = ({
+@@ -139,42 +296,6 @@ export const VocabularyManager: React.FC<Props> = ({
      }
    };
  
@@ -196,7 +231,7 @@ index 77d7677..48b2d17 100644
    const handleBatchAnalyze = async () => {
      if (!importText.trim()) return;
      setIsAnalyzing(true);
-@@ -238,88 +315,39 @@ export const VocabularyManager: React.FC<Props> = ({
+@@ -238,88 +359,76 @@ export const VocabularyManager: React.FC<Props> = ({
    }, [filterLevel, searchTerm, words]);
  
    return (
@@ -214,54 +249,82 @@ index 77d7677..48b2d17 100644
 -          </div>
 -
 -          <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-stone-100 border border-stone-200 shadow-xs">
--            <button
--              type="button"
++    <div className="space-y-6 pb-24">
++      {/* Floating action button: collapsed = single entry button, expanded = vertical action menu */}
++      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
++        {fabOpen && (
++          <div className="flex flex-col items-end gap-2">
++            <button
++              type="button"
++              onClick={() => { setIsQuickAddOpen(true); setFabOpen(false); }}
++              className="inline-flex items-center gap-2 pl-4 pr-3 py-2.5 rounded-full bg-stone-900/95 backdrop-blur border border-stone-700 text-white text-sm font-semibold shadow-xl hover:bg-stone-800 cursor-pointer"
++            >
++              新增單字
++              <span className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center"><Pencil className="w-3.5 h-3.5" /></span>
++            </button>
+             <button
+               type="button"
 -              onClick={() => setMode('study')}
 -              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition cursor-pointer ${studyMode === 'study' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-600 hover:text-stone-900'}`}
--            >
++              onClick={() => { openImport('clipboard'); setFabOpen(false); }}
++              className="inline-flex items-center gap-2 pl-4 pr-3 py-2.5 rounded-full bg-stone-900/95 backdrop-blur border border-stone-700 text-white text-sm font-semibold shadow-xl hover:bg-stone-800 cursor-pointer"
+             >
 -              <Layers3 className="w-4 h-4" />
 -              Study Mode
 -              <span className="text-[10px] opacity-70">字卡</span>
--            </button>
--            <button
--              type="button"
++              批次匯入
++              <span className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center"><Upload className="w-3.5 h-3.5" /></span>
+             </button>
+             <button
+               type="button"
 -              onClick={() => setMode('exam')}
 -              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition cursor-pointer ${studyMode === 'exam' ? 'bg-stone-900 text-white shadow-sm' : 'text-stone-600 hover:text-stone-900'}`}
--            >
++              onClick={() => { setMode(studyMode === 'exam' ? 'study' : 'exam'); setFabOpen(false); }}
++              className="inline-flex items-center gap-2 pl-4 pr-3 py-2.5 rounded-full bg-stone-900/95 backdrop-blur border border-stone-700 text-white text-sm font-semibold shadow-xl hover:bg-stone-800 cursor-pointer"
+             >
 -              <Brain className="w-4 h-4" />
 -              Exam Mode
 -              <span className="text-[10px] opacity-70">考題</span>
-+    <div className="space-y-6 pb-24">
-+      {/* Floating mode switch + import toolbar — fixed to the viewport, stays visible while scrolling */}
-+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 p-1.5 rounded-2xl bg-stone-900/95 backdrop-blur border border-stone-700 shadow-2xl">
-+        <button
-+          type="button"
-+          onClick={() => setMode('study')}
-+          title="Study Mode 字卡"
-+          className={`inline-flex items-center justify-center p-2.5 rounded-xl transition cursor-pointer ${studyMode === 'study' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-300 hover:text-white'}`}
-+        >
-+          <Layers3 className="w-4 h-4" />
-+        </button>
-+        <button
-+          type="button"
-+          onClick={() => setMode('exam')}
-+          title="Exam Mode 考題"
-+          className={`inline-flex items-center justify-center p-2.5 rounded-xl transition cursor-pointer ${studyMode === 'exam' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-300 hover:text-white'}`}
-+        >
-+          <Brain className="w-4 h-4" />
-+        </button>
-+        {studyMode === 'study' && (
-+          <>
-+            <div className="w-px self-stretch bg-stone-700" />
-+            <button type="button" onClick={() => openImport('clipboard')} title="匯入單字" className="inline-flex items-center justify-center p-2.5 rounded-xl text-stone-300 hover:text-white hover:bg-stone-800 cursor-pointer">
-+              <Upload className="w-4 h-4" />
++              {studyMode === 'exam' ? '字卡模式' : '測驗模式'}
++              <span className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center">{studyMode === 'exam' ? <Layers3 className="w-3.5 h-3.5" /> : <Brain className="w-3.5 h-3.5" />}</span>
              </button>
--          </div>
--        </div>
--      </section>
-+          </>
+           </div>
 +        )}
++        <button
++          type="button"
++          onClick={() => setFabOpen((v) => !v)}
++          title={fabOpen ? '收合選單' : '生字庫功能選單'}
++          className="w-14 h-14 rounded-full bg-stone-900 text-white shadow-2xl flex items-center justify-center cursor-pointer hover:bg-stone-800 transition"
++        >
++          <Plus className={`w-6 h-6 transition-transform duration-200 ${fabOpen ? 'rotate-45' : ''}`} />
++        </button>
 +      </div>
++
++      {/* Quick add single word modal */}
++      {isQuickAddOpen && (
++        <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-950/60 p-4" onClick={() => setIsQuickAddOpen(false)}>
++          <div className="w-full max-w-sm rounded-2xl bg-white border border-stone-200 shadow-2xl p-5" onClick={(e) => e.stopPropagation()}>
++            <div className="flex items-center justify-between mb-3">
++              <h3 className="font-bold text-stone-900">新增單字</h3>
++              <button onClick={() => setIsQuickAddOpen(false)} className="p-1 rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100 cursor-pointer"><X className="w-4 h-4" /></button>
++            </div>
++            <form onSubmit={handleAddSingleWord} className="flex gap-2">
++              <input
++                autoFocus
++                value={singleWordInput}
++                onChange={(e) => setSingleWordInput(e.target.value)}
++                placeholder="例如 articulate"
++                className="flex-1 px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm text-stone-900 placeholder:text-stone-400 focus:outline-hidden focus:ring-2 focus:ring-stone-200"
++              />
++              <button type="submit" disabled={isSingleLoading || !singleWordInput.trim()} className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-stone-900 text-white rounded-xl text-sm font-semibold hover:bg-stone-800 disabled:opacity-40 cursor-pointer shrink-0">
++                {isSingleLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
++              </button>
++            </form>
++            {analysisError && <p className="mt-2 text-xs text-rose-600">{analysisError}</p>}
++          </div>
+         </div>
+-      </section>
++      )}
  
        {studyMode === 'exam' ? (
          <VocabAIQuiz words={words} onWordsChange={onWordsChange} />
@@ -312,7 +375,7 @@ index 77d7677..48b2d17 100644
            {/* Search / filter */}
            <section className="rounded-2xl border border-stone-200 bg-white p-4 shadow-xs">
              <div className="flex flex-col lg:flex-row gap-3">
-@@ -374,7 +402,7 @@ export const VocabularyManager: React.FC<Props> = ({
+@@ -374,7 +483,7 @@ export const VocabularyManager: React.FC<Props> = ({
                        </span>
                      </div>
  
@@ -321,7 +384,7 @@ index 77d7677..48b2d17 100644
                        <div className="flex items-center justify-between gap-2">
                          <span className="text-sm font-semibold text-stone-900">{word.translation}</span>
                          {examAttempts > 0 && <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${word.examStatus === 'learned' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-rose-50 text-rose-800 border-rose-200'}`}>{word.examStatus === 'learned' ? `已學習 ${examAccuracy}%` : `需複習 ${examAccuracy}%`}</span>}
-@@ -383,10 +411,10 @@ export const VocabularyManager: React.FC<Props> = ({
+@@ -383,10 +492,10 @@ export const VocabularyManager: React.FC<Props> = ({
                      </div>
  
                      <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
@@ -334,7 +397,7 @@ index 77d7677..48b2d17 100644
                          ✍️ 寫：{word.writingPassed ? '通過 ✓' : '待測'}
                        </div>
                      </div>
-@@ -395,32 +423,124 @@ export const VocabularyManager: React.FC<Props> = ({
+@@ -395,32 +504,124 @@ export const VocabularyManager: React.FC<Props> = ({
                        <div className="mt-3">
                          <p className="text-[11px] font-bold text-stone-400 uppercase tracking-wide">搭配字詞</p>
                          <div className="flex flex-wrap gap-1.5 mt-1">
