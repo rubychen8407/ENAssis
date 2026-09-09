@@ -7,33 +7,28 @@ import {
   CheckCircle2,
   Sparkles,
   ClipboardPaste,
-  Filter,
   Search,
-  ExternalLink,
-  ArrowRight,
   RefreshCw,
   Award,
   Clock,
   AlertCircle,
-  HelpCircle,
   GraduationCap,
-  BookMarked,
+  Upload,
+  Link,
+  FileText,
 } from 'lucide-react';
 import { VocabWord, SkillTab } from '../types';
 import { speakText } from '../utils/speech';
 import {
   addWordToVocabulary,
-  updateWordMastery,
   deleteWord,
   readClipboardTextSafe,
   isWordAddedWithin24Hours,
   recordWordPracticeResult,
 } from '../utils/storage';
 import { VocabMasteryCheckModal } from './VocabMasteryCheckModal';
-import { IELTSVocabExplorer } from './ielts/IELTSVocabExplorer';
 import { toTraditionalChinese } from '../utils/chineseConverter';
-import { SAMPLE_IELTS_CORE_VOCAB } from '../data/ielts/vocabLoader';
-import confetti from 'canvas-confetti';
+import { VocabAIQuiz } from './VocabAIQuiz';
 
 interface Props {
   words: VocabWord[];
@@ -41,59 +36,28 @@ interface Props {
   onSelectWordForPractice: (word: VocabWord, targetTab: SkillTab) => void;
 }
 
+type FilterLevel = 'all' | 'new' | 'learning' | 'mastered' | 'ielts';
+type ImportMode = 'text' | 'file' | 'url';
+
 export const VocabularyManager: React.FC<Props> = ({
   words,
   onWordsChange,
   onSelectWordForPractice,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterLevel, setFilterLevel] = useState<'all' | 'new' | 'learning' | 'mastered' | 'ielts'>('all');
+  const [filterLevel, setFilterLevel] = useState<FilterLevel>('all');
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [importMode, setImportMode] = useState<ImportMode>('text');
   const [importText, setImportText] = useState('');
+  const [sourceUrl, setSourceUrl] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isFetchingUrl, setIsFetchingUrl] = useState(false);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
-  const [syncStatusMessage, setSyncStatusMessage] = useState<string | null>(null);
   const [singleWordInput, setSingleWordInput] = useState('');
   const [isSingleLoading, setIsSingleLoading] = useState(false);
   const [selectedTestWord, setSelectedTestWord] = useState<VocabWord | null>(null);
   const [isCheckModalOpen, setIsCheckModalOpen] = useState(false);
-  // Vocabulary source view: my own notebook vs. the curated IELTS core wordlist
-  const [vocabSource, setVocabSource] = useState<'mine' | 'ielts-core'>('mine');
-
-  // One-click sync from IELTS core vocabulary to personal notebook
-  const handleSyncIELTSToNotebook = (count: number = 20) => {
-    const existingWords = new Set(words.map((w) => w.word.toLowerCase()));
-    const toImport = SAMPLE_IELTS_CORE_VOCAB.filter((w) => !existingWords.has(w.word.toLowerCase())).slice(0, count);
-
-    if (toImport.length === 0) {
-      setSyncStatusMessage('所有推薦雅思核心單字已在您的生字庫中！');
-      setTimeout(() => setSyncStatusMessage(null), 3000);
-      return;
-    }
-
-    toImport.forEach((item) => {
-      addWordToVocabulary({
-        word: item.word,
-        phonetic: item.phonetic ? `/${item.phonetic}/` : '',
-        partOfSpeech: item.meaning.slice(0, 4),
-        translation: toTraditionalChinese(item.meaning),
-        definitionEn: '',
-        collocations: [],
-        exampleEn: item.example || '',
-        exampleZh: '',
-        grammarNotes: `雅思官方真題高頻詞 (考頻權重: ${item.freq})`,
-        masteryLevel: 'new',
-        tags: ['IELTS-Core', '雅思高頻'],
-      });
-    });
-
-    onWordsChange();
-    try {
-      confetti({ particleCount: 40, spread: 60, origin: { y: 0.8 } });
-    } catch (_) {}
-    setSyncStatusMessage(`成功匯入 ${toImport.length} 個雅思核心單字至生字庫！已可展開艾賓浩斯記憶與說寫練習。`);
-    setTimeout(() => setSyncStatusMessage(null), 4000);
-  };
+  const [showImportHelp, setShowImportHelp] = useState(false);
 
   const formatAddedTimeAgo = (dateStr?: string): string => {
     if (!dateStr) return '';
@@ -105,106 +69,137 @@ export const VocabularyManager: React.FC<Props> = ({
       const diffMins = Math.max(1, Math.floor(diffMs / (60 * 1000)));
       return `${diffMins}分鐘前`;
     }
-    if (diffHours < 24) {
-      return `${diffHours}小時前`;
-    }
+    if (diffHours < 24) return `${diffHours}小時前`;
     return `${Math.floor(diffHours / 24)}天前`;
   };
 
-  // Read Clipboard directly
   const handleReadClipboard = async () => {
+    setAnalysisError(null);
     const result = await readClipboardTextSafe();
+    setImportMode('text');
+    setIsImportModalOpen(true);
     if (result.success && result.text) {
       setImportText(result.text);
-      setIsImportModalOpen(true);
-    } else {
-      setIsImportModalOpen(true);
-      if (result.error) {
-        setAnalysisError(result.error);
-      }
+    } else if (result.error) {
+      setAnalysisError(result.error);
     }
   };
 
-  // Quick single word add
+  const handleFileImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setAnalysisError(null);
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = String(reader.result || '').trim();
+      if (!text) {
+        setAnalysisError('檔案沒有可讀取的文字內容。');
+        return;
+      }
+      setImportText(text.slice(0, 120000));
+      setImportMode('text');
+      setIsImportModalOpen(true);
+    };
+    reader.onerror = () => setAnalysisError('讀取檔案失敗，請確認檔案格式。');
+    reader.readAsText(file);
+    event.target.value = '';
+  };
+
+  const handleFetchUrl = async () => {
+    const normalizedUrl = sourceUrl.trim();
+    if (!/^https?:\/\//i.test(normalizedUrl)) {
+      setAnalysisError('請輸入完整網址，例如 https://example.com/article');
+      return;
+    }
+    setIsFetchingUrl(true);
+    setAnalysisError(null);
+    try {
+      // Jina Reader converts public web pages into clean text/Markdown for import.
+      const response = await fetch(`https://r.jina.ai/${normalizedUrl}`);
+      if (!response.ok) throw new Error(`網站讀取失敗（${response.status}）`);
+      const text = (await response.text()).trim();
+      if (!text) throw new Error('網站沒有可擷取的文字內容。');
+      setImportText(text.slice(0, 120000));
+      setImportMode('text');
+    } catch (error: any) {
+      setAnalysisError(error?.message || '無法取得網站文字，請直接複製文章內容再匯入。');
+    } finally {
+      setIsFetchingUrl(false);
+    }
+  };
+
   const handleAddSingleWord = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!singleWordInput.trim()) return;
-
+    const raw = singleWordInput.trim();
+    if (!raw) return;
     setIsSingleLoading(true);
     setAnalysisError(null);
     try {
       const res = await fetch('/api/gemini/quick-lookup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ word: singleWordInput.trim() }),
+        body: JSON.stringify({ word: raw }),
       });
-
       if (!res.ok) throw new Error('單字查詢失敗，請確認網路或 API 設置');
       const data = await res.json();
-
       addWordToVocabulary({
-        word: data.word || singleWordInput.trim(),
+        word: data.word || raw,
         phonetic: data.phonetic || '',
         partOfSpeech: data.partOfSpeech || 'n.',
         translation: toTraditionalChinese(data.translation || '查詢結果'),
         definitionEn: data.definitionEn || '',
         collocations: (data.collocations || []).map(toTraditionalChinese),
-        exampleEn: data.exampleEn || `Using ${singleWordInput.trim()} in everyday communication.`,
-        exampleZh: toTraditionalChinese(data.exampleZh || '在日常交流中使用該單字。'),
-        grammarNotes: toTraditionalChinese(data.grammarNotes || '一般用法。'),
+        exampleEn: data.exampleEn || `Using ${raw} in everyday communication.`,
+        exampleZh: toTraditionalChinese(data.exampleZh || ''),
+        grammarNotes: toTraditionalChinese(data.grammarNotes || ''),
         masteryLevel: 'new',
         tags: ['Quick-Add'],
       });
-
       setSingleWordInput('');
       onWordsChange();
-    } catch (err: any) {
-      setAnalysisError(err?.message || '查詢失敗');
+    } catch (error: any) {
+      setAnalysisError(error?.message || '查詢失敗');
     } finally {
       setIsSingleLoading(false);
     }
   };
 
-  // Batch analysis from text
   const handleBatchAnalyze = async () => {
     if (!importText.trim()) return;
-
     setIsAnalyzing(true);
     setAnalysisError(null);
     try {
       const res = await fetch('/api/gemini/analyze-vocab', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: importText.trim(), count: 6 }),
+        body: JSON.stringify({ text: importText.trim(), count: 12 }),
       });
-
-      if (!res.ok) throw new Error('分析生字失敗');
+      if (!res.ok) throw new Error('AI 生字分析失敗');
       const data = await res.json();
-
-      if (Array.isArray(data.words) && data.words.length > 0) {
-        data.words.forEach((item: any) => {
-          addWordToVocabulary({
-            word: item.word,
-            phonetic: item.phonetic || '',
-            partOfSpeech: item.partOfSpeech || 'n.',
-            translation: toTraditionalChinese(item.translation || ''),
-            definitionEn: item.definitionEn || '',
-            collocations: (item.collocations || []).map(toTraditionalChinese),
-            exampleEn: item.exampleEn || '',
-            exampleZh: toTraditionalChinese(item.exampleZh || ''),
-            grammarNotes: toTraditionalChinese(item.grammarNotes || ''),
-            masteryLevel: 'new',
-            tags: ['Batch-Import'],
-          });
-        });
-        onWordsChange();
-        setImportText('');
-        setIsImportModalOpen(false);
-      } else {
-        setAnalysisError('未能從文字中分析出明確單字，請嘗試輸入單字清單或更明確的文章段落。');
+      if (!Array.isArray(data.words) || data.words.length === 0) {
+        throw new Error('找不到適合匯入的單字，請貼上英文文章、單字清單或片語。');
       }
-    } catch (err: any) {
-      setAnalysisError(err?.message || 'AI 分析發生錯誤');
+      data.words.forEach((item: any) => {
+        addWordToVocabulary({
+          word: item.word,
+          phonetic: item.phonetic || '',
+          partOfSpeech: item.partOfSpeech || 'n.',
+          translation: toTraditionalChinese(item.translation || ''),
+          definitionEn: item.definitionEn || '',
+          collocations: (item.collocations || []).map(toTraditionalChinese),
+          exampleEn: item.exampleEn || '',
+          exampleZh: toTraditionalChinese(item.exampleZh || ''),
+          grammarNotes: toTraditionalChinese(item.grammarNotes || ''),
+          masteryLevel: 'new',
+          tags: ['AI-Import'],
+        });
+      });
+      onWordsChange();
+      setImportText('');
+      setSourceUrl('');
+      setIsImportModalOpen(false);
+    } catch (error: any) {
+      setAnalysisError(error?.message || 'AI 分析發生錯誤');
     } finally {
       setIsAnalyzing(false);
     }
@@ -213,217 +208,97 @@ export const VocabularyManager: React.FC<Props> = ({
   const newWordsCount = words.filter((w) => w.masteryLevel === 'new' || isWordAddedWithin24Hours(w)).length;
   const learningWordsCount = words.filter((w) => w.masteryLevel === 'learning').length;
   const masteredWordsCount = words.filter((w) => w.masteryLevel === 'mastered').length;
-  const ieltsWordsCount = words.filter((w) => w.tags?.includes('IELTS-Core') || w.tags?.includes('雅思高頻')).length;
+  const ieltsWordsCount = words.filter((w) => w.tags?.some((tag) => tag.includes('IELTS') || tag.includes('雅思'))).length;
 
   const filteredWords = words.filter((w) => {
+    const query = searchTerm.toLowerCase();
     const matchesSearch =
-      w.word.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      w.translation.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      w.definitionEn.toLowerCase().includes(searchTerm.toLowerCase());
-    
+      w.word.toLowerCase().includes(query) ||
+      w.translation.toLowerCase().includes(query) ||
+      w.definitionEn.toLowerCase().includes(query);
     let matchesLevel = true;
-    if (filterLevel === 'new') {
-      matchesLevel = w.masteryLevel === 'new' || isWordAddedWithin24Hours(w);
-    } else if (filterLevel === 'learning') {
-      matchesLevel = w.masteryLevel === 'learning';
-    } else if (filterLevel === 'mastered') {
-      matchesLevel = w.masteryLevel === 'mastered';
-    } else if (filterLevel === 'ielts') {
-      matchesLevel = Boolean(w.tags?.includes('IELTS-Core') || w.tags?.includes('雅思高頻'));
-    }
+    if (filterLevel === 'new') matchesLevel = w.masteryLevel === 'new' || isWordAddedWithin24Hours(w);
+    if (filterLevel === 'learning') matchesLevel = w.masteryLevel === 'learning';
+    if (filterLevel === 'mastered') matchesLevel = w.masteryLevel === 'mastered';
+    if (filterLevel === 'ielts') matchesLevel = Boolean(w.tags?.some((tag) => tag.includes('IELTS') || tag.includes('雅思')));
     return matchesSearch && matchesLevel;
   });
 
   return (
     <div className="space-y-6">
-      {/* Top action banner */}
-      <div className="bg-white rounded-2xl border border-stone-200 p-5 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-            <h2 className="text-lg font-semibold text-stone-900">我的個人生字庫</h2>
-            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-stone-100 text-stone-700">
-              共 {words.length} 個單字
-            </span>
-          </div>
-          <p className="text-sm text-stone-600 mt-1">
-            支援一鍵讀取剪貼簿、匯入文章生字，並將單字直接套入聽、說、讀、寫模組練習。
-          </p>
-        </div>
-
-        <div className="flex items-center flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => handleSyncIELTSToNotebook(20)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold rounded-xl text-sm transition shadow-xs cursor-pointer"
-            title="一鍵同步雅思官方核心單字到個人生字本"
-          >
-            <GraduationCap className="w-4 h-4 text-stone-900" />
-            一鍵同步雅思核心詞 (20詞)
-          </button>
-
-          <button
-            id="btn-read-clipboard"
-            onClick={handleReadClipboard}
-            className="inline-flex items-center gap-2 px-3.5 py-2 bg-stone-900 text-white rounded-xl text-sm font-medium hover:bg-stone-800 transition shadow-xs cursor-pointer"
-          >
-            <ClipboardPaste className="w-4 h-4 text-emerald-400" />
-            讀取剪貼簿 / 匯入文字
-          </button>
-        </div>
-      </div>
-
-      {syncStatusMessage && (
-        <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 text-xs font-medium flex items-center justify-between animate-in fade-in">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>{syncStatusMessage}</span>
-          </div>
-          <button
-            type="button"
-            onClick={() => setSyncStatusMessage(null)}
-            className="text-emerald-700 hover:text-emerald-950 text-xs cursor-pointer"
-          >
-            關閉
-          </button>
-        </div>
-      )}
-
-      {/* Vocabulary Source Switch: my notebook vs. curated IELTS core wordlist */}
-      <div className="bg-white rounded-2xl border border-stone-200 p-2 shadow-xs flex items-center gap-2">
-        <button
-          id="btn-vocab-source-mine"
-          onClick={() => setVocabSource('mine')}
-          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer ${
-            vocabSource === 'mine'
-              ? 'bg-stone-900 text-white shadow-2xs'
-              : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
-          }`}
-        >
-          <BookMarked className="w-4 h-4" />
-          我的生字本
-        </button>
-        <button
-          id="btn-vocab-source-ielts"
-          onClick={() => setVocabSource('ielts-core')}
-          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition cursor-pointer ${
-            vocabSource === 'ielts-core'
-              ? 'bg-amber-500 text-stone-950 shadow-2xs'
-              : 'text-stone-700 hover:text-stone-900 hover:bg-amber-50/70 border border-amber-200/60'
-          }`}
-        >
-          <GraduationCap className="w-4 h-4" />
-          雅思核心字表 (3,610詞)
-        </button>
-      </div>
-
-      {vocabSource === 'ielts-core' ? (
-        <IELTSVocabExplorer onWordAdded={onWordsChange} />
-      ) : (
-      <>
-      {/* Mastery Feedback Rules Banner */}
-      <div className="bg-gradient-to-r from-stone-50 via-amber-50/40 to-emerald-50/40 border border-stone-200/80 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-        <div className="flex items-center gap-3">
-          <span className="p-2 rounded-xl bg-amber-100 text-amber-800 shrink-0">
-            <Sparkles className="w-4 h-4" />
-          </span>
+      {/* Unified vocabulary header */}
+      <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-xs">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <span className="font-bold text-stone-900 block sm:inline mr-2">
-              生字掌握度反饋機制：
-            </span>
-            <span className="text-stone-600">
-              「說」與「寫」雙重考核通過自動標記為
-              <strong className="text-emerald-700 font-bold mx-1">已掌握</strong>；
-              未完全通過標記為
-              <strong className="text-amber-700 font-bold mx-1">學習中</strong>；
-              過去 24 小時新匯入單字標記為
-              <strong className="text-sky-700 font-bold mx-1">新收錄</strong>。
-            </span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="text-xl font-bold text-stone-900">生字庫</h2>
+              <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-stone-100 text-stone-800 border border-stone-200">共 {words.length} 個</span>
+              {ieltsWordsCount > 0 && <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300">雅思 {ieltsWordsCount}</span>}
+            </div>
+            <p className="mt-1 text-sm text-stone-600">所有自建、文章匯入與雅思單字統一放在同一個生字庫；AI 會依單字反覆出題，幫你從「看過」走到「會用」。</p>
           </div>
-        </div>
-
-        <div className="flex items-center gap-2 text-stone-500 shrink-0">
-          <span className="flex items-center gap-1 bg-white/80 px-2 py-1 rounded-lg border border-stone-200/60 font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-sky-500"></span> 24h新匯入: {newWordsCount}
-          </span>
-          <span className="flex items-center gap-1 bg-white/80 px-2 py-1 rounded-lg border border-stone-200/60 font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> 學習中: {learningWordsCount}
-          </span>
-          <span className="flex items-center gap-1 bg-white/80 px-2 py-1 rounded-lg border border-stone-200/60 font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> 已掌握: {masteredWordsCount}
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <label className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-900 text-white text-sm font-semibold hover:bg-stone-800 cursor-pointer shadow-xs">
+              <Upload className="w-4 h-4" />
+              從檔案匯入
+              <input type="file" accept=".txt,.md,.csv,.json,.html,.htm" onChange={handleFileImport} className="hidden" />
+            </label>
+            <button type="button" onClick={handleReadClipboard} className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-100 text-stone-800 border border-stone-200 text-sm font-semibold hover:bg-stone-200 cursor-pointer">
+              <ClipboardPaste className="w-4 h-4" />
+              剪貼簿 / 文字
+            </button>
+            <button type="button" onClick={() => { setImportMode('url'); setAnalysisError(null); setIsImportModalOpen(true); }} className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-100 text-stone-800 border border-stone-200 text-sm font-semibold hover:bg-stone-200 cursor-pointer">
+              <Link className="w-4 h-4" />
+              網站轉文字
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Quick Add and Search Bar */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
-        {/* Quick Add Form */}
-        <form onSubmit={handleAddSingleWord} className="md:col-span-6 flex gap-2">
-          <div className="relative flex-1">
-            <input
-              id="input-quick-add-word"
-              type="text"
-              placeholder="輸入單字快速查詢加入 (例如：articulate)"
-              value={singleWordInput}
-              onChange={(e) => setSingleWordInput(e.target.value)}
-              className="w-full px-3.5 py-2.5 bg-white border border-stone-200 rounded-xl text-sm text-stone-900 placeholder:text-stone-400 focus:outline-hidden focus:border-stone-400 focus:ring-2 focus:ring-stone-100"
-            />
+      {/* Mastery feedback: high-contrast in dark mode via explicit dark palette classes */}
+      <div className="rounded-2xl border border-amber-300 bg-amber-50 p-4 shadow-xs dark:bg-amber-950/70 dark:border-amber-700">
+        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <span className="p-2 rounded-xl bg-amber-200 text-amber-950 shrink-0 dark:bg-amber-900 dark:text-amber-100"><Sparkles className="w-4 h-4" /></span>
+            <div>
+              <p className="font-bold text-amber-950 dark:text-amber-100">生字掌握度反饋機制</p>
+              <p className="mt-0.5 text-xs text-amber-900 dark:text-amber-100/90 leading-relaxed">「說」＋「寫」雙重考核通過 → <strong className="text-emerald-800 dark:text-emerald-300">已掌握</strong>；尚未完成 → <strong className="text-amber-800 dark:text-amber-300">學習中</strong>；24 小時內加入 → <strong className="text-sky-800 dark:text-sky-300">新收錄</strong>。</p>
+            </div>
           </div>
-          <button
-            type="submit"
-            disabled={isSingleLoading || !singleWordInput.trim()}
-            className="px-4 py-2.5 bg-stone-800 text-white rounded-xl text-sm font-medium hover:bg-stone-900 disabled:opacity-50 transition cursor-pointer flex items-center gap-1.5 shrink-0"
-          >
-            {isSingleLoading ? (
-              <RefreshCw className="w-4 h-4 animate-spin" />
-            ) : (
-              <Plus className="w-4 h-4" />
-            )}
-            查詢加入
+          <div className="grid grid-cols-3 gap-2 min-w-0">
+            <div className="rounded-xl border border-sky-300 bg-sky-50 px-3 py-2 text-center dark:bg-sky-950/80 dark:border-sky-700"><div className="text-[11px] font-semibold text-sky-800 dark:text-sky-200">新收錄</div><div className="text-lg font-bold text-sky-950 dark:text-sky-100">{newWordsCount}</div></div>
+            <div className="rounded-xl border border-amber-300 bg-white px-3 py-2 text-center dark:bg-stone-900 dark:border-amber-700"><div className="text-[11px] font-semibold text-amber-800 dark:text-amber-200">學習中</div><div className="text-lg font-bold text-amber-950 dark:text-amber-100">{learningWordsCount}</div></div>
+            <div className="rounded-xl border border-emerald-300 bg-emerald-50 px-3 py-2 text-center dark:bg-emerald-950/80 dark:border-emerald-700"><div className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-200">已掌握</div><div className="text-lg font-bold text-emerald-950 dark:text-emerald-100">{masteredWordsCount}</div></div>
+          </div>
+        </div>
+      </div>
+
+      {/* AI retrieval practice */}
+      <VocabAIQuiz words={words} />
+
+      {/* Quick add + search */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
+        <form onSubmit={handleAddSingleWord} className="lg:col-span-5 flex gap-2">
+          <input id="input-quick-add-word" value={singleWordInput} onChange={(e) => setSingleWordInput(e.target.value)} placeholder="輸入單字快速查詢加入，例如 articulate" className="flex-1 px-3.5 py-2.5 bg-white border border-stone-200 rounded-xl text-sm text-stone-900 placeholder:text-stone-400 focus:outline-hidden focus:border-stone-400" />
+          <button type="submit" disabled={isSingleLoading || !singleWordInput.trim()} className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-stone-800 text-white text-sm font-semibold hover:bg-stone-900 disabled:opacity-50 cursor-pointer">
+            {isSingleLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />} 查詢
           </button>
         </form>
-
-        {/* Search & Filter */}
-        <div className="md:col-span-6 flex gap-2">
+        <div className="lg:col-span-7 flex gap-2">
           <div className="relative flex-1">
             <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-3" />
-            <input
-              id="input-search-words"
-              type="text"
-              placeholder="搜尋單字、中文釋義或例句..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-3.5 py-2.5 bg-white border border-stone-200 rounded-xl text-sm text-stone-900 placeholder:text-stone-400 focus:outline-hidden focus:border-stone-400"
-            />
+            <input id="input-search-words" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="搜尋單字、中文釋義或英文定義…" className="w-full pl-9 pr-3.5 py-2.5 bg-white border border-stone-200 rounded-xl text-sm text-stone-900 placeholder:text-stone-400" />
           </div>
-
-          <div className="flex bg-stone-100 p-1 rounded-xl border border-stone-200 text-xs font-medium text-stone-600 shrink-0 overflow-x-auto max-w-full">
+          <div className="flex bg-stone-100 p-1 rounded-xl border border-stone-200 text-xs font-semibold overflow-x-auto max-w-full">
             {[
-              { id: 'all', label: '全部', count: words.length },
-              { id: 'new', label: '新收錄', count: newWordsCount },
-              { id: 'learning', label: '學習中', count: learningWordsCount },
-              { id: 'mastered', label: '已掌握', count: masteredWordsCount },
-              { id: 'ielts', label: '雅思核心', count: ieltsWordsCount },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setFilterLevel(tab.id as any)}
-                className={`px-2.5 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1 shrink-0 ${
-                  filterLevel === tab.id
-                    ? 'bg-white text-stone-900 font-semibold shadow-2xs'
-                    : 'hover:text-stone-900'
-                }`}
-              >
-                <span>{tab.label}</span>
-                <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                    filterLevel === tab.id
-                      ? 'bg-stone-100 text-stone-800 font-bold'
-                      : 'bg-stone-200/60 text-stone-500'
-                  }`}
-                >
-                  {tab.count}
-                </span>
+              ['all', '全部', words.length],
+              ['new', '新收錄', newWordsCount],
+              ['learning', '學習中', learningWordsCount],
+              ['mastered', '已掌握', masteredWordsCount],
+              ['ielts', '雅思', ieltsWordsCount],
+            ].map(([id, label, count]) => (
+              <button key={String(id)} type="button" onClick={() => setFilterLevel(id as FilterLevel)} className={`px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 shrink-0 cursor-pointer ${filterLevel === id ? 'bg-white text-stone-950 shadow-2xs' : 'text-stone-600 hover:text-stone-900'}`}>
+                {label}<span className="text-[10px] px-1.5 py-0.5 rounded-full bg-stone-200 text-stone-800">{count}</span>
               </button>
             ))}
           </div>
@@ -431,323 +306,120 @@ export const VocabularyManager: React.FC<Props> = ({
       </div>
 
       {analysisError && (
-        <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm flex items-center justify-between">
+        <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-300 text-rose-900 text-sm flex items-center justify-between dark:bg-rose-950/70 dark:border-rose-700 dark:text-rose-100">
           <span>{analysisError}</span>
-          <button
-            onClick={() => setAnalysisError(null)}
-            className="text-amber-600 hover:text-amber-800 font-medium text-xs ml-2 cursor-pointer"
-          >
-            關閉
-          </button>
+          <button type="button" onClick={() => setAnalysisError(null)} className="text-xs font-semibold cursor-pointer">關閉</button>
         </div>
       )}
 
-      {/* Vocabulary Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredWords.map((word) => (
-          <div
-            key={word.id}
-            id={`vocab-card-${word.id}`}
-            className="bg-white rounded-2xl border border-stone-200 p-5 shadow-xs flex flex-col justify-between hover:border-stone-300 transition"
-          >
-            <div>
-              {/* Header: Word, IPA, Pronounce */}
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="text-xl font-bold text-stone-900 tracking-tight">{word.word}</h3>
-                    <button
-                      onClick={() => speakText(word.word)}
-                      title="發音"
-                      className="p-1 rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition cursor-pointer"
-                    >
-                      <Volume2 className="w-4 h-4" />
-                    </button>
-                    {(word.tags?.some((t) => t.includes('IELTS') || t.includes('雅思')) || false) && (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-50 text-amber-900 border border-amber-200/80 flex items-center gap-1">
-                        <GraduationCap className="w-3 h-3 text-amber-600" />
-                        雅思核心
-                      </span>
-                    )}
+      {/* Vocabulary list */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        {filteredWords.map((word) => {
+          const isIELTS = Boolean(word.tags?.some((tag) => tag.includes('IELTS') || tag.includes('雅思')));
+          return (
+            <article key={word.id} className="bg-white rounded-2xl border border-stone-200 p-5 shadow-xs flex flex-col justify-between hover:border-stone-300 transition dark-vocab-card">
+              <div>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="text-xl font-bold text-stone-900 tracking-tight break-words">{word.word}</h3>
+                      <button type="button" onClick={() => speakText(word.word)} title="發音" className="p-1 rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100 cursor-pointer"><Volume2 className="w-4 h-4" /></button>
+                      {isIELTS && <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 font-bold flex items-center gap-1 dark:bg-amber-950 dark:text-amber-100 dark:border-amber-700"><GraduationCap className="w-3 h-3" /> 雅思</span>}
+                    </div>
+                    <div className="flex items-center gap-2 mt-1 text-xs text-stone-500 font-mono"><span>{word.phonetic}</span><span>•</span><span className="italic font-sans">{word.partOfSpeech}</span></div>
                   </div>
-                  <div className="flex items-center gap-2 mt-0.5 text-xs text-stone-500 font-mono">
-                    <span>{word.phonetic}</span>
-                    <span className="text-stone-300">•</span>
-                    <span className="italic text-stone-600 font-sans">{word.partOfSpeech}</span>
-                  </div>
-                </div>
-
-                {/* Mastery badge toggle */}
-                <div className="flex items-center gap-1.5">
-                  <span
-                    className={`text-xs px-2.5 py-1 rounded-full font-medium border flex items-center gap-1 ${
-                      word.masteryLevel === 'mastered'
-                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                        : word.masteryLevel === 'new' || isWordAddedWithin24Hours(word)
-                        ? 'bg-sky-50 text-sky-700 border-sky-200'
-                        : 'bg-amber-50 text-amber-700 border-amber-200'
-                    }`}
-                  >
-                    {word.masteryLevel === 'mastered' ? (
-                      <>
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                        已掌握 ✓
-                      </>
-                    ) : word.masteryLevel === 'new' || isWordAddedWithin24Hours(word) ? (
-                      <>
-                        <Clock className="w-3.5 h-3.5 text-sky-600" />
-                        新收錄 {word.dateAdded ? `(${formatAddedTimeAgo(word.dateAdded)})` : ''}
-                      </>
-                    ) : (
-                      <>
-                        <AlertCircle className="w-3.5 h-3.5 text-amber-600" />
-                        學習中
-                      </>
-                    )}
+                  <span className={`shrink-0 text-xs px-2.5 py-1 rounded-full font-semibold border flex items-center gap-1 ${
+                    word.masteryLevel === 'mastered'
+                      ? 'bg-emerald-100 text-emerald-900 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-100 dark:border-emerald-700'
+                      : word.masteryLevel === 'new' || isWordAddedWithin24Hours(word)
+                      ? 'bg-sky-100 text-sky-900 border-sky-300 dark:bg-sky-950 dark:text-sky-100 dark:border-sky-700'
+                      : 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950 dark:text-amber-100 dark:border-amber-700'
+                  }`}>
+                    {word.masteryLevel === 'mastered' ? <><CheckCircle2 className="w-3.5 h-3.5" /> 已掌握</> : word.masteryLevel === 'new' || isWordAddedWithin24Hours(word) ? <><Clock className="w-3.5 h-3.5" /> 新收錄</> : <><AlertCircle className="w-3.5 h-3.5" /> 學習中</>}
                   </span>
                 </div>
-              </div>
 
-              {/* Speak & Write Verification Progress Bar */}
-              <div className="mt-3 p-2 bg-stone-50 rounded-xl border border-stone-100 flex items-center justify-between gap-2">
-                <div className="flex items-center gap-1.5 text-xs">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const nextState = !word.speakingPassed;
-                      recordWordPracticeResult(word.id, 'speaking', nextState);
-                      onWordsChange();
-                    }}
-                    title="點擊切換口說通過狀態"
-                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-medium border transition cursor-pointer ${
-                      word.speakingPassed
-                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                        : 'bg-stone-100 text-stone-500 border-stone-200 hover:bg-stone-200'
-                    }`}
-                  >
-                    🗣️ 說: {word.speakingPassed ? '通過 ✓' : '待測'}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const nextState = !word.writingPassed;
-                      recordWordPracticeResult(word.id, 'writing', nextState);
-                      onWordsChange();
-                    }}
-                    title="點擊切換寫作通過狀態"
-                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-medium border transition cursor-pointer ${
-                      word.writingPassed
-                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                        : 'bg-stone-100 text-stone-500 border-stone-200 hover:bg-stone-200'
-                    }`}
-                  >
-                    ✍️ 寫: {word.writingPassed ? '通過 ✓' : '待測'}
-                  </button>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelectedTestWord(word);
-                    setIsCheckModalOpen(true);
-                  }}
-                  className="text-xs px-2.5 py-1 rounded-lg bg-stone-900 text-white hover:bg-stone-800 font-semibold transition cursor-pointer flex items-center gap-1 shrink-0 shadow-2xs"
-                >
-                  <Award className="w-3 h-3 text-amber-400" />
-                  說寫檢測
-                </button>
-              </div>
-
-              {/* Translation & Definition */}
-              <div className="mt-3">
-                <p className="text-sm font-semibold text-stone-900">{word.translation}</p>
-                {word.definitionEn && (
-                  <p className="text-xs text-stone-600 mt-1 leading-relaxed line-clamp-2">
-                    {word.definitionEn}
-                  </p>
-                )}
-              </div>
-
-              {/* Collocations */}
-              {word.collocations && word.collocations.length > 0 && (
-                <div className="mt-3 pt-3 border-t border-stone-100">
-                  <span className="text-[11px] font-semibold text-stone-400 block mb-1">常用搭配 (Collocations)</span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {word.collocations.map((col, idx) => (
-                      <span
-                        key={idx}
-                        className="text-xs px-2 py-0.5 rounded-md bg-stone-50 text-stone-700 border border-stone-200/60"
-                      >
-                        {col}
-                      </span>
-                    ))}
+                <div className="mt-3 p-2.5 rounded-xl border border-stone-200 bg-stone-50 dark:bg-stone-900 dark:border-stone-700">
+                  <div className="flex flex-wrap gap-1.5 text-xs">
+                    <button type="button" onClick={() => { const next = !word.speakingPassed; recordWordPracticeResult(word.id, 'speaking', next); onWordsChange(); }} className={`px-2.5 py-1 rounded-lg border font-semibold cursor-pointer ${word.speakingPassed ? 'bg-emerald-100 text-emerald-900 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-100 dark:border-emerald-700' : 'bg-stone-100 text-stone-700 border-stone-300 dark:bg-stone-800 dark:text-stone-200 dark:border-stone-600'}`}>🗣️ 說：{word.speakingPassed ? '通過 ✓' : '待測'}</button>
+                    <button type="button" onClick={() => { const next = !word.writingPassed; recordWordPracticeResult(word.id, 'writing', next); onWordsChange(); }} className={`px-2.5 py-1 rounded-lg border font-semibold cursor-pointer ${word.writingPassed ? 'bg-emerald-100 text-emerald-900 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-100 dark:border-emerald-700' : 'bg-stone-100 text-stone-700 border-stone-300 dark:bg-stone-800 dark:text-stone-200 dark:border-stone-600'}`}>✍️ 寫：{word.writingPassed ? '通過 ✓' : '待測'}</button>
+                    <button type="button" onClick={() => { setSelectedTestWord(word); setIsCheckModalOpen(true); }} className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-stone-900 text-white font-semibold hover:bg-stone-800 cursor-pointer"><Award className="w-3 h-3 text-amber-400" />說寫檢測</button>
                   </div>
                 </div>
-              )}
 
-              {/* Example sentence */}
-              {word.exampleEn && (
-                <div className="mt-3 p-2.5 rounded-xl bg-stone-50 border border-stone-100 text-xs">
-                  <div className="flex items-start justify-between gap-1">
-                    <p className="text-stone-800 font-medium leading-relaxed">{word.exampleEn}</p>
-                    <button
-                      onClick={() => speakText(word.exampleEn)}
-                      title="朗讀例句"
-                      className="text-stone-400 hover:text-stone-700 shrink-0 p-0.5 cursor-pointer"
-                    >
-                      <Volume2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                  {word.exampleZh && <p className="text-stone-500 mt-1">{word.exampleZh}</p>}
-                </div>
-              )}
+                <div className="mt-3"><p className="text-sm font-bold text-stone-900">{word.translation}</p>{word.definitionEn && <p className="text-xs text-stone-600 mt-1 leading-relaxed">{word.definitionEn}</p>}</div>
 
-              {/* Grammar note */}
-              {word.grammarNotes && (
-                <div className="mt-2 text-[11px] text-stone-500 leading-snug">
-                  <span className="font-semibold text-stone-600">語法重點：</span>
-                  {word.grammarNotes}
-                </div>
-              )}
-            </div>
+                {word.collocations?.length > 0 && <div className="mt-3 pt-3 border-t border-stone-200"><span className="text-[11px] font-semibold text-stone-500">常用搭配</span><div className="flex flex-wrap gap-1.5 mt-1">{word.collocations.slice(0, 4).map((col, idx) => <span key={idx} className="text-xs px-2 py-0.5 rounded-md bg-stone-50 text-stone-800 border border-stone-200 dark:bg-stone-900 dark:text-stone-200 dark:border-stone-700">{col}</span>)}</div></div>}
 
-            {/* Bottom Actions: Practice in Speaking / Writing / Listening */}
-            <div className="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs">
-              <div className="flex items-center gap-1.5">
-                <button
-                  onClick={() => onSelectWordForPractice(word, 'writing')}
-                  className="px-2 py-1 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100 font-medium transition cursor-pointer"
-                  title="帶入造句與寫作練習"
-                >
-                  ✍️ 造句
-                </button>
-                <button
-                  onClick={() => onSelectWordForPractice(word, 'speaking')}
-                  className="px-2 py-1 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100 font-medium transition cursor-pointer"
-                  title="帶入口說情境對話"
-                >
-                  🎙️ 口說
-                </button>
-                <button
-                  onClick={() => onSelectWordForPractice(word, 'listening')}
-                  className="px-2 py-1 rounded-md text-stone-600 hover:text-stone-900 hover:bg-stone-100 font-medium transition cursor-pointer"
-                  title="帶入聽力理解練習"
-                >
-                  🎧 聽力
-                </button>
+                {word.exampleEn && <div className="mt-3 p-2.5 rounded-xl bg-stone-50 border border-stone-200 text-xs dark:bg-stone-900 dark:border-stone-700"><div className="flex items-start justify-between gap-2"><p className="text-stone-900 font-medium leading-relaxed">{word.exampleEn}</p><button type="button" onClick={() => speakText(word.exampleEn)} className="text-stone-400 hover:text-stone-700 p-0.5 cursor-pointer"><Volume2 className="w-3.5 h-3.5" /></button></div>{word.exampleZh && <p className="text-stone-600 mt-1">{word.exampleZh}</p>}</div>}
+
+                {word.grammarNotes && <p className="mt-2 text-[11px] text-stone-600 leading-snug"><span className="font-semibold text-stone-800">語法：</span>{word.grammarNotes}</p>}
               </div>
 
-              <button
-                onClick={() => {
-                  deleteWord(word.id);
-                  onWordsChange();
-                }}
-                className="text-stone-300 hover:text-rose-500 p-1 rounded-md transition cursor-pointer"
-                title="刪除單字"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-        ))}
+              <div className="mt-4 pt-3 border-t border-stone-200 flex items-center justify-between text-xs">
+                <div className="flex items-center gap-1">
+                  <button type="button" onClick={() => onSelectWordForPractice(word, 'writing')} className="px-2 py-1 rounded-md text-stone-700 hover:text-stone-950 hover:bg-stone-100 font-semibold cursor-pointer">✍️ 造句</button>
+                  <button type="button" onClick={() => onSelectWordForPractice(word, 'speaking')} className="px-2 py-1 rounded-md text-stone-700 hover:text-stone-950 hover:bg-stone-100 font-semibold cursor-pointer">🎙️ 口說</button>
+                  <button type="button" onClick={() => onSelectWordForPractice(word, 'listening')} className="px-2 py-1 rounded-md text-stone-700 hover:text-stone-950 hover:bg-stone-100 font-semibold cursor-pointer">🎧 聽力</button>
+                </div>
+                <button type="button" onClick={() => { deleteWord(word.id); onWordsChange(); }} className="text-stone-400 hover:text-rose-600 p-1 rounded-md cursor-pointer" title="刪除單字"><Trash2 className="w-3.5 h-3.5" /></button>
+              </div>
+            </article>
+          );
+        })}
 
-        {filteredWords.length === 0 && (
-          <div className="col-span-full py-12 text-center bg-stone-50 rounded-2xl border border-dashed border-stone-200">
-            <BookOpen className="w-8 h-8 text-stone-300 mx-auto mb-2" />
-            <p className="text-sm font-medium text-stone-700">尚未找到符合條件的單字</p>
-            <p className="text-xs text-stone-500 mt-1">
-              可點擊上方「讀取剪貼簿 / 匯入文字」或手動輸入單字加入學習清單。
-            </p>
-          </div>
-        )}
+        {filteredWords.length === 0 && <div className="col-span-full py-12 text-center bg-stone-50 rounded-2xl border border-dashed border-stone-300"><BookOpen className="w-8 h-8 text-stone-400 mx-auto mb-2" /><p className="text-sm font-bold text-stone-800">尚未找到符合條件的單字</p><p className="text-xs text-stone-600 mt-1">從剪貼簿、檔案或網站匯入一篇英文內容，就可以讓 AI 自動整理成生字。</p></div>}
       </div>
 
-      {/* Batch Import Modal */}
+      {/* Unified import modal */}
       {isImportModalOpen && (
-        <div className="fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-xl rounded-2xl border border-stone-200 shadow-xl p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-stone-800" />
-                <h3 className="text-lg font-bold text-stone-900">剪貼簿讀取與生字批次匯入</h3>
-              </div>
-              <button
-                onClick={() => setIsImportModalOpen(false)}
-                className="text-stone-400 hover:text-stone-700 text-sm font-medium cursor-pointer"
-              >
-                關閉
-              </button>
+        <div className="fixed inset-0 z-50 bg-stone-950/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-2xl rounded-2xl border border-stone-200 shadow-2xl p-6 space-y-4 dark:bg-stone-900 dark:border-stone-700">
+            <div className="flex items-start justify-between gap-4">
+              <div><div className="flex items-center gap-2"><FileText className="w-5 h-5 text-emerald-500" /><h3 className="text-lg font-bold text-stone-900 dark:text-stone-100">匯入內容 → AI 建立生字</h3></div><p className="text-xs text-stone-600 dark:text-stone-300 mt-1">支援剪貼簿、文字檔，以及公開網站轉文字後匯入。</p></div>
+              <button type="button" onClick={() => setIsImportModalOpen(false)} className="text-xs font-semibold text-stone-500 hover:text-stone-900 dark:hover:text-stone-100 cursor-pointer">關閉</button>
             </div>
 
-            <p className="text-xs text-stone-600">
-              貼上複製的英文單字清單（例如：`articulate, nuance, spontaneous`）或整段英文文章。AI
-              會自動為您提取關鍵生字，並生成音標、中文釋義、例句與語法搭配。
-            </p>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                ['text', '剪貼簿 / 文字', ClipboardPaste],
+                ['file', '檔案', Upload],
+                ['url', '網站', Link],
+              ].map(([id, label, Icon]) => (
+                <button key={String(id)} type="button" onClick={() => setImportMode(id as ImportMode)} className={`inline-flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-xs font-bold cursor-pointer ${importMode === id ? 'bg-stone-900 text-white border-stone-900' : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100 dark:bg-stone-800 dark:text-stone-200 dark:border-stone-700'}`}><Icon className="w-3.5 h-3.5" />{label}</button>
+              ))}
+            </div>
 
-            <textarea
-              id="textarea-import-content"
-              rows={6}
-              value={importText}
-              onChange={(e) => setImportText(e.target.value)}
-              placeholder="在此貼上您複製的英文單字或文章段落..."
-              className="w-full p-3.5 bg-stone-50 border border-stone-200 rounded-xl text-sm text-stone-900 placeholder:text-stone-400 focus:outline-hidden focus:border-stone-400 focus:bg-white transition"
-            />
-
-            {analysisError && (
-              <p className="text-xs text-rose-600 bg-rose-50 p-2.5 rounded-lg">{analysisError}</p>
+            {importMode === 'url' && (
+              <div className="space-y-2">
+                <div className="flex gap-2"><input value={sourceUrl} onChange={(e) => setSourceUrl(e.target.value)} placeholder="https://example.com/article" className="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-200 bg-white text-sm text-stone-900 dark:bg-stone-800 dark:text-stone-100 dark:border-stone-700" /><button type="button" onClick={() => void handleFetchUrl()} disabled={isFetchingUrl || !sourceUrl.trim()} className="px-4 rounded-xl bg-stone-900 text-white text-sm font-semibold disabled:opacity-50 cursor-pointer">{isFetchingUrl ? <RefreshCw className="w-4 h-4 animate-spin" /> : '轉成文字'}</button></div>
+                <p className="text-[11px] text-stone-500 dark:text-stone-300">網站必須是公開頁面；系統會先轉成文字，再交給 AI 找出高價值單字。</p>
+              </div>
             )}
 
-            <div className="flex items-center justify-between pt-2">
-              <button
-                type="button"
-                onClick={async () => {
-                  const res = await readClipboardTextSafe();
-                  if (res.success && res.text) {
-                    setImportText(res.text);
-                  } else if (res.error) {
-                    setAnalysisError(res.error);
-                  }
-                }}
-                className="text-xs text-stone-600 hover:text-stone-900 font-medium flex items-center gap-1 cursor-pointer"
-              >
-                <ClipboardPaste className="w-3.5 h-3.5" />
-                從剪貼簿重新貼上
-              </button>
+            <textarea value={importText} onChange={(e) => setImportText(e.target.value)} rows={9} placeholder="在這裡貼上英文單字、文章、字幕或網站轉出的文字…" className="w-full p-3.5 rounded-xl border border-stone-200 bg-stone-50 text-sm text-stone-900 placeholder:text-stone-400 dark:bg-stone-800 dark:text-stone-100 dark:border-stone-700" />
 
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsImportModalOpen(false)}
-                  className="px-4 py-2 text-sm text-stone-600 hover:text-stone-900 font-medium rounded-xl cursor-pointer"
-                >
-                  取消
-                </button>
-                <button
-                  type="button"
-                  disabled={isAnalyzing || !importText.trim()}
-                  onClick={handleBatchAnalyze}
-                  className="px-4 py-2 bg-stone-900 text-white text-sm font-medium rounded-xl hover:bg-stone-800 disabled:opacity-50 transition cursor-pointer flex items-center gap-1.5"
-                >
-                  {isAnalyzing ? (
-                    <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
-                      AI 智能分析中...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4 text-emerald-400" />
-                      立即分析並匯入
-                    </>
-                  )}
-                </button>
+            {analysisError && <div className="p-3 rounded-xl bg-rose-50 border border-rose-300 text-rose-900 text-xs dark:bg-rose-950 dark:text-rose-100 dark:border-rose-700">{analysisError}</div>}
+
+            <div className="flex items-center justify-between gap-3">
+              <button type="button" onClick={() => setShowImportHelp((value) => !value)} className="text-xs font-semibold text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-white cursor-pointer">{showImportHelp ? '隱藏匯入建議' : '看匯入建議'}</button>
+              <div className="flex items-center gap-2">
+                <button type="button" onClick={async () => { const result = await readClipboardTextSafe(); if (result.success) { setImportText(result.text); setImportMode('text'); } else if (result.error) setAnalysisError(result.error); }} className="px-3 py-2 rounded-xl border border-stone-200 text-xs font-semibold text-stone-700 hover:bg-stone-100 dark:border-stone-700 dark:text-stone-200 dark:hover:bg-stone-800 cursor-pointer"><ClipboardPaste className="w-3.5 h-3.5 inline mr-1" />重新讀取</button>
+                <button type="button" onClick={() => void handleBatchAnalyze()} disabled={isAnalyzing || !importText.trim()} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 disabled:opacity-50 cursor-pointer">{isAnalyzing ? <><RefreshCw className="w-4 h-4 animate-spin" />AI 分析中…</> : <><Sparkles className="w-4 h-4" />分析並匯入</>}</button>
               </div>
             </div>
+
+            {showImportHelp && <div className="rounded-xl bg-stone-50 border border-stone-200 p-3 text-xs text-stone-700 space-y-1 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-200"><p>• <strong>剪貼簿：</strong>直接貼英文文章、字幕或單字清單。</p><p>• <strong>檔案：</strong>TXT、Markdown、CSV、JSON、HTML 都可先轉為文字。</p><p>• <strong>網站：</strong>貼公開文章網址，系統先轉成文字，再用 AI 擷取高價值單字。</p></div>}
           </div>
         </div>
       )}
-      </>
-      )}
+
+      <VocabMasteryCheckModal
+        word={selectedTestWord}
+        isOpen={isCheckModalOpen}
+        onClose={() => setIsCheckModalOpen(false)}
+        onWordsChange={onWordsChange}
+      />
     </div>
   );
 };
