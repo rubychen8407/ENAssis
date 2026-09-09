@@ -307,11 +307,8 @@ export default function App() {
             records={ieltsRecords}
             mistakes={ieltsMistakes}
             writingRecords={writingRecords}
-            speakingRecords={speakingRecords}
-            listeningRecords={listeningRecords}
             settings={generalSettings}
             onOpenSettings={() => setIsSettingsModalOpen(true)}
-            onUpdateSettings={handleUpdateSettings}
             onNavigate={(tab, promptId) => {
               if (promptId) setSelectedWritingPromptId(promptId);
               setActiveTab(tab);
