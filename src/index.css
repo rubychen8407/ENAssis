@@ -91,8 +91,3 @@ html.dark option { background: #292524; color: #fafaf9; }
 html.dark [class*="bg-white"] { background-color: #292524 !important; }
 html.dark [class*="bg-stone-900"] { color: #fff !important; }
 html.dark ::selection { background: #57534e; color: #fff; }
-
-/* The redundant vocabulary mastery-feedback summary is intentionally removed from the UI. */
-main section:has(> div p.text-amber-950) {
-  display: none !important;
-}
