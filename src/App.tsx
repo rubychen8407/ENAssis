@@ -7,6 +7,7 @@ import {
   PenTool,
   ClipboardPaste,
   Sparkles,
+  Volume2,
   Award,
   GraduationCap,
   LayoutDashboard,
@@ -49,8 +50,9 @@ export default function App() {
   const [clipboardAlert, setClipboardAlert] = useState<string | null>(null);
   const [selectedWritingPromptId, setSelectedWritingPromptId] = useState('task2-opinion-practice');
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return localStorage.getItem('linguacraft-theme') === 'dark';
+    if (typeof window === 'undefined') return true;
+    const savedTheme = localStorage.getItem('linguacraft-theme');
+    return savedTheme ? savedTheme === 'dark' : true;
   });
 
   useEffect(() => {
