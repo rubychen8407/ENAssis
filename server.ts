@@ -265,6 +265,88 @@ Format your output strictly in JSON:
   }
 });
 
+// 3.1 Real-time Grammar & Syntax Check for SentenceBuilder
+app.post('/api/gemini/realtime-grammar-check', async (req, res) => {
+  try {
+    const { sentence, targetWords = [] } = req.body;
+    if (!sentence || typeof sentence !== 'string' || sentence.trim().length < 3) {
+      return res.json({
+        hasErrors: false,
+        errors: [],
+        improvedSentences: [],
+        overallVerdictZh: '請輸入完整句子以進行即時語法檢查。',
+      });
+    }
+
+    const ai = getAI();
+    const prompt = `You are a real-time English grammar inspector and writing coach for a Traditional Chinese (繁體中文) learner.
+Inspect this user sentence in real-time:
+"${sentence.trim()}"
+${targetWords.length > 0 ? `Target words intended: ${targetWords.join(', ')}` : ''}
+
+Strictly analyze:
+1. Are there grammatical errors, agreement mistakes, wrong tenses, wrong prepositions, or awkward collocations?
+2. If yes, specify the exact erroneous substring ("badText" MUST be an exact verbatim substring from the user's sentence), explain the issue concisely in Traditional Chinese ("issue"), and give the exact replacement snippet ("suggestion").
+3. Provide 3 AI-optimized sentence alternatives showcasing upgraded syntax:
+   - "自然流暢句 (Natural & Idiomatic)"
+   - "雅思/學術進階句 (Academic / Advanced Structure)"
+   - "生動有力句 (Expressive & Emphatic)"
+   Each alternative must include a brief Traditional Chinese explanation of why this structure is superior ("whyBetter").
+4. A concise one-sentence overall verdict in Traditional Chinese ("overallVerdictZh").
+
+Respond strictly in valid JSON without codeblocks:
+{
+  "hasErrors": boolean,
+  "errors": [
+    {
+      "badText": "exact verbatim erroneous substring",
+      "issue": "繁體中文簡明錯誤原因",
+      "suggestion": "建議替換詞或片段",
+      "type": "grammar"
+    }
+  ],
+  "improvedSentences": [
+    {
+      "patternName": "自然流暢句 (Natural & Idiomatic)",
+      "sentence": "Refined sentence text",
+      "whyBetter": "繁體中文結構優化解析"
+    },
+    {
+      "patternName": "雅思/學術進階句 (Academic / Advanced Structure)",
+      "sentence": "Refined sentence text",
+      "whyBetter": "繁體中文結構優化解析"
+    },
+    {
+      "patternName": "生動有力句 (Expressive & Emphatic)",
+      "sentence": "Refined sentence text",
+      "whyBetter": "繁體中文結構優化解析"
+    }
+  ],
+  "overallVerdictZh": "整體評估總結"
+}`;
+
+    const response = await generateContentWithFallback(ai, {
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json',
+        temperature: 0.2,
+      },
+    });
+
+    const parsed = cleanAndParseJSON(response.text || '{}', {
+      hasErrors: false,
+      errors: [],
+      improvedSentences: [],
+      overallVerdictZh: '即時語法分析完成',
+    });
+
+    res.json(parsed);
+  } catch (error: any) {
+    console.error('Error in realtime-grammar-check:', error);
+    res.status(500).json({ error: error?.message || 'Realtime check failed' });
+  }
+});
+
 // 4. Writing & Essay Polish with Spoken Presentation Outline
 app.post('/api/gemini/polish-writing', async (req, res) => {
   try {
@@ -274,7 +356,7 @@ app.post('/api/gemini/polish-writing', async (req, res) => {
     }
 
     const ai = getAI();
-    const prompt = `You are a professional English writing coach and examiner.
+    const prompt = `You are a professional IELTS writing examiner and coach trained in the official Cambridge/IDP assessment criteria and the widely respected IELTS Liz methodology.
 Analyze the following written text from a Traditional Chinese student:
 Topic: "${targetTopic || 'General Writing'}"
 Writing Style: "${style}"
@@ -283,15 +365,36 @@ Target Band: "${targetBand || 'not specified'}"
 Student Text:
 "${text}"
 
-Provide a comprehensive, encouraging diagnostic report:
+CRITICAL INSTRUCTION - NO WORDINESS & NO FILLER WORDS (嚴格去除贅詞、空話與客套前言):
+1. All diagnostic comments, grammar explanations, and action plan items MUST be direct, concise, and dense in Traditional Chinese (繁體中文).
+2. Do not use greeting fluff, rhetorical questions, or generic boilerplate praise. Get straight to the technical diagnosis.
+3. In writing analysis, actively identify and penalize wordy template fillers (e.g., "in this modern world of globalization", "it goes without saying that", "needless to say", "at the end of the day").
+
+Provide a comprehensive, high-precision diagnostic report:
 1. Overall score (0-100) and estimated CEFR level (A2, B1, B2, C1, C2).
-2. Strengths of the writing.
-3. Grammar and syntactic issues: locate the exact erroneous phrase, corrected version, grammar rule name, and clear explanation in Traditional Chinese (繁體中文).
-4. Vocabulary enhancements: replace basic or repetitive words with richer collocations.
-5. Native Polished Version: a natural, idiomatic rewriting that retains the author's original intended meaning.
-6. Spoken Presentation Outline: since the user also wants to express complete thoughts aloud, extract 3-4 clear bullet points, an opening phrase, closing phrase, and transitional connectors so the user can easily speak this idea out loud!
+2. Strengths of the writing (concise bullet points).
+3. Grammar and syntactic issues: locate the exact erroneous phrase, corrected version, grammar rule name, and clear explanation strictly in Traditional Chinese (繁體中文).
+4. Vocabulary enhancements: replace basic or repetitive words with richer academic collocations.
+5. Native Polished Version: a natural, idiomatic, concise rewriting that retains the author's original intended meaning without unnecessary filler words.
+6. Spoken Presentation Outline: since the user also wants to express complete thoughts aloud, extract 3-4 clear bullet points, an opening phrase, closing phrase, and transitional connectors.
 ${ieltsTask ? `
-If this is IELTS writing, also assess the four official criteria independently on the 0.0-9.0 band scale: Task Response/Achievement, Coherence and Cohesion, Lexical Resource, and Grammatical Range and Accuracy. Calculate a realistic overall band (average rounded to the nearest 0.5). Give exactly three specific, high-impact actions for the next rewrite. For Task 1, check overview, key features, comparisons, and factual reporting. For Task 2, check position, idea development, paragraphing, and direct task response.` : ''}
+7. Strict IELTS Assessment (0.0-9.0 band scale with 0.5 increments):
+   - Assess all four official criteria independently:
+     a) Task Achievement (Task 1) / Task Response (Task 2)
+     b) Coherence and Cohesion
+     c) Lexical Resource
+     d) Grammatical Range and Accuracy
+   - Calculate realistic overall band (average of the four criteria rounded to the nearest 0.5).
+   - For Task 1 (Academic Report, min 150 words):
+     * Check if there is an explicit OVERVIEW summarizing main trends/features without specific figures. In IELTS Liz methodology, if the overview is missing, Task Achievement is capped at Band 5.0!
+     * Check for logical grouping into 2 body paragraphs with comparisons, rather than a list of every number.
+     * Check that NO personal opinion or speculative reasons are included.
+   - For Task 2 (Academic Essay, min 250 words):
+     * Identify the essay type (Opinion, Discussion, Advantage/Disadvantage, Problem/Solution, Direct Questions).
+     * Check if a clear position/thesis is presented in the introduction and maintained throughout.
+     * Check if each body paragraph has a clear topic sentence and is developed using the PEEL/TEER method (Point, Explain, Example, Link).
+     * Check that conclusion summarizes without introducing new ideas.
+   - Action Plan: Give exactly three specific, actionable, high-impact improvements for the next draft strictly in Traditional Chinese (繁體中文), completely without filler words.` : ''}
 
 Output strictly JSON:
 {
@@ -305,7 +408,7 @@ Output strictly JSON:
       "original": "error phrase",
       "correction": "corrected phrase",
       "rule": "Grammar rule name",
-      "explanationZh": "Detailed explanation in 繁體中文"
+      "explanationZh": "Detailed explanation strictly in 繁體中文 without wordy filler"
     }
   ],
   "vocabularyEnhancements": [
@@ -329,7 +432,7 @@ Output strictly JSON:
     "lexicalResource": number,
     "grammar": number
   },
-  "ieltsActionPlan": ["Action 1", "Action 2", "Action 3"]
+  "ieltsActionPlan": ["Action 1 in 繁體中文", "Action 2 in 繁體中文", "Action 3 in 繁體中文"]
 }`;
 
     const response = await generateContentWithFallback(ai, {
@@ -369,6 +472,161 @@ Output strictly JSON:
   } catch (error: any) {
     console.error('Error in polish-writing:', error);
     res.status(500).json({ error: error?.message || 'Writing polish failed' });
+  }
+});
+
+// 4.1 Mode B Guided Builder - Step-by-Step IELTS Advisor & Wordiness Stripper
+app.post('/api/gemini/ielts-mode-b-advice', async (req, res) => {
+  try {
+    const {
+      mode = 'evaluate', // 'evaluate' | 'starters'
+      ieltsTask = 'task2', // 'task1' | 'task2'
+      stepIndex = 0,
+      stepName = '',
+      prompt = '',
+      targetBand = 7.0,
+      draftText = '',
+      visualType = '',
+      essayType = '',
+    } = req.body;
+
+    const ai = getAI();
+
+    if (mode === 'starters') {
+      const promptText = `You are an elite IELTS Writing mentor and IELTS Liz methodology specialist.
+You are helping a Traditional Chinese student kickstart their writing for STEP ${stepIndex + 1} (${stepName}) of IELTS ${ieltsTask === 'task1' ? 'Task 1' : 'Task 2'}.
+
+EXAM PROMPT:
+"${prompt}"
+
+${ieltsTask === 'task1' ? `Visual Type: ${visualType}` : `Essay Type: ${essayType}`}
+Target Band: ${targetBand}
+
+MANDATORY DIRECTIVE - ZERO FILLER WORDS & NO WORDINESS (嚴禁贅詞、空話、套話):
+1. Provide 3 punchy, academic, Band 8+ sentence starters or structured ideas tailored specifically to this step and prompt.
+2. Absolutely NO conversational greetings, empty pleasantries, or generic advice (如「這是一個很好的題目...」一律禁止).
+3. Ensure every sentence starter is direct, academically rigorous, and completely free of memorized cliché padding (e.g. avoid "in this modern society", "it goes without saying that", "at the present moment").
+
+Respond strictly in valid JSON:
+{
+  "stepIndex": ${stepIndex},
+  "stepName": "${stepName}",
+  "starters": [
+    {
+      "title": "風格名稱 (如：俐落客觀改寫 / 強效主題句 / 高度對比句)",
+      "text": "The concise Band 8+ English sentence starter or skeleton",
+      "rationale": "繁體中文簡明理由（15字內，切中要點，不帶贅詞）"
+    }
+  ]
+}`;
+
+      const response = await generateContentWithFallback(ai, {
+        contents: promptText,
+        config: {
+          responseMimeType: 'application/json',
+          temperature: 0.3,
+        },
+      });
+
+      const parsed = cleanAndParseJSON(response.text || '{}', {
+        stepIndex,
+        stepName,
+        starters: [],
+      });
+      return res.json(parsed);
+    }
+
+    // mode === 'evaluate'
+    const promptText = `You are an elite IELTS writing examiner and IELTS Liz methodology specialist.
+Evaluate the student's text written for STEP ${stepIndex + 1}: ${stepName} of IELTS ${ieltsTask === 'task1' ? 'Task 1' : 'Task 2'}.
+
+EXAM PROMPT:
+"${prompt}"
+${ieltsTask === 'task1' ? `Visual Type: ${visualType}` : `Essay Type: ${essayType}`}
+Target Band: ${targetBand}
+
+STUDENT'S STEP DRAFT:
+"${draftText}"
+
+CORE CRITERIA & RULES FOR THIS STEP:
+${
+  ieltsTask === 'task1'
+    ? stepIndex === 0
+      ? 'Task 1 Intro: Must paraphrase prompt in 1-2 concise sentences without copying prompt verbatim.'
+      : stepIndex === 1
+      ? 'Task 1 Overview: CRITICAL LIZ RULE: Must summarize 2-3 main trends/features. ABSOLUTELY NO SPECIFIC FIGURES/NUMBERS. If any numbers appear, it fails the overview requirement!'
+      : 'Task 1 Body: Logical groupings with key numbers, start values, peaks, and precise comparisons. No personal assumptions or opinions.'
+    : stepIndex === 0
+    ? 'Task 2 Planning: 5-minute brainstorm. Clear stance and 2 robust main ideas with examples.'
+    : stepIndex === 1
+    ? 'Task 2 Intro: Paraphrase background + crystal-clear thesis statement indicating stance. 2 sentences only.'
+    : stepIndex === 4
+    ? 'Task 2 Conclusion: Summarize main points & restate thesis. NO new arguments or ideas.'
+    : 'Task 2 Body: PEEL formula (Point -> Explain -> Example -> Link). Clear topic sentence, depth of explanation, concrete illustration.'
+}
+
+MANDATORY DIRECTIVE - ZERO FILLER WORDS & NO WORDINESS (嚴格去贅詞、零廢話、切中要害):
+1. In your feedback output: No greeting, no polite preamble, no filler praise. Keep every explanation dense, actionable, and strictly in Traditional Chinese (繁體中文).
+2. Scan the student's draft for:
+   - Empty filler phrases (e.g. "In this day and age", "It is undeniable that", "Needless to say", "In my personal opinion", "Due to the fact that", "At the present time")
+   - Redundant wordiness (e.g. "each and every", "future plans", "revert back", "in close proximity to")
+   - Memorized template clichés that IELTS examiners penalize
+3. Provide a concise, high-band native rewrite (Band 8.0+) that preserves the student's core idea while pruning all fluff and enhancing academic cohesion.
+4. Provide up to 3 high-impact lexical collocations.
+
+Respond strictly in valid JSON:
+{
+  "stepIndex": ${stepIndex},
+  "stepName": "${stepName}",
+  "conciseDiagnosis": "繁體中文核心診斷（1-2句直接切中要點，指明是否達標與失分關鍵，絕不使用客套贅詞）",
+  "wordinessVerdict": {
+    "hasFillers": boolean,
+    "fillers": [
+      {
+        "phrase": "exact wordy or filler phrase in user text",
+        "fix": "concise replacement or '建議直接刪除'",
+        "reason": "繁體中文精簡說明為何是贅詞"
+      }
+    ]
+  },
+  "polishedText": "A crisp, concise, high-impact Band 8+ English revision of the student's text with all filler eliminated",
+  "lexicalUpgrades": [
+    {
+      "original": "weak or basic word",
+      "upgraded": "advanced academic collocation",
+      "note": "繁體中文簡明解析（10字以內）"
+    }
+  ],
+  "lizKeyRuleCheck": {
+    "passed": boolean,
+    "tip": "繁體中文要點檢核（如：Overview 未包含具體數字，符合規則）"
+  },
+  "actionPoint": "繁體中文下一步修改指令（1句，不超過25字）"
+}`;
+
+    const response = await generateContentWithFallback(ai, {
+      contents: promptText,
+      config: {
+        responseMimeType: 'application/json',
+        temperature: 0.2,
+      },
+    });
+
+    const parsed = cleanAndParseJSON(response.text || '{}', {
+      stepIndex,
+      stepName,
+      conciseDiagnosis: '診斷完成。',
+      wordinessVerdict: { hasFillers: false, fillers: [] },
+      polishedText: draftText,
+      lexicalUpgrades: [],
+      lizKeyRuleCheck: { passed: true, tip: '符合基本規範' },
+      actionPoint: '繼續推進下一段落。',
+    });
+
+    res.json(parsed);
+  } catch (error: any) {
+    console.error('Error in ielts-mode-b-advice:', error);
+    res.status(500).json({ error: error?.message || 'Advice failed' });
   }
 });
 

@@ -11,6 +11,9 @@ import {
   Award,
   GraduationCap,
   LayoutDashboard,
+  Sliders,
+  Target,
+  Calendar,
 } from 'lucide-react';
 import { SkillTab, VocabWord } from './types';
 import { getSavedVocabulary, readClipboardTextSafe, addWordToVocabulary } from './utils/storage';
@@ -19,27 +22,47 @@ import { VoiceDialogue } from './components/VoiceDialogue';
 import { ListeningLab } from './components/ListeningLab';
 import { ReadingHub } from './components/ReadingHub';
 import { IELTSPracticeHub } from './components/ielts/IELTSPracticeHub';
-import { IELTSWritingCoach } from './components/IELTSWritingCoach';
-import { WritingPracticeLab } from './components/WritingPracticeLab';
+import { IELTSWritingStudio } from './components/ielts/IELTSWritingStudio';
 import { Dashboard } from './components/Dashboard';
-import { IELTSMistakeItem, IELTSRecord } from './types/ielts';
-import { getIELTSMistakes, getIELTSRecords } from './utils/ielts';
+import { GeneralSettingsModal } from './components/GeneralSettingsModal';
+import { IELTSMistakeItem, IELTSRecord, IELTSWritingRecord, IELTSSpeakingRecord, IELTSListeningRecord, GeneralSettings } from './types/ielts';
+import {
+  getIELTSMistakes,
+  getIELTSRecords,
+  getIELTSWritingRecords,
+  getIELTSSpeakingRecords,
+  getIELTSListeningRecords,
+  getGeneralSettings,
+  saveGeneralSettings,
+  seedSampleWritingRecords,
+  clearAllIELTSWritingRecords,
+  calculateIELTSOverallBand,
+} from './utils/ielts';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<SkillTab>('dashboard');
   const [savedWords, setSavedWords] = useState<VocabWord[]>([]);
   const [ieltsRecords, setIeltsRecords] = useState<IELTSRecord[]>([]);
   const [ieltsMistakes, setIeltsMistakes] = useState<IELTSMistakeItem[]>([]);
+  const [writingRecords, setWritingRecords] = useState<IELTSWritingRecord[]>([]);
+  const [speakingRecords, setSpeakingRecords] = useState<IELTSSpeakingRecord[]>(() => getIELTSSpeakingRecords());
+  const [listeningRecords, setListeningRecords] = useState<IELTSListeningRecord[]>(() => getIELTSListeningRecords());
+  const [generalSettings, setGeneralSettings] = useState<GeneralSettings>(() => getGeneralSettings());
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [prefilledWord, setPrefilledWord] = useState<VocabWord | null>(null);
   const [clipboardAlert, setClipboardAlert] = useState<string | null>(null);
   const [selectedWritingPromptId, setSelectedWritingPromptId] = useState('task2-opinion-practice');
 
-  // Load vocabulary from localStorage
+  // Load state from localStorage
   const refreshWords = () => {
     const list = getSavedVocabulary();
     setSavedWords(list);
     setIeltsRecords(getIELTSRecords());
     setIeltsMistakes(getIELTSMistakes());
+    setWritingRecords(getIELTSWritingRecords());
+    setSpeakingRecords(getIELTSSpeakingRecords());
+    setListeningRecords(getIELTSListeningRecords());
+    setGeneralSettings(getGeneralSettings());
   };
 
   useEffect(() => {
@@ -98,6 +121,36 @@ export default function App() {
 
   const masteredCount = savedWords.filter((w) => w.masteryLevel === 'mastered').length;
 
+  // Calculate dynamic current IELTS overall band across 4 skills
+  const overallBand = useMemo(() => {
+    let l = generalSettings.currentScores.listening;
+    let s = generalSettings.currentScores.speaking;
+    let r = generalSettings.currentScores.reading;
+    let w = generalSettings.currentScores.writing;
+
+    if (generalSettings.scoreCalculationMode === 'auto') {
+      if (listeningRecords.length > 0) {
+        l = Math.round((listeningRecords.reduce((acc, x) => acc + x.bandScore, 0) / listeningRecords.length) * 2) / 2;
+      }
+      if (speakingRecords.length > 0) {
+        s = Math.round((speakingRecords.reduce((acc, x) => acc + x.overallBand, 0) / speakingRecords.length) * 2) / 2;
+      }
+      if (ieltsRecords.length > 0) {
+        r = Math.round((ieltsRecords.reduce((acc, x) => acc + x.bandScore, 0) / ieltsRecords.length) * 2) / 2;
+      }
+      if (writingRecords.length > 0) {
+        w = Math.round((writingRecords.reduce((acc, x) => acc + x.overallBand, 0) / writingRecords.length) * 2) / 2;
+      }
+    }
+
+    return calculateIELTSOverallBand(l, s, r, w);
+  }, [generalSettings, listeningRecords, speakingRecords, ieltsRecords, writingRecords]);
+
+  const handleUpdateSettings = (newSettings: GeneralSettings) => {
+    saveGeneralSettings(newSettings);
+    setGeneralSettings(newSettings);
+  };
+
   return (
     <div className="min-h-screen bg-stone-100/60 text-stone-900 flex flex-col">
       {/* Top Navbar */}
@@ -122,7 +175,22 @@ export default function App() {
           </div>
 
           {/* Quick Stats & Clipboard Button */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* General Settings Button with Overall Band */}
+            <button
+              id="btn-general-settings-navbar"
+              onClick={() => setIsSettingsModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-xs font-semibold text-amber-900 transition cursor-pointer shadow-2xs"
+              title="調整雅思四科設定、目標與考期"
+            >
+              <Sliders className="w-3.5 h-3.5 text-amber-600" />
+              <span className="hidden sm:inline">雅思總分</span>
+              <span className="font-bold text-amber-950">Band {overallBand.toFixed(1)}</span>
+              <span className="text-amber-600/70 text-[10px] font-normal">
+                (目標 {generalSettings.targetOverallBand.toFixed(1)})
+              </span>
+            </button>
+
             <button
               id="btn-quick-clipboard-navbar"
               onClick={handleQuickClipboardRead}
@@ -133,7 +201,7 @@ export default function App() {
               <span className="hidden sm:inline">讀取剪貼簿生字</span>
             </button>
 
-            <div className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-stone-50 border border-stone-200 text-xs text-stone-600">
+            <div className="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-xl bg-stone-50 border border-stone-200 text-xs text-stone-600">
               <Award className="w-3.5 h-3.5 text-amber-500" />
               <span>生字庫：</span>
               <span className="font-bold text-stone-900">{savedWords.length}</span>
@@ -238,7 +306,17 @@ export default function App() {
             savedWords={savedWords}
             records={ieltsRecords}
             mistakes={ieltsMistakes}
-            onNavigate={(tab) => setActiveTab(tab)}
+            writingRecords={writingRecords}
+            speakingRecords={speakingRecords}
+            listeningRecords={listeningRecords}
+            settings={generalSettings}
+            onOpenSettings={() => setIsSettingsModalOpen(true)}
+            onUpdateSettings={handleUpdateSettings}
+            onNavigate={(tab, promptId) => {
+              if (promptId) setSelectedWritingPromptId(promptId);
+              setActiveTab(tab);
+            }}
+            onRefreshRecords={refreshWords}
           />
         )}
 
@@ -263,23 +341,10 @@ export default function App() {
         )}
 
         {activeTab === 'writing' && (
-          <div className="space-y-8">
-            <section>
-              <div className="mb-4">
-                <p className="text-xs font-bold uppercase tracking-widest text-emerald-700">Writing Studio</p>
-                <h1 className="mt-1 text-2xl font-bold text-stone-900">IELTS 寫作</h1>
-                <p className="mt-1 text-sm text-stone-500">先在互動專區整理論點、段落與詞彙，再選 Task 1 或 Task 2 完成正式寫作。</p>
-              </div>
-              <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/30 p-4 sm:p-5">
-                <div className="mb-4 flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-emerald-700" />
-                  <h2 className="text-base font-bold text-stone-900">互動專區</h2>
-                </div>
-                <WritingPracticeLab selectedPromptId={selectedWritingPromptId} onPromptChange={setSelectedWritingPromptId} />
-              </div>
-            </section>
-            <IELTSWritingCoach selectedPromptId={selectedWritingPromptId} onPromptChange={setSelectedWritingPromptId} />
-          </div>
+          <IELTSWritingStudio
+            selectedPromptId={selectedWritingPromptId}
+            onPromptChange={setSelectedWritingPromptId}
+          />
         )}
       </main>
 
@@ -287,6 +352,25 @@ export default function App() {
       <footer className="border-t border-stone-200 bg-white/70 py-4 text-center text-xs text-stone-500">
         LinguaCraft 英文全方位學習 • 聽、說、讀、寫四維一體 • 結合語意分析與即時語音回饋
       </footer>
+
+      {/* General Settings Modal */}
+      <GeneralSettingsModal
+        isOpen={isSettingsModalOpen}
+        onClose={() => setIsSettingsModalOpen(false)}
+        settings={generalSettings}
+        onSaveSettings={(newSettings) => {
+          saveGeneralSettings(newSettings);
+          setGeneralSettings(newSettings);
+        }}
+        onSeedSampleWriting={() => {
+          seedSampleWritingRecords();
+          refreshWords();
+        }}
+        onClearWritingRecords={() => {
+          clearAllIELTSWritingRecords();
+          refreshWords();
+        }}
+      />
     </div>
   );
 }

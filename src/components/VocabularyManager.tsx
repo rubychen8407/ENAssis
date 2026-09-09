@@ -31,6 +31,9 @@ import {
 } from '../utils/storage';
 import { VocabMasteryCheckModal } from './VocabMasteryCheckModal';
 import { IELTSVocabExplorer } from './ielts/IELTSVocabExplorer';
+import { toTraditionalChinese } from '../utils/chineseConverter';
+import { SAMPLE_IELTS_CORE_VOCAB } from '../data/ielts/vocabLoader';
+import confetti from 'canvas-confetti';
 
 interface Props {
   words: VocabWord[];
@@ -44,17 +47,53 @@ export const VocabularyManager: React.FC<Props> = ({
   onSelectWordForPractice,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterLevel, setFilterLevel] = useState<'all' | 'new' | 'learning' | 'mastered'>('all');
+  const [filterLevel, setFilterLevel] = useState<'all' | 'new' | 'learning' | 'mastered' | 'ielts'>('all');
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [importText, setImportText] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const [syncStatusMessage, setSyncStatusMessage] = useState<string | null>(null);
   const [singleWordInput, setSingleWordInput] = useState('');
   const [isSingleLoading, setIsSingleLoading] = useState(false);
   const [selectedTestWord, setSelectedTestWord] = useState<VocabWord | null>(null);
   const [isCheckModalOpen, setIsCheckModalOpen] = useState(false);
   // Vocabulary source view: my own notebook vs. the curated IELTS core wordlist
   const [vocabSource, setVocabSource] = useState<'mine' | 'ielts-core'>('mine');
+
+  // One-click sync from IELTS core vocabulary to personal notebook
+  const handleSyncIELTSToNotebook = (count: number = 20) => {
+    const existingWords = new Set(words.map((w) => w.word.toLowerCase()));
+    const toImport = SAMPLE_IELTS_CORE_VOCAB.filter((w) => !existingWords.has(w.word.toLowerCase())).slice(0, count);
+
+    if (toImport.length === 0) {
+      setSyncStatusMessage('所有推薦雅思核心單字已在您的生字庫中！');
+      setTimeout(() => setSyncStatusMessage(null), 3000);
+      return;
+    }
+
+    toImport.forEach((item) => {
+      addWordToVocabulary({
+        word: item.word,
+        phonetic: item.phonetic ? `/${item.phonetic}/` : '',
+        partOfSpeech: item.meaning.slice(0, 4),
+        translation: toTraditionalChinese(item.meaning),
+        definitionEn: '',
+        collocations: [],
+        exampleEn: item.example || '',
+        exampleZh: '',
+        grammarNotes: `雅思官方真題高頻詞 (考頻權重: ${item.freq})`,
+        masteryLevel: 'new',
+        tags: ['IELTS-Core', '雅思高頻'],
+      });
+    });
+
+    onWordsChange();
+    try {
+      confetti({ particleCount: 40, spread: 60, origin: { y: 0.8 } });
+    } catch (_) {}
+    setSyncStatusMessage(`成功匯入 ${toImport.length} 個雅思核心單字至生字庫！已可展開艾賓浩斯記憶與說寫練習。`);
+    setTimeout(() => setSyncStatusMessage(null), 4000);
+  };
 
   const formatAddedTimeAgo = (dateStr?: string): string => {
     if (!dateStr) return '';
@@ -107,12 +146,12 @@ export const VocabularyManager: React.FC<Props> = ({
         word: data.word || singleWordInput.trim(),
         phonetic: data.phonetic || '',
         partOfSpeech: data.partOfSpeech || 'n.',
-        translation: data.translation || '查詢結果',
+        translation: toTraditionalChinese(data.translation || '查詢結果'),
         definitionEn: data.definitionEn || '',
-        collocations: data.collocations || [],
+        collocations: (data.collocations || []).map(toTraditionalChinese),
         exampleEn: data.exampleEn || `Using ${singleWordInput.trim()} in everyday communication.`,
-        exampleZh: data.exampleZh || '在日常交流中使用該單字。',
-        grammarNotes: data.grammarNotes || '一般用法。',
+        exampleZh: toTraditionalChinese(data.exampleZh || '在日常交流中使用該單字。'),
+        grammarNotes: toTraditionalChinese(data.grammarNotes || '一般用法。'),
         masteryLevel: 'new',
         tags: ['Quick-Add'],
       });
@@ -148,12 +187,12 @@ export const VocabularyManager: React.FC<Props> = ({
             word: item.word,
             phonetic: item.phonetic || '',
             partOfSpeech: item.partOfSpeech || 'n.',
-            translation: item.translation || '',
+            translation: toTraditionalChinese(item.translation || ''),
             definitionEn: item.definitionEn || '',
-            collocations: item.collocations || [],
+            collocations: (item.collocations || []).map(toTraditionalChinese),
             exampleEn: item.exampleEn || '',
-            exampleZh: item.exampleZh || '',
-            grammarNotes: item.grammarNotes || '',
+            exampleZh: toTraditionalChinese(item.exampleZh || ''),
+            grammarNotes: toTraditionalChinese(item.grammarNotes || ''),
             masteryLevel: 'new',
             tags: ['Batch-Import'],
           });
@@ -174,6 +213,7 @@ export const VocabularyManager: React.FC<Props> = ({
   const newWordsCount = words.filter((w) => w.masteryLevel === 'new' || isWordAddedWithin24Hours(w)).length;
   const learningWordsCount = words.filter((w) => w.masteryLevel === 'learning').length;
   const masteredWordsCount = words.filter((w) => w.masteryLevel === 'mastered').length;
+  const ieltsWordsCount = words.filter((w) => w.tags?.includes('IELTS-Core') || w.tags?.includes('雅思高頻')).length;
 
   const filteredWords = words.filter((w) => {
     const matchesSearch =
@@ -188,6 +228,8 @@ export const VocabularyManager: React.FC<Props> = ({
       matchesLevel = w.masteryLevel === 'learning';
     } else if (filterLevel === 'mastered') {
       matchesLevel = w.masteryLevel === 'mastered';
+    } else if (filterLevel === 'ielts') {
+      matchesLevel = Boolean(w.tags?.includes('IELTS-Core') || w.tags?.includes('雅思高頻'));
     }
     return matchesSearch && matchesLevel;
   });
@@ -211,6 +253,16 @@ export const VocabularyManager: React.FC<Props> = ({
 
         <div className="flex items-center flex-wrap gap-2">
           <button
+            type="button"
+            onClick={() => handleSyncIELTSToNotebook(20)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold rounded-xl text-sm transition shadow-xs cursor-pointer"
+            title="一鍵同步雅思官方核心單字到個人生字本"
+          >
+            <GraduationCap className="w-4 h-4 text-stone-900" />
+            一鍵同步雅思核心詞 (20詞)
+          </button>
+
+          <button
             id="btn-read-clipboard"
             onClick={handleReadClipboard}
             className="inline-flex items-center gap-2 px-3.5 py-2 bg-stone-900 text-white rounded-xl text-sm font-medium hover:bg-stone-800 transition shadow-xs cursor-pointer"
@@ -220,6 +272,22 @@ export const VocabularyManager: React.FC<Props> = ({
           </button>
         </div>
       </div>
+
+      {syncStatusMessage && (
+        <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 text-xs font-medium flex items-center justify-between animate-in fade-in">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>{syncStatusMessage}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setSyncStatusMessage(null)}
+            className="text-emerald-700 hover:text-emerald-950 text-xs cursor-pointer"
+          >
+            關閉
+          </button>
+        </div>
+      )}
 
       {/* Vocabulary Source Switch: my notebook vs. curated IELTS core wordlist */}
       <div className="bg-white rounded-2xl border border-stone-200 p-2 shadow-xs flex items-center gap-2">
@@ -329,17 +397,18 @@ export const VocabularyManager: React.FC<Props> = ({
             />
           </div>
 
-          <div className="flex bg-stone-100 p-1 rounded-xl border border-stone-200 text-xs font-medium text-stone-600 shrink-0">
+          <div className="flex bg-stone-100 p-1 rounded-xl border border-stone-200 text-xs font-medium text-stone-600 shrink-0 overflow-x-auto max-w-full">
             {[
               { id: 'all', label: '全部', count: words.length },
               { id: 'new', label: '新收錄', count: newWordsCount },
               { id: 'learning', label: '學習中', count: learningWordsCount },
               { id: 'mastered', label: '已掌握', count: masteredWordsCount },
+              { id: 'ielts', label: '雅思核心', count: ieltsWordsCount },
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setFilterLevel(tab.id as any)}
-                className={`px-2.5 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1 ${
+                className={`px-2.5 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1 shrink-0 ${
                   filterLevel === tab.id
                     ? 'bg-white text-stone-900 font-semibold shadow-2xs'
                     : 'hover:text-stone-900'
@@ -385,7 +454,7 @@ export const VocabularyManager: React.FC<Props> = ({
               {/* Header: Word, IPA, Pronounce */}
               <div className="flex items-start justify-between">
                 <div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="text-xl font-bold text-stone-900 tracking-tight">{word.word}</h3>
                     <button
                       onClick={() => speakText(word.word)}
@@ -394,6 +463,12 @@ export const VocabularyManager: React.FC<Props> = ({
                     >
                       <Volume2 className="w-4 h-4" />
                     </button>
+                    {(word.tags?.some((t) => t.includes('IELTS') || t.includes('雅思')) || false) && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-50 text-amber-900 border border-amber-200/80 flex items-center gap-1">
+                        <GraduationCap className="w-3 h-3 text-amber-600" />
+                        雅思核心
+                      </span>
+                    )}
                   </div>
                   <div className="flex items-center gap-2 mt-0.5 text-xs text-stone-500 font-mono">
                     <span>{word.phonetic}</span>

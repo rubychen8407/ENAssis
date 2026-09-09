@@ -47,6 +47,7 @@ export const IELTSPracticeHub: React.FC<Props> = ({ onWordAdded, onOpenWriting }
   const [categoryFilter, setCategoryFilter] = useState<'all' | 'P1' | 'P2' | 'P3'>('all');
   const [frequencyFilter, setFrequencyFilter] = useState<'all' | '高频' | '中频'>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [resourceCategory, setResourceCategory] = useState<'all' | 'listening' | 'reading' | 'writing' | 'speaking' | 'vocabulary'>('all');
 
   // Records and statistics
   const [records, setRecords] = useState<IELTSRecord[]>([]);

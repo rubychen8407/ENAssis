@@ -41,6 +41,7 @@ export interface IELTSExam {
   questionDisplayMap: Record<string, string>;
   explanations?: IELTSQuestionExplanation[];
   passageNotes?: any;
+  paragraphTranslations?: { label: string; text: string }[];
 }
 
 export interface IELTSCoreVocab {
@@ -84,4 +85,101 @@ export interface BandScoreConversion {
   rawScore: number;
   total: number;
   band: number;
+}
+
+export interface IELTSWritingRecord {
+  id: string;
+  timestamp: number;
+  date: string;
+  task: 'task1' | 'task2';
+  promptId?: string;
+  promptTitle: string;
+  lizCategory: string;
+  overallBand: number;
+  targetBand?: number;
+  criteriaScores: {
+    taskResponse: number;
+    coherenceCohesion: number;
+    lexicalResource: number;
+    grammar: number;
+  };
+  criteriaFeedback?: {
+    taskResponse?: string;
+    coherenceCohesion?: string;
+    lexicalResource?: string;
+    grammar?: string;
+  };
+  wordCount: number;
+  timeSpentSeconds?: number;
+  generalFeedbackZh?: string;
+  strengths?: string[];
+  weaknesses?: string[];
+  ieltsActionPlan?: string[];
+  userDraft: string;
+  polishedVersion?: string;
+}
+
+export interface IELTSSpeakingRecord {
+  id: string;
+  timestamp: number;
+  date: string;
+  part: 'part1' | 'part2' | 'part3' | 'mock';
+  topic: string;
+  overallBand: number;
+  criteriaScores: {
+    fluencyCoherence: number;
+    lexicalResource: number;
+    grammarAccuracy: number;
+    pronunciation: number;
+  };
+  feedbackZh?: string;
+}
+
+export interface IELTSListeningRecord {
+  id: string;
+  timestamp: number;
+  date: string;
+  title: string;
+  score: number;
+  totalQuestions: number;
+  bandScore: number;
+}
+
+export interface IELTSFourSkillsSummary {
+  listening: number;
+  speaking: number;
+  reading: number;
+  writing: number;
+  rawAverage: number;
+  overallBand: number;
+  targetOverallBand: number;
+  targetGap: number;
+  isTargetMet: boolean;
+  pointsToNextBand: number; // raw sum points (in 0.5 steps) needed to reach next rounded band
+  nextBand: number;
+  strongestSkill: { name: string; band: number; key: 'listening' | 'speaking' | 'reading' | 'writing' };
+  weakestSkill: { name: string; band: number; key: 'listening' | 'speaking' | 'reading' | 'writing' };
+}
+
+export interface GeneralSettings {
+  targetOverallBand: number;
+  targetScores: {
+    listening: number;
+    reading: number;
+    writing: number;
+    speaking: number;
+  };
+  currentScores: {
+    listening: number;
+    reading: number;
+    writing: number;
+    speaking: number;
+  };
+  scoreCalculationMode: 'auto' | 'manual';
+  examDate: string; // YYYY-MM-DD
+  dailyVocabGoal: number;
+  weeklyWritingGoal: number;
+  feedbackLanguage: 'zh-TW' | 'en';
+  examinerStrictness: 'strict_liz' | 'standard' | 'encouraging';
+  studyPlanTitle?: string;
 }

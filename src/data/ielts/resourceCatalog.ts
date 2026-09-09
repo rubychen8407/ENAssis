@@ -103,12 +103,48 @@ export const ZEEKLOG_IELTS_RESOURCES: IELTSResource[] = [
 
 const ZEEKLOG_REPO_RAW_BASE = 'https://raw.githubusercontent.com/zeeklog/IELTS/master/';
 
+const TITLE_ZH_TRADITIONAL_MAP: Record<string, string> = {
+  '剑桥雅思真题4': '劍橋雅思真題 4',
+  '剑桥雅思真题5': '劍橋雅思真題 5',
+  '剑桥雅思真题6': '劍橋雅思真題 6',
+  '剑桥雅思真题7': '劍橋雅思真題 7',
+  '剑桥雅思真题8': '劍橋雅思真題 8',
+  '剑桥雅思真题9': '劍橋雅思真題 9',
+  '剑桥雅思真题10': '劍橋雅思真題 10',
+  '剑桥雅思真题11': '劍橋雅思真題 11',
+  '剑桥雅思真题12': '劍橋雅思真題 12',
+  '剑桥雅思真题13': '劍橋雅思真題 13',
+  '剑桥雅思真题14': '劍橋雅思真題 14',
+  '剑桥雅思真题15': '劍橋雅思真題 15',
+  '剑桥雅思真题16': '劍橋雅思真題 16',
+  '剑桥雅思真题17': '劍橋雅思真題 17',
+  '剑桥雅思真题18': '劍橋雅思真題 18',
+  '4周攻克雅思听力': '4 週攻克雅思聽力',
+  '剑桥雅思听力考点词': '劍橋雅思聽力考點詞',
+  '雅思听力词汇小伴侣': '雅思聽力詞彙小伴侶',
+  '雅思词汇精讲-听力': '雅思詞彙精講 - 聽力篇',
+  '2022年1-4月大作文真题范文': '2022 年 1-4 月大作文真題範文',
+  '7周突破雅思写作7分-杨凡': '7 週突破雅思寫作 7 分 - 楊凡',
+  'Ideas-for-IELTS-Topics': 'Ideas for IELTS Topics (論點素材庫)',
+  '剑桥图表题大全': '劍橋圖表題大全 (Task 1 題庫)',
+  '剑桥雅思写作高分范文': '劍橋雅思寫作高分範文',
+  '过雅思写作6.5': '過雅思寫作 6.5 分指南',
+  '雅思写作7分288词': '雅思寫作 7 分核心 288 詞',
+  '雅思写作7范文': '雅思寫作 7 分範文合輯',
+  '雅思写作真经': '雅思寫作真經精選',
+  '雅思写作词汇': '雅思寫作必備詞彙',
+  '黑眼睛雅思写作教程': '黑眼睛雅思寫作教程',
+  'IELTS16_体验版': 'IELTS 16 體驗版',
+};
+
 function createPdfResource(path: string, category: IELTSPdfResource['category']): IELTSPdfResource {
   const fileName = path.split('/').pop() || path;
+  const baseName = fileName.replace(/\.pdf$/i, '');
+  const displayTitle = TITLE_ZH_TRADITIONAL_MAP[baseName] || baseName;
   const encodedPath = path.split('/').map((part) => encodeURIComponent(part)).join('/');
   return {
     id: `zeeklog-pdf-${path}`,
-    title: fileName.replace(/\.pdf$/i, ''),
+    title: displayTitle,
     category,
     path,
     url: `${ZEEKLOG_REPO_RAW_BASE}${encodedPath}`,

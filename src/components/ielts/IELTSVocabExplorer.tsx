@@ -16,6 +16,7 @@ import { VocabWord } from '../../types';
 import { loadFullIELTSCoreVocab } from '../../data/ielts/vocabLoader';
 import { addWordToVocabulary, getSavedVocabulary } from '../../utils/storage';
 import { speakText } from '../../utils/speech';
+import { toTraditionalChinese } from '../../utils/chineseConverter';
 
 interface Props {
   onWordAdded?: () => void;
@@ -78,7 +79,7 @@ export const IELTSVocabExplorer: React.FC<Props> = ({ onWordAdded }) => {
         : item.meaning.startsWith('a.') || item.meaning.startsWith('adj.')
         ? 'adj.'
         : 'adv.',
-      translation: item.meaning,
+      translation: toTraditionalChinese(item.meaning),
       definitionEn: '',
       collocations: [],
       exampleEn: item.example || '',
@@ -104,7 +105,7 @@ export const IELTSVocabExplorer: React.FC<Props> = ({ onWordAdded }) => {
         word: item.word,
         phonetic: item.phonetic ? `/${item.phonetic}/` : '',
         partOfSpeech: item.meaning.slice(0, 4),
-        translation: item.meaning,
+        translation: toTraditionalChinese(item.meaning),
         definitionEn: '',
         collocations: [],
         exampleEn: item.example || '',

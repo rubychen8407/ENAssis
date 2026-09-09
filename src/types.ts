@@ -1,4 +1,4 @@
-export type SkillTab = 'vocabulary' | 'speaking' | 'writing' | 'reading' | 'listening';
+export type SkillTab = 'dashboard' | 'vocabulary' | 'speaking' | 'writing' | 'reading' | 'listening';
 
 export interface VocabWord {
   id: string;
@@ -48,6 +48,8 @@ export interface WritingAnalysis {
   score: number;
   cefrLevel: string; // A1, A2, B1, B2, C1, C2
   strengths: string[];
+  weaknesses?: string[];
+  generalFeedbackZh?: string;
   grammarIssues: {
     original: string;
     correction: string;
@@ -59,6 +61,11 @@ export interface WritingAnalysis {
     replacement: string;
     reason: string;
   }[];
+  vocabularyUpgrades?: {
+    original: string;
+    better: string;
+    reasonZh: string;
+  }[];
   nativePolishedVersion: string;
   spokenPresentationOutline: {
     keyPoints: string[];
@@ -66,12 +73,19 @@ export interface WritingAnalysis {
     closingPhrase: string;
     transitionalTips: string[];
   };
+  overallBand?: number;
   ieltsOverallBand?: number;
   ieltsScores?: {
     taskResponse: number;
     coherenceCohesion: number;
     lexicalResource: number;
     grammar: number;
+  };
+  criteriaScores?: {
+    taskResponse?: { band: number; feedbackZh?: string; keyMissingElements?: string[] };
+    coherenceCohesion?: { band: number; feedbackZh?: string; keyMissingElements?: string[] };
+    lexicalResource?: { band: number; feedbackZh?: string; keyMissingElements?: string[] };
+    grammar?: { band: number; feedbackZh?: string; keyMissingElements?: string[] };
   };
   ieltsActionPlan?: string[];
 }

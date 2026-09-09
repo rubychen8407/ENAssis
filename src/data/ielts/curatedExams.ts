@@ -1,6 +1,7 @@
 import { IELTSExam } from "../../types/ielts";
+import { toTraditionalChinese } from "../../utils/chineseConverter";
 
-export const INITIAL_IELTS_EXAMS: IELTSExam[] = [
+const RAW_IELTS_EXAMS: IELTSExam[] = [
   {
     "id": "p1-high-01",
     "title": "A Brief History of Tea 茶叶简史",
@@ -2084,3 +2085,13 @@ export const INITIAL_IELTS_EXAMS: IELTSExam[] = [
     ]
   }
 ];
+
+export const INITIAL_IELTS_EXAMS: IELTSExam[] = RAW_IELTS_EXAMS.map((exam) => ({
+  ...exam,
+  title: toTraditionalChinese(exam.title),
+  frequency: toTraditionalChinese(exam.frequency),
+  paragraphTranslations: exam.paragraphTranslations?.map((p) => ({
+    ...p,
+    text: toTraditionalChinese(p.text),
+  })),
+}));

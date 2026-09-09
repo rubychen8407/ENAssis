@@ -1,6 +1,9 @@
 import { IELTSCoreVocab } from "../../types/ielts";
+import { toTraditionalChinese } from "../../utils/chineseConverter";
 
-export const SAMPLE_IELTS_CORE_VOCAB: IELTSCoreVocab[] = [
+let cachedVocab: IELTSCoreVocab[] | null = null;
+
+const RAW_SAMPLE_IELTS_CORE_VOCAB: IELTSCoreVocab[] = [
   {
     "word": "emperor",
     "meaning": "n. 皇帝；君主",
@@ -1049,14 +1052,33 @@ export const SAMPLE_IELTS_CORE_VOCAB: IELTSCoreVocab[] = [
   }
 ];
 
+export const SAMPLE_IELTS_CORE_VOCAB: IELTSCoreVocab[] = RAW_SAMPLE_IELTS_CORE_VOCAB.map((item) => ({
+  ...item,
+  meaning: toTraditionalChinese(item.meaning),
+  example: item.example ? toTraditionalChinese(item.example) : '',
+}));
+
 export async function loadFullIELTSCoreVocab(): Promise<IELTSCoreVocab[]> {
+  if (cachedVocab && cachedVocab.length > 0) {
+    return cachedVocab;
+  }
+
+  let rawList: IELTSCoreVocab[] = SAMPLE_IELTS_CORE_VOCAB;
   try {
     const res = await fetch("/ielts/ielts_core.json");
     if (res.ok) {
-      return await res.json();
+      rawList = await res.json();
     }
   } catch (e) {
     console.warn("Failed to load full /ielts/ielts_core.json, using fallback sample", e);
   }
-  return SAMPLE_IELTS_CORE_VOCAB;
+
+  // Ensure all meanings and examples are converted to Traditional Chinese
+  cachedVocab = rawList.map((item) => ({
+    ...item,
+    meaning: toTraditionalChinese(item.meaning),
+    example: item.example ? toTraditionalChinese(item.example) : '',
+  }));
+
+  return cachedVocab;
 }

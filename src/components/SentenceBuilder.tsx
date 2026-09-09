@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   PenTool,
   Sparkles,
   Volume2,
   CheckCircle,
+  CheckCircle2,
   AlertCircle,
   ArrowRight,
   RefreshCw,
@@ -13,11 +14,35 @@ import {
   MicOff,
   Layers,
   MessageSquareQuote,
+  Wand2,
+  Check,
+  Zap,
 } from 'lucide-react';
 import { VocabWord, SentenceFeedback, WritingAnalysis } from '../types';
 import { speakText, createSpeechRecognizer, isSpeechRecognitionSupported } from '../utils/speech';
 import { recordWordPracticeResult } from '../utils/storage';
+import { toTraditionalChinese } from '../utils/chineseConverter';
 import confetti from 'canvas-confetti';
+
+interface RealtimeGrammarError {
+  badText: string;
+  issue: string;
+  suggestion: string;
+  type: string;
+}
+
+interface RealtimeGrammarSuggestion {
+  patternName: string;
+  sentence: string;
+  whyBetter: string;
+}
+
+interface RealtimeGrammarResult {
+  hasErrors: boolean;
+  errors: RealtimeGrammarError[];
+  improvedSentences: RealtimeGrammarSuggestion[];
+  overallVerdictZh: string;
+}
 
 interface Props {
   savedWords: VocabWord[];
@@ -106,6 +131,108 @@ export const SentenceBuilder: React.FC<Props> = ({ savedWords, prefilledWord }) 
       setExpandedWord(savedWords[0].word);
     }
   }, [prefilledWord, savedWords]);
+
+  // Real-time Grammar Checker state
+  const [isRealtimeChecking, setIsRealtimeChecking] = useState<boolean>(false);
+  const [realtimeResult, setRealtimeResult] = useState<RealtimeGrammarResult | null>(null);
+  const [fixNotification, setFixNotification] = useState<string | null>(null);
+  const realtimeTimerRef = useRef<any>(null);
+
+  // Trigger real-time grammar check with debouncing as user types
+  useEffect(() => {
+    if (realtimeTimerRef.current) {
+      clearTimeout(realtimeTimerRef.current);
+    }
+
+    const trimmed = userSentence.trim();
+    const wordCount = trimmed.split(/\s+/).filter(Boolean).length;
+    if (wordCount < 3 || trimmed.length < 10) {
+      setRealtimeResult(null);
+      setIsRealtimeChecking(false);
+      return;
+    }
+
+    setIsRealtimeChecking(true);
+    realtimeTimerRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch('/api/gemini/realtime-grammar-check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sentence: trimmed,
+            targetWords: selectedWord ? [selectedWord] : [],
+          }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setRealtimeResult({
+            hasErrors: Boolean(data.hasErrors),
+            errors: (data.errors || []).map((err: any) => ({
+              badText: err.badText || '',
+              issue: toTraditionalChinese(err.issue || ''),
+              suggestion: err.suggestion || '',
+              type: err.type || 'grammar',
+            })),
+            improvedSentences: (data.improvedSentences || []).map((s: any) => ({
+              patternName: toTraditionalChinese(s.patternName || ''),
+              sentence: s.sentence || '',
+              whyBetter: toTraditionalChinese(s.whyBetter || ''),
+            })),
+            overallVerdictZh: toTraditionalChinese(data.overallVerdictZh || ''),
+          });
+        }
+      } catch (err) {
+        console.warn('Realtime grammar check error:', err);
+      } finally {
+        setIsRealtimeChecking(false);
+      }
+    }, 650);
+
+    return () => {
+      if (realtimeTimerRef.current) {
+        clearTimeout(realtimeTimerRef.current);
+      }
+    };
+  }, [userSentence, selectedWord]);
+
+  // Apply single grammar fix
+  const handleApplyFix = (badText: string, suggestion: string) => {
+    if (!badText) return;
+    setUserSentence((prev) => {
+      const idx = prev.indexOf(badText);
+      if (idx !== -1) {
+        return prev.substring(0, idx) + suggestion + prev.substring(idx + badText.length);
+      }
+      return prev.replace(badText, suggestion);
+    });
+    setFixNotification(`已替換修復：「${badText}」→「${suggestion}」`);
+    setTimeout(() => setFixNotification(null), 3500);
+  };
+
+  // Apply all grammar fixes at once
+  const handleApplyAllFixes = () => {
+    if (!realtimeResult || realtimeResult.errors.length === 0) return;
+    let updated = userSentence;
+    realtimeResult.errors.forEach((err) => {
+      if (err.badText && updated.includes(err.badText)) {
+        updated = updated.replace(err.badText, err.suggestion);
+      }
+    });
+    setUserSentence(updated);
+    setFixNotification('已套用所有推薦語法修復！');
+    setTimeout(() => setFixNotification(null), 3500);
+  };
+
+  // Adopt recommended sentence pattern
+  const handleAdoptSentence = (newSentence: string) => {
+    setUserSentence(newSentence);
+    try {
+      confetti({ particleCount: 35, spread: 50, origin: { y: 0.8 } });
+    } catch (_) {}
+    setFixNotification('已採用 AI 優化建議句型！');
+    setTimeout(() => setFixNotification(null), 3500);
+  };
 
   // Toggle voice recognition
   const toggleRecording = (target: 'sentence' | 'essay') => {
@@ -400,6 +527,97 @@ export const SentenceBuilder: React.FC<Props> = ({ savedWords, prefilledWord }) 
                   placeholder={`例如：請使用 "${selectedWord || '單字'}" 並依照「${selectedPattern}」造句...`}
                   className="w-full p-3.5 bg-stone-50 border border-stone-200 rounded-xl text-sm text-stone-900 placeholder:text-stone-400 focus:outline-hidden focus:border-stone-400 focus:bg-white"
                 />
+
+                {/* Real-time Status Indicator */}
+                <div className="flex items-center justify-between mt-1 text-[11px] text-stone-500">
+                  <div className="flex items-center gap-1.5">
+                    {isRealtimeChecking ? (
+                      <span className="flex items-center gap-1 text-stone-600">
+                        <RefreshCw className="w-3 h-3 animate-spin text-stone-500" />
+                        AI 語法即時檢查中...
+                      </span>
+                    ) : realtimeResult ? (
+                      realtimeResult.hasErrors && realtimeResult.errors.length > 0 ? (
+                        <span className="flex items-center gap-1 text-rose-600 font-medium">
+                          <AlertCircle className="w-3 h-3 text-rose-500" />
+                          偵測到 {realtimeResult.errors.length} 處可改善語法
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1 text-emerald-700 font-medium">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                          語法結構正確！
+                        </span>
+                      )
+                    ) : (
+                      <span>輸入完整句子 (3個單字以上) 自動開啟即時語法診斷</span>
+                    )}
+                  </div>
+                  <span>{userSentence.trim().split(/\s+/).filter(Boolean).length} 字</span>
+                </div>
+
+                {/* Fix Notification Toast */}
+                {fixNotification && (
+                  <div className="mt-2 p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center gap-2 font-medium animate-in fade-in">
+                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>{fixNotification}</span>
+                  </div>
+                )}
+
+                {/* Real-time Grammar Error Highlighting & 1-Click Fixes */}
+                {realtimeResult && realtimeResult.hasErrors && realtimeResult.errors.length > 0 && (
+                  <div className="mt-3 p-3.5 rounded-xl bg-rose-50/70 border border-rose-200/80 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-full bg-rose-200/80 text-rose-800 flex items-center justify-center text-xs font-bold">
+                          !
+                        </span>
+                        <span className="text-xs font-bold text-rose-900">
+                          即時語法錯誤高亮標註 ({realtimeResult.errors.length} 處)
+                        </span>
+                      </div>
+                      {realtimeResult.errors.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={handleApplyAllFixes}
+                          className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer flex items-center gap-1 shadow-2xs"
+                        >
+                          <Wand2 className="w-3 h-3" />
+                          全部一鍵修復
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      {realtimeResult.errors.map((err, idx) => (
+                        <div
+                          key={idx}
+                          className="bg-white/95 p-2.5 rounded-lg border border-rose-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-2xs"
+                        >
+                          <div className="space-y-0.5">
+                            <div className="flex items-center gap-2 flex-wrap text-xs">
+                              <span className="line-through bg-rose-100 text-rose-900 px-1.5 py-0.5 rounded font-mono font-medium">
+                                {err.badText}
+                              </span>
+                              <ArrowRight className="w-3 h-3 text-stone-400" />
+                              <span className="bg-emerald-100 text-emerald-900 px-1.5 py-0.5 rounded font-mono font-bold">
+                                {err.suggestion}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-stone-600">{err.issue}</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleApplyFix(err.badText, err.suggestion)}
+                            className="self-start sm:self-center px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer flex items-center gap-1 shadow-2xs shrink-0"
+                          >
+                            <Wand2 className="w-3 h-3" />
+                            一鍵修復
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center justify-between pt-1">
@@ -538,12 +756,82 @@ export const SentenceBuilder: React.FC<Props> = ({ savedWords, prefilledWord }) 
                   </div>
                 )}
               </div>
+            ) : realtimeResult && realtimeResult.improvedSentences && realtimeResult.improvedSentences.length > 0 ? (
+              <div className="bg-white rounded-2xl border border-stone-200 p-5 shadow-xs space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+                  <div className="flex items-center gap-2">
+                    <span className="w-7 h-7 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center">
+                      <Sparkles className="w-4 h-4 text-amber-600" />
+                    </span>
+                    <div>
+                      <h4 className="text-sm font-bold text-stone-900">AI 優化後的建議句型</h4>
+                      <p className="text-xs text-stone-500">依據您的輸入即時生成 3 種高階句型結構</p>
+                    </div>
+                  </div>
+                  <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
+                    即時生成
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  {realtimeResult.improvedSentences.map((pattern, idx) => (
+                    <div
+                      key={idx}
+                      className="p-4 rounded-xl border border-stone-200 hover:border-stone-400 bg-stone-50/60 hover:bg-white transition space-y-2 group shadow-2xs"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-stone-200 text-stone-800">
+                          {pattern.patternName}
+                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => speakText(pattern.sentence)}
+                            className="p-1 rounded-md text-stone-500 hover:text-stone-900 hover:bg-stone-100 transition cursor-pointer"
+                            title="朗讀此句型"
+                          >
+                            <Volume2 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleAdoptSentence(pattern.sentence)}
+                            className="px-2.5 py-1 rounded-lg bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold transition cursor-pointer flex items-center gap-1 shadow-2xs"
+                          >
+                            <Zap className="w-3 h-3 text-amber-400" />
+                            採用此句型
+                          </button>
+                        </div>
+                      </div>
+
+                      <p className="text-sm font-semibold text-stone-900 leading-relaxed font-serif">
+                        “{pattern.sentence}”
+                      </p>
+
+                      <div className="text-xs text-stone-600 leading-relaxed bg-white p-2.5 rounded-lg border border-stone-100">
+                        <span className="font-semibold text-stone-700">優化解析：</span>
+                        {pattern.whyBetter}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="pt-2 border-t border-stone-100 text-center">
+                  <button
+                    type="button"
+                    onClick={() => handleCheckSentence()}
+                    className="w-full py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-semibold transition cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    <PenTool className="w-3.5 h-3.5" />
+                    執行完整語法評分與句子成分剖析
+                  </button>
+                </div>
+              </div>
             ) : (
               <div className="bg-stone-50 rounded-2xl border border-dashed border-stone-200 p-8 text-center h-full flex flex-col items-center justify-center text-stone-500 space-y-2">
                 <PenTool className="w-8 h-8 text-stone-300" />
                 <p className="text-sm font-medium text-stone-700">等待語法檢驗</p>
                 <p className="text-xs text-stone-500 max-w-xs">
-                  在左側選擇生字與語法句型並提交句子，AI 將在此即時分析句子成分、時態主謂一致性與母語者表達方式。
+                  在左側輸入句子時，AI 將即時高亮標記語法錯誤並提供優化後的建議句型；點擊「立即檢驗語法」可獲得完整評分與成分剖析。
                 </p>
               </div>
             )}
