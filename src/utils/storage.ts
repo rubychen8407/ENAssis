@@ -100,12 +100,10 @@ export function computeWordMastery(word: VocabWord): 'new' | 'learning' | 'maste
   }
   // If tested and either failed, it is in learning
   if (word.speakingPassed === false || word.writingPassed === false) {
-    // If one is passed and other failed, definitely learning
     if (word.speakingPassed || word.writingPassed) {
       return 'learning';
     }
   }
-  // If freshly added within 24 hours and neither passed yet
   if (isWordAddedWithin24Hours(word)) {
     return 'new';
   }
@@ -119,7 +117,6 @@ export function getSavedVocabulary(): VocabWord[] {
     let list: VocabWord[];
     if (!raw) {
       list = INITIAL_WORDS.map((w, index) => {
-        // Provide realistic demo states: perspective is freshly imported
         if (w.word === 'perspective' || w.word === 'spontaneous') {
           return {
             ...w,
@@ -149,7 +146,6 @@ export function getSavedVocabulary(): VocabWord[] {
     }
 
     list = JSON.parse(raw);
-    // Recalculate dynamic mastery and synchronize
     let hasChanges = false;
     const synchronized = list.map((w) => {
       const calculated = computeWordMastery(w);
@@ -184,10 +180,7 @@ export function saveVocabularyList(words: VocabWord[]): void {
 
 export function addWordToVocabulary(newWord: Omit<VocabWord, 'id' | 'dateAdded'>): VocabWord {
   const current = getSavedVocabulary();
-  // Check if exists
-  const existingIndex = current.findIndex(
-    (w) => w.word.toLowerCase() === newWord.word.toLowerCase()
-  );
+  const existingIndex = current.findIndex((w) => w.word.toLowerCase() === newWord.word.toLowerCase());
 
   const wordObj: VocabWord = {
     ...newWord,
@@ -196,27 +189,35 @@ export function addWordToVocabulary(newWord: Omit<VocabWord, 'id' | 'dateAdded'>
     speakingPassed: false,
     writingPassed: false,
     masteryLevel: 'new',
+    examAttempts: 0,
+    examCorrect: 0,
+    examAccuracy: 0,
+    examStatus: 'review',
   };
 
   let updated: VocabWord[];
   if (existingIndex >= 0) {
-    updated = [...current];
-    updated[existingIndex] = {
-      ...current[existingIndex],
+    const previous = current[existingIndex];
+    const refreshed: VocabWord = {
+      ...previous,
       ...newWord,
-      dateAdded: new Date().toISOString(), // refresh 24h timer on re-import
-      masteryLevel: computeWordMastery({
-        ...current[existingIndex],
-        ...newWord,
-        dateAdded: new Date().toISOString(),
-      }),
+      dateAdded: new Date().toISOString(),
+      speakingPassed: previous.speakingPassed ?? false,
+      writingPassed: previous.writingPassed ?? false,
+      examAttempts: previous.examAttempts ?? 0,
+      examCorrect: previous.examCorrect ?? 0,
+      examAccuracy: previous.examAccuracy ?? 0,
+      examStatus: previous.examStatus ?? 'review',
     };
+    refreshed.masteryLevel = computeWordMastery(refreshed);
+    updated = [...current];
+    updated[existingIndex] = refreshed;
   } else {
     updated = [wordObj, ...current];
   }
 
   saveVocabularyList(updated);
-  return wordObj;
+  return existingIndex >= 0 ? updated[existingIndex] : wordObj;
 }
 
 // Record result of speaking or writing test for a word
@@ -246,9 +247,34 @@ export function recordWordPracticeResult(
     return w;
   });
 
-  if (updatedWord) {
-    saveVocabularyList(updated);
-  }
+  if (updatedWord) saveVocabularyList(updated);
+  return updatedWord;
+}
+
+// Persist adaptive exam performance independently from the speaking/writing mastery rule.
+export function recordVocabExamResult(wordId: string, passed: boolean): VocabWord | null {
+  const current = getSavedVocabulary();
+  let updatedWord: VocabWord | null = null;
+
+  const updated = current.map((w) => {
+    if (w.id === wordId || w.word.toLowerCase() === wordId.toLowerCase()) {
+      const attempts = (w.examAttempts ?? 0) + 1;
+      const correct = (w.examCorrect ?? 0) + (passed ? 1 : 0);
+      const accuracy = Math.round((correct / attempts) * 100);
+      const status = attempts >= 2 && accuracy >= 80 ? 'learned' : 'review';
+      updatedWord = {
+        ...w,
+        examAttempts: attempts,
+        examCorrect: correct,
+        examAccuracy: accuracy,
+        examStatus: status,
+      };
+      return updatedWord;
+    }
+    return w;
+  });
+
+  if (updatedWord) saveVocabularyList(updated);
   return updatedWord;
 }
 
@@ -272,6 +298,7 @@ export function updateWordMastery(id: string, level: 'new' | 'learning' | 'maste
           dateAdded: new Date().toISOString(),
           speakingPassed: false,
           writingPassed: false,
+          examStatus: 'review',
         };
       }
       return {
@@ -292,7 +319,6 @@ export function deleteWord(id: string): void {
   saveVocabularyList(updated);
 }
 
-// Read text from clipboard with browser permission check
 export async function readClipboardTextSafe(): Promise<{ success: boolean; text: string; error?: string }> {
   try {
     if (!navigator.clipboard || !navigator.clipboard.readText) {
