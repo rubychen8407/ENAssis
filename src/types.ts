@@ -17,6 +17,10 @@ export interface VocabWord {
   speakingPassed?: boolean;
   writingPassed?: boolean;
   lastTestedAt?: string;
+  examAttempts?: number;
+  examCorrect?: number;
+  examAccuracy?: number;
+  examStatus?: 'learned' | 'review';
 }
 
 export interface GrammarPattern {
