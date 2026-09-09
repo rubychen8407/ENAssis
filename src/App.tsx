@@ -7,13 +7,14 @@ import {
   PenTool,
   ClipboardPaste,
   Sparkles,
-  Volume2,
   Award,
   GraduationCap,
   LayoutDashboard,
   Sliders,
   Target,
   Calendar,
+  Moon,
+  Sun,
 } from 'lucide-react';
 import { SkillTab, VocabWord } from './types';
 import { getSavedVocabulary, readClipboardTextSafe, addWordToVocabulary } from './utils/storage';
@@ -47,6 +48,15 @@ export default function App() {
   const [prefilledWord, setPrefilledWord] = useState<VocabWord | null>(null);
   const [clipboardAlert, setClipboardAlert] = useState<string | null>(null);
   const [selectedWritingPromptId, setSelectedWritingPromptId] = useState('task2-opinion-practice');
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('linguacraft-theme') === 'dark';
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', isDarkMode);
+    localStorage.setItem('linguacraft-theme', isDarkMode ? 'dark' : 'light');
+  }, [isDarkMode]);
 
   // Load state from localStorage
   const refreshWords = () => {
@@ -137,8 +147,18 @@ export default function App() {
             </div>
           </div>
 
-          {/* Quick Stats & Clipboard Button */}
+          {/* Quick Stats & Controls */}
           <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              id="btn-theme-toggle-navbar"
+              onClick={() => setIsDarkMode((value) => !value)}
+              className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-stone-50 hover:bg-stone-100 border border-stone-200 text-stone-700 transition cursor-pointer shadow-2xs"
+              title={isDarkMode ? '切換到淺色模式' : '切換到深色模式'}
+              aria-label={isDarkMode ? '切換到淺色模式' : '切換到深色模式'}
+            >
+              {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+
             {/* General Settings Button */}
             <button
               id="btn-general-settings-navbar"
@@ -212,9 +232,7 @@ export default function App() {
             id="tab-speaking"
             onClick={() => setActiveTab('speaking')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
-              activeTab === 'speaking'
-                ? 'bg-stone-900 text-white shadow-2xs'
-                : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
+              activeTab === 'speaking' ? 'bg-stone-900 text-white shadow-2xs' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
             }`}
           >
             <Mic className="w-4 h-4 text-rose-400" />
@@ -225,9 +243,7 @@ export default function App() {
             id="tab-reading"
             onClick={() => setActiveTab('reading')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
-              activeTab === 'reading'
-                ? 'bg-stone-900 text-white shadow-2xs'
-                : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
+              activeTab === 'reading' ? 'bg-stone-900 text-white shadow-2xs' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
             }`}
           >
             <BookOpen className="w-4 h-4" />
@@ -238,15 +254,12 @@ export default function App() {
             id="tab-writing"
             onClick={() => setActiveTab('writing')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
-              activeTab === 'writing'
-                ? 'bg-stone-900 text-white shadow-2xs'
-                : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
+              activeTab === 'writing' ? 'bg-stone-900 text-white shadow-2xs' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
             }`}
           >
             <PenTool className="w-4 h-4" />
             寫作 (Writing)
           </button>
-
         </div>
       </header>
 
