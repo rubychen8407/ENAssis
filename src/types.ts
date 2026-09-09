@@ -1,4 +1,4 @@
-export type SkillTab = 'vocabulary' | 'ielts' | 'speaking' | 'writing' | 'reading' | 'listening';
+export type SkillTab = 'dashboard' | 'vocabulary' | 'ielts' | 'speaking' | 'writing' | 'writing-practice' | 'reading' | 'listening';
 
 export interface VocabWord {
   id: string;
@@ -66,6 +66,14 @@ export interface WritingAnalysis {
     closingPhrase: string;
     transitionalTips: string[];
   };
+  ieltsOverallBand?: number;
+  ieltsScores?: {
+    taskResponse: number;
+    coherenceCohesion: number;
+    lexicalResource: number;
+    grammar: number;
+  };
+  ieltsActionPlan?: string[];
 }
 
 export interface VoiceMessage {

@@ -254,7 +254,7 @@ export function recordWordPracticeResult(
 
 export function updateWordMastery(id: string, level: 'new' | 'learning' | 'mastered'): void {
   const current = getSavedVocabulary();
-  const updated = current.map((w) => {
+  const updated: VocabWord[] = current.map((w): VocabWord => {
     if (w.id === id) {
       if (level === 'mastered') {
         return {

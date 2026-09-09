@@ -268,7 +268,7 @@ Format your output strictly in JSON:
 // 4. Writing & Essay Polish with Spoken Presentation Outline
 app.post('/api/gemini/polish-writing', async (req, res) => {
   try {
-    const { text, targetTopic, style = 'general' } = req.body;
+    const { text, targetTopic, style = 'general', ieltsTask, targetBand } = req.body;
     if (!text || typeof text !== 'string') {
       return res.status(400).json({ error: 'Text is required' });
     }
@@ -278,6 +278,8 @@ app.post('/api/gemini/polish-writing', async (req, res) => {
 Analyze the following written text from a Traditional Chinese student:
 Topic: "${targetTopic || 'General Writing'}"
 Writing Style: "${style}"
+IELTS Task: "${ieltsTask || 'general'}"
+Target Band: "${targetBand || 'not specified'}"
 Student Text:
 "${text}"
 
@@ -288,6 +290,8 @@ Provide a comprehensive, encouraging diagnostic report:
 4. Vocabulary enhancements: replace basic or repetitive words with richer collocations.
 5. Native Polished Version: a natural, idiomatic rewriting that retains the author's original intended meaning.
 6. Spoken Presentation Outline: since the user also wants to express complete thoughts aloud, extract 3-4 clear bullet points, an opening phrase, closing phrase, and transitional connectors so the user can easily speak this idea out loud!
+${ieltsTask ? `
+If this is IELTS writing, also assess the four official criteria independently on the 0.0-9.0 band scale: Task Response/Achievement, Coherence and Cohesion, Lexical Resource, and Grammatical Range and Accuracy. Calculate a realistic overall band (average rounded to the nearest 0.5). Give exactly three specific, high-impact actions for the next rewrite. For Task 1, check overview, key features, comparisons, and factual reporting. For Task 2, check position, idea development, paragraphing, and direct task response.` : ''}
 
 Output strictly JSON:
 {
@@ -317,7 +321,15 @@ Output strictly JSON:
     "openingPhrase": "How to start speaking your idea",
     "closingPhrase": "How to conclude speaking your idea",
     "transitionalTips": ["Transition connector tips"]
-  }
+  },
+  "ieltsOverallBand": number,
+  "ieltsScores": {
+    "taskResponse": number,
+    "coherenceCohesion": number,
+    "lexicalResource": number,
+    "grammar": number
+  },
+  "ieltsActionPlan": ["Action 1", "Action 2", "Action 3"]
 }`;
 
     const response = await generateContentWithFallback(ai, {
@@ -343,6 +355,14 @@ Output strictly JSON:
         closingPhrase: 'In conclusion, that is my perspective.',
         transitionalTips: ['Furthermore', 'On the other hand'],
       },
+      ieltsOverallBand: 0,
+      ieltsScores: {
+        taskResponse: 0,
+        coherenceCohesion: 0,
+        lexicalResource: 0,
+        grammar: 0,
+      },
+      ieltsActionPlan: [],
     });
 
     res.json(parsed);

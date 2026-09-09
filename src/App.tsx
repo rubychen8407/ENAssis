@@ -10,26 +10,36 @@ import {
   Volume2,
   Award,
   GraduationCap,
+  LayoutDashboard,
 } from 'lucide-react';
 import { SkillTab, VocabWord } from './types';
 import { getSavedVocabulary, readClipboardTextSafe, addWordToVocabulary } from './utils/storage';
 import { VocabularyManager } from './components/VocabularyManager';
-import { SentenceBuilder } from './components/SentenceBuilder';
 import { VoiceDialogue } from './components/VoiceDialogue';
 import { ListeningLab } from './components/ListeningLab';
 import { ReadingHub } from './components/ReadingHub';
 import { IELTSPracticeHub } from './components/ielts/IELTSPracticeHub';
+import { IELTSWritingCoach } from './components/IELTSWritingCoach';
+import { WritingPracticeLab } from './components/WritingPracticeLab';
+import { Dashboard } from './components/Dashboard';
+import { IELTSMistakeItem, IELTSRecord } from './types/ielts';
+import { getIELTSMistakes, getIELTSRecords } from './utils/ielts';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<SkillTab>('vocabulary');
+  const [activeTab, setActiveTab] = useState<SkillTab>('dashboard');
   const [savedWords, setSavedWords] = useState<VocabWord[]>([]);
+  const [ieltsRecords, setIeltsRecords] = useState<IELTSRecord[]>([]);
+  const [ieltsMistakes, setIeltsMistakes] = useState<IELTSMistakeItem[]>([]);
   const [prefilledWord, setPrefilledWord] = useState<VocabWord | null>(null);
   const [clipboardAlert, setClipboardAlert] = useState<string | null>(null);
+  const [selectedWritingPromptId, setSelectedWritingPromptId] = useState('task2-opinion-practice');
 
   // Load vocabulary from localStorage
   const refreshWords = () => {
     const list = getSavedVocabulary();
     setSavedWords(list);
+    setIeltsRecords(getIELTSRecords());
+    setIeltsMistakes(getIELTSMistakes());
   };
 
   useEffect(() => {
@@ -134,7 +144,17 @@ export default function App() {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto gap-1 py-1 scrollbar-none">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap gap-1.5 py-2">
+          <button
+            id="tab-dashboard"
+            onClick={() => setActiveTab('dashboard')}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
+              activeTab === 'dashboard' ? 'bg-stone-900 text-white shadow-2xs' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
+            }`}
+          >
+            <LayoutDashboard className="w-4 h-4" /> 今日進度
+          </button>
+
           <button
             id="tab-vocabulary"
             onClick={() => setActiveTab('vocabulary')}
@@ -145,7 +165,7 @@ export default function App() {
             }`}
           >
             <BookMarked className="w-4 h-4" />
-            生字庫與剪貼簿 (Vocabulary)
+            生字庫
           </button>
 
           <button
@@ -158,7 +178,7 @@ export default function App() {
             }`}
           >
             <Headphones className="w-4 h-4" />
-            聽力理解 (Listening)
+            聽力
           </button>
 
           <button
@@ -171,7 +191,7 @@ export default function App() {
             }`}
           >
             <Mic className="w-4 h-4 text-rose-400" />
-            及時語音對話 (Speaking & Voice)
+            口說
           </button>
 
           <button
@@ -184,7 +204,7 @@ export default function App() {
             }`}
           >
             <BookOpen className="w-4 h-4" />
-            情境閱讀與查詞 (Reading)
+            閱讀
           </button>
 
           <button
@@ -197,7 +217,7 @@ export default function App() {
             }`}
           >
             <GraduationCap className="w-4 h-4 text-amber-600" />
-            雅思全真模考與題庫 (IELTS Practice)
+            IELTS 題庫
           </button>
 
           <button
@@ -210,8 +230,9 @@ export default function App() {
             }`}
           >
             <PenTool className="w-4 h-4" />
-            語法造句與寫作 (Writing & Sentences)
+            IELTS 寫作
           </button>
+
         </div>
       </header>
 
@@ -225,6 +246,15 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {activeTab === 'dashboard' && (
+          <Dashboard
+            savedWords={savedWords}
+            records={ieltsRecords}
+            mistakes={ieltsMistakes}
+            onNavigate={(tab) => setActiveTab(tab)}
+          />
+        )}
+
         {activeTab === 'vocabulary' && (
           <VocabularyManager
             words={savedWords}
@@ -246,11 +276,27 @@ export default function App() {
         )}
 
         {activeTab === 'ielts' && (
-          <IELTSPracticeHub onWordAdded={refreshWords} />
+          <IELTSPracticeHub onWordAdded={refreshWords} onOpenWriting={() => setActiveTab('writing')} />
         )}
 
         {activeTab === 'writing' && (
-          <SentenceBuilder savedWords={savedWords} prefilledWord={prefilledWord} />
+          <div className="space-y-8">
+            <section>
+              <div className="mb-4">
+                <p className="text-xs font-bold uppercase tracking-widest text-emerald-700">Writing Studio</p>
+                <h1 className="mt-1 text-2xl font-bold text-stone-900">IELTS 寫作</h1>
+                <p className="mt-1 text-sm text-stone-500">先在互動專區整理論點、段落與詞彙，再選 Task 1 或 Task 2 完成正式寫作。</p>
+              </div>
+              <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/30 p-4 sm:p-5">
+                <div className="mb-4 flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-emerald-700" />
+                  <h2 className="text-base font-bold text-stone-900">互動專區</h2>
+                </div>
+                <WritingPracticeLab selectedPromptId={selectedWritingPromptId} onPromptChange={setSelectedWritingPromptId} />
+              </div>
+            </section>
+            <IELTSWritingCoach selectedPromptId={selectedWritingPromptId} onPromptChange={setSelectedWritingPromptId} />
+          </div>
         )}
       </main>
 

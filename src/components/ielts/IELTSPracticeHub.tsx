@@ -16,9 +16,16 @@ import {
   BarChart3,
   BookmarkCheck,
   Compass,
+  ExternalLink,
+  PenTool,
 } from 'lucide-react';
 import { IELTSExam, IELTSRecord, IELTSMistakeItem } from '../../types/ielts';
 import { INITIAL_IELTS_EXAMS } from '../../data/ielts/curatedExams';
+import {
+  IELTSResourceCategory,
+  ZEEKLOG_IELTS_PDFS,
+  ZEEKLOG_IELTS_RESOURCES,
+} from '../../data/ielts/resourceCatalog';
 import { getIELTSRecords, getIELTSMistakes, getCustomExams, saveCustomExam } from '../../utils/ielts';
 import { IELTSExamArena } from './IELTSExamArena';
 import { IELTSFlashStudy } from './IELTSFlashStudy';
@@ -27,11 +34,13 @@ import { IELTSMistakeNotebook } from './IELTSMistakeNotebook';
 
 interface Props {
   onWordAdded?: () => void;
+  onOpenWriting?: () => void;
 }
 
-export const IELTSPracticeHub: React.FC<Props> = ({ onWordAdded }) => {
+export const IELTSPracticeHub: React.FC<Props> = ({ onWordAdded, onOpenWriting }) => {
   // Navigation tabs inside IELTS hub
-  const [activeTab, setActiveTab] = useState<'bank' | 'arena' | 'flash' | 'vocab' | 'mistakes'>('bank');
+  const [activeTab, setActiveTab] = useState<'bank' | 'arena' | 'flash' | 'vocab' | 'mistakes' | 'resources'>('bank');
+  const [resourceCategory, setResourceCategory] = useState<'all' | IELTSResourceCategory>('all');
 
   // Exam list & selection
   const [exams, setExams] = useState<IELTSExam[]>(INITIAL_IELTS_EXAMS);
@@ -157,6 +166,15 @@ export const IELTSPracticeHub: React.FC<Props> = ({ onWordAdded }) => {
             </div>
           </div>
 
+          {onOpenWriting && (
+            <button
+              onClick={onOpenWriting}
+              className="inline-flex items-center gap-2 self-start rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-bold text-rose-800 hover:bg-rose-100 cursor-pointer"
+            >
+              <PenTool className="w-3.5 h-3.5" /> IELTS 寫作批改
+            </button>
+          )}
+
           {/* IELTS Sub-Tabs */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0">
             <button
@@ -228,6 +246,19 @@ export const IELTSPracticeHub: React.FC<Props> = ({ onWordAdded }) => {
                 </span>
               )}
             </button>
+
+            <button
+              id="tab-ielts-resources"
+              onClick={() => setActiveTab('resources')}
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
+                activeTab === 'resources'
+                  ? 'bg-stone-900 text-white shadow-2xs'
+                  : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
+              }`}
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              外部資源
+            </button>
           </div>
         </div>
 
@@ -298,6 +329,79 @@ export const IELTSPracticeHub: React.FC<Props> = ({ onWordAdded }) => {
         <IELTSVocabExplorer onWordAdded={onWordAdded} />
       ) : activeTab === 'mistakes' ? (
         <IELTSMistakeNotebook onSelectExamForPractice={handleStartExam} />
+      ) : activeTab === 'resources' ? (
+        <div className="space-y-5">
+          <div className="bg-stone-900 text-white rounded-2xl p-5 sm:p-6">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2 text-amber-300 text-xs font-bold uppercase tracking-widest">
+                  <ExternalLink className="w-4 h-4" /> Awesome IELTS Resources
+                </div>
+                <h2 className="text-xl font-bold mt-2">zeeklog/IELTS 資源導航</h2>
+                <p className="text-xs text-stone-300 mt-2 max-w-2xl leading-relaxed">
+                  此 repository 是 IELTS 學習資源索引，不是可直接匯入的試卷 JSON。以下連結依四科與詞彙分類，會在新分頁開啟原始網站。
+                </p>
+              </div>
+              <a href="https://github.com/zeeklog/IELTS" target="_blank" rel="noreferrer" className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-stone-600 px-3 py-2 text-xs font-semibold text-stone-200 hover:bg-stone-800">
+                查看來源 <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {(['all', 'listening', 'reading', 'writing', 'speaking', 'vocabulary'] as const).map((category) => (
+              <button
+                key={category}
+                onClick={() => setResourceCategory(category)}
+                className={`rounded-xl px-3 py-2 text-xs font-semibold cursor-pointer ${resourceCategory === category ? 'bg-stone-900 text-white' : 'bg-white border border-stone-200 text-stone-600 hover:bg-stone-50'}`}
+              >
+                {{ all: '全部', listening: '聽力', reading: '閱讀', writing: '寫作', speaking: '口說', vocabulary: '詞彙' }[category]}
+              </button>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {ZEEKLOG_IELTS_RESOURCES.filter((resource) => resourceCategory === 'all' || resource.category === resourceCategory).map((resource) => (
+              <article key={resource.id} className="bg-white rounded-2xl border border-stone-200 p-5 shadow-2xs flex flex-col">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="px-2 py-0.5 rounded bg-amber-50 border border-amber-200 text-[10px] font-bold text-amber-800 uppercase">{resource.category}</span>
+                  <span className="text-[10px] text-stone-400">{resource.source}</span>
+                </div>
+                <h3 className="mt-3 text-base font-bold text-stone-900">{resource.title}</h3>
+                <p className="mt-2 text-xs leading-relaxed text-stone-600 flex-1">{resource.description}</p>
+                <a href={resource.url} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-stone-900 px-3 py-2.5 text-xs font-bold text-white hover:bg-stone-800">
+                  開啟資源 <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </article>
+            ))}
+          </div>
+
+          <div className="pt-2">
+            <div className="flex items-end justify-between gap-3 mb-3">
+              <div>
+                <h2 className="text-base font-bold text-stone-900">PDF 雅思真題與教材</h2>
+                <p className="text-xs text-stone-500 mt-1">共 {ZEEKLOG_IELTS_PDFS.length} 份，來源為 zeeklog/IELTS 的 path.json。</p>
+              </div>
+              <a href="https://github.com/zeeklog/IELTS/blob/master/path.json" target="_blank" rel="noreferrer" className="text-xs font-semibold text-stone-600 hover:text-stone-900 inline-flex items-center gap-1">
+                查看完整索引 <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {ZEEKLOG_IELTS_PDFS.filter((pdf) => resourceCategory === 'all' || pdf.category === resourceCategory).map((pdf) => (
+                <a key={pdf.id} href={pdf.url} target="_blank" rel="noreferrer" className="group bg-white rounded-xl border border-stone-200 p-4 hover:border-amber-300 hover:bg-amber-50/30 transition">
+                  <div className="flex items-start gap-3">
+                    <div className="shrink-0 rounded-lg bg-rose-50 p-2 text-rose-700"><FileText className="w-4 h-4" /></div>
+                    <div className="min-w-0">
+                      <h3 className="text-sm font-semibold text-stone-900 group-hover:text-stone-950 truncate">{pdf.title}</h3>
+                      <p className="mt-1 text-[11px] text-stone-500">{{ reading: '閱讀真題', listening: '聽力資料', writing: '寫作資料', other: '體驗版' }[pdf.category]}</p>
+                    </div>
+                    <ExternalLink className="ml-auto shrink-0 w-3.5 h-3.5 text-stone-400 group-hover:text-amber-700" />
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
       ) : (
         /* BANK VIEW: Browse Exams */
         <div className="space-y-6">
