@@ -25,18 +25,15 @@ import { IELTSPracticeHub } from './components/ielts/IELTSPracticeHub';
 import { IELTSWritingStudio } from './components/ielts/IELTSWritingStudio';
 import { Dashboard } from './components/Dashboard';
 import { GeneralSettingsModal } from './components/GeneralSettingsModal';
-import { IELTSMistakeItem, IELTSRecord, IELTSWritingRecord, IELTSSpeakingRecord, IELTSListeningRecord, GeneralSettings } from './types/ielts';
+import { IELTSMistakeItem, IELTSRecord, IELTSWritingRecord, GeneralSettings } from './types/ielts';
 import {
   getIELTSMistakes,
   getIELTSRecords,
   getIELTSWritingRecords,
-  getIELTSSpeakingRecords,
-  getIELTSListeningRecords,
   getGeneralSettings,
   saveGeneralSettings,
   seedSampleWritingRecords,
   clearAllIELTSWritingRecords,
-  calculateIELTSOverallBand,
 } from './utils/ielts';
 
 export default function App() {
@@ -45,8 +42,6 @@ export default function App() {
   const [ieltsRecords, setIeltsRecords] = useState<IELTSRecord[]>([]);
   const [ieltsMistakes, setIeltsMistakes] = useState<IELTSMistakeItem[]>([]);
   const [writingRecords, setWritingRecords] = useState<IELTSWritingRecord[]>([]);
-  const [speakingRecords, setSpeakingRecords] = useState<IELTSSpeakingRecord[]>(() => getIELTSSpeakingRecords());
-  const [listeningRecords, setListeningRecords] = useState<IELTSListeningRecord[]>(() => getIELTSListeningRecords());
   const [generalSettings, setGeneralSettings] = useState<GeneralSettings>(() => getGeneralSettings());
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [prefilledWord, setPrefilledWord] = useState<VocabWord | null>(null);
@@ -60,8 +55,6 @@ export default function App() {
     setIeltsRecords(getIELTSRecords());
     setIeltsMistakes(getIELTSMistakes());
     setWritingRecords(getIELTSWritingRecords());
-    setSpeakingRecords(getIELTSSpeakingRecords());
-    setListeningRecords(getIELTSListeningRecords());
     setGeneralSettings(getGeneralSettings());
   };
 
@@ -121,36 +114,6 @@ export default function App() {
 
   const masteredCount = savedWords.filter((w) => w.masteryLevel === 'mastered').length;
 
-  // Calculate dynamic current IELTS overall band across 4 skills
-  const overallBand = useMemo(() => {
-    let l = generalSettings.currentScores.listening;
-    let s = generalSettings.currentScores.speaking;
-    let r = generalSettings.currentScores.reading;
-    let w = generalSettings.currentScores.writing;
-
-    if (generalSettings.scoreCalculationMode === 'auto') {
-      if (listeningRecords.length > 0) {
-        l = Math.round((listeningRecords.reduce((acc, x) => acc + x.bandScore, 0) / listeningRecords.length) * 2) / 2;
-      }
-      if (speakingRecords.length > 0) {
-        s = Math.round((speakingRecords.reduce((acc, x) => acc + x.overallBand, 0) / speakingRecords.length) * 2) / 2;
-      }
-      if (ieltsRecords.length > 0) {
-        r = Math.round((ieltsRecords.reduce((acc, x) => acc + x.bandScore, 0) / ieltsRecords.length) * 2) / 2;
-      }
-      if (writingRecords.length > 0) {
-        w = Math.round((writingRecords.reduce((acc, x) => acc + x.overallBand, 0) / writingRecords.length) * 2) / 2;
-      }
-    }
-
-    return calculateIELTSOverallBand(l, s, r, w);
-  }, [generalSettings, listeningRecords, speakingRecords, ieltsRecords, writingRecords]);
-
-  const handleUpdateSettings = (newSettings: GeneralSettings) => {
-    saveGeneralSettings(newSettings);
-    setGeneralSettings(newSettings);
-  };
-
   return (
     <div className="min-h-screen bg-stone-100/60 text-stone-900 flex flex-col">
       {/* Top Navbar */}
@@ -176,19 +139,15 @@ export default function App() {
 
           {/* Quick Stats & Clipboard Button */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* General Settings Button with Overall Band */}
+            {/* General Settings Button */}
             <button
               id="btn-general-settings-navbar"
               onClick={() => setIsSettingsModalOpen(true)}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-xs font-semibold text-amber-900 transition cursor-pointer shadow-2xs"
-              title="調整雅思四科設定、目標與考期"
+              title="調整雅思總目標與考期設定"
             >
               <Sliders className="w-3.5 h-3.5 text-amber-600" />
-              <span className="hidden sm:inline">雅思總分</span>
-              <span className="font-bold text-amber-950">Band {overallBand.toFixed(1)}</span>
-              <span className="text-amber-600/70 text-[10px] font-normal">
-                (目標 {generalSettings.targetOverallBand.toFixed(1)})
-              </span>
+              <span>目標 Band {generalSettings.targetOverallBand.toFixed(1)}</span>
             </button>
 
             <button

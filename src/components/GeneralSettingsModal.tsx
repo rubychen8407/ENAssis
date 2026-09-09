@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import {
   X,
   Target,
@@ -12,14 +12,9 @@ import {
   AlertCircle,
   Clock,
   ShieldCheck,
-  Headphones,
-  Mic,
-  RefreshCw,
-  Award,
-  Info,
 } from 'lucide-react';
 import { GeneralSettings } from '../types/ielts';
-import { DEFAULT_GENERAL_SETTINGS, calculateIELTSOverallBand } from '../utils/ielts';
+import { DEFAULT_GENERAL_SETTINGS } from '../utils/ielts';
 
 interface Props {
   isOpen: boolean;
@@ -54,44 +49,6 @@ export const GeneralSettingsModal: React.FC<Props> = ({
   };
 
   const daysLeft = calculateDaysRemaining(formData.examDate);
-
-  const targetDerivedBand = useMemo(() => {
-    return calculateIELTSOverallBand(
-      formData.targetScores.listening,
-      formData.targetScores.speaking,
-      formData.targetScores.reading,
-      formData.targetScores.writing
-    );
-  }, [formData.targetScores]);
-
-  const targetRawAvg = useMemo(() => {
-    return (
-      (formData.targetScores.listening +
-        formData.targetScores.speaking +
-        formData.targetScores.reading +
-        formData.targetScores.writing) /
-      4
-    ).toFixed(2);
-  }, [formData.targetScores]);
-
-  const currentDerivedBand = useMemo(() => {
-    return calculateIELTSOverallBand(
-      formData.currentScores.listening,
-      formData.currentScores.speaking,
-      formData.currentScores.reading,
-      formData.currentScores.writing
-    );
-  }, [formData.currentScores]);
-
-  const currentRawAvg = useMemo(() => {
-    return (
-      (formData.currentScores.listening +
-        formData.currentScores.speaking +
-        formData.currentScores.reading +
-        formData.currentScores.writing) /
-      4
-    ).toFixed(2);
-  }, [formData.currentScores]);
 
   const handleSave = () => {
     onSaveSettings(formData);
@@ -222,23 +179,14 @@ export const GeneralSettingsModal: React.FC<Props> = ({
 
               {/* Sub-test Band Targets */}
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-stone-600">
-                    四科分項成績目標 (Sub-scores Target Bands)
-                  </label>
-                  <span className="text-[11px] font-mono text-stone-500">
-                    4科加權換算總分：<strong className="text-stone-900">Band {targetDerivedBand.toFixed(1)}</strong> (平均 {targetRawAvg})
-                  </span>
-                </div>
-
+                <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-3">
+                  四科分項成績目標 (Sub-scores Target Bands)
+                </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   {/* Listening */}
                   <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-200 flex items-center justify-between">
                     <div>
-                      <span className="block text-xs font-bold text-stone-800 flex items-center gap-1.5">
-                        <Headphones className="w-3.5 h-3.5 text-sky-600" />
-                        聽力目標 (Listening)
-                      </span>
+                      <span className="block text-xs font-bold text-stone-800">聽力 (Listening)</span>
                       <span className="text-[11px] text-stone-500">建議設定 7.0 - 8.0 穩固平均</span>
                     </div>
                     <select
@@ -262,10 +210,7 @@ export const GeneralSettingsModal: React.FC<Props> = ({
                   {/* Reading */}
                   <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-200 flex items-center justify-between">
                     <div>
-                      <span className="block text-xs font-bold text-stone-800 flex items-center gap-1.5">
-                        <BookOpen className="w-3.5 h-3.5 text-emerald-600" />
-                        閱讀目標 (Reading)
-                      </span>
+                      <span className="block text-xs font-bold text-stone-800">閱讀 (Reading)</span>
                       <span className="text-[11px] text-stone-500">高分關鍵，真題正確率 30+ 題</span>
                     </div>
                     <select
@@ -289,9 +234,9 @@ export const GeneralSettingsModal: React.FC<Props> = ({
                   {/* Writing */}
                   <div className="p-3.5 rounded-2xl bg-amber-50/60 border border-amber-200 flex items-center justify-between">
                     <div>
-                      <span className="block text-xs font-bold text-amber-900 flex items-center gap-1.5">
+                      <span className="block text-xs font-bold text-amber-900 flex items-center gap-1">
                         <PenTool className="w-3.5 h-3.5 text-amber-600" />
-                        寫作目標 (Writing)
+                        寫作 (Writing)
                       </span>
                       <span className="text-[11px] text-amber-700/80">寫作練習室預設評核目標</span>
                     </div>
@@ -316,10 +261,7 @@ export const GeneralSettingsModal: React.FC<Props> = ({
                   {/* Speaking */}
                   <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-200 flex items-center justify-between">
                     <div>
-                      <span className="block text-xs font-bold text-stone-800 flex items-center gap-1.5">
-                        <Mic className="w-3.5 h-3.5 text-rose-600" />
-                        口說目標 (Speaking)
-                      </span>
+                      <span className="block text-xs font-bold text-stone-800">口說 (Speaking)</span>
                       <span className="text-[11px] text-stone-500">流利度、連貫性與發音</span>
                     </div>
                     <select
@@ -339,168 +281,6 @@ export const GeneralSettingsModal: React.FC<Props> = ({
                       ))}
                     </select>
                   </div>
-                </div>
-
-                {/* Target consistency indicator */}
-                <div className="mt-2 text-[11px] text-stone-500 bg-stone-100/70 p-2 rounded-xl flex items-center justify-between">
-                  <span>
-                    四科目標平均：({formData.targetScores.listening} + {formData.targetScores.speaking} + {formData.targetScores.reading} + {formData.targetScores.writing}) ÷ 4 = {targetRawAvg}
-                  </span>
-                  <span className="font-semibold text-stone-800">
-                    ➔ 官方進位: Band {targetDerivedBand.toFixed(1)}
-                  </span>
-                </div>
-              </div>
-
-              {/* Current Benchmark Scores & Calculation Mode */}
-              <div className="pt-2 border-t border-stone-100 space-y-3">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-stone-800 flex items-center gap-1.5">
-                      <Award className="w-4 h-4 text-amber-600" />
-                      四科當前實測基準分數 (Current Benchmark Scores)
-                    </label>
-                    <p className="text-[11px] text-stone-500 mt-0.5">
-                      設定您目前已有的模考或正式考試成績，作為全科儀表板進度基準
-                    </p>
-                  </div>
-
-                  {/* Mode switch */}
-                  <div className="flex items-center gap-1 bg-stone-100 p-1 rounded-xl">
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, scoreCalculationMode: 'auto' })}
-                      className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition cursor-pointer ${
-                        formData.scoreCalculationMode === 'auto'
-                          ? 'bg-white text-stone-900 shadow-2xs'
-                          : 'text-stone-500 hover:text-stone-800'
-                      }`}
-                    >
-                      練習動態加權
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, scoreCalculationMode: 'manual' })}
-                      className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition cursor-pointer ${
-                        formData.scoreCalculationMode === 'manual'
-                          ? 'bg-white text-stone-900 shadow-2xs'
-                          : 'text-stone-500 hover:text-stone-800'
-                      }`}
-                    >
-                      手動基準自訂
-                    </button>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  {/* Current Listening */}
-                  <div className="p-3 rounded-2xl bg-white border border-stone-200 flex items-center justify-between">
-                    <div>
-                      <span className="block text-xs font-semibold text-stone-800">聽力當前基準</span>
-                      <span className="text-[10px] text-stone-400">目前實測/目標 Band</span>
-                    </div>
-                    <select
-                      value={formData.currentScores.listening}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          currentScores: { ...formData.currentScores, listening: Number(e.target.value) },
-                        })
-                      }
-                      className="px-2.5 py-1 rounded-lg bg-stone-50 border border-stone-200 text-xs font-bold text-stone-900 cursor-pointer"
-                    >
-                      {[4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0].map((b) => (
-                        <option key={b} value={b}>
-                          Band {b.toFixed(1)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Current Reading */}
-                  <div className="p-3 rounded-2xl bg-white border border-stone-200 flex items-center justify-between">
-                    <div>
-                      <span className="block text-xs font-semibold text-stone-800">閱讀當前基準</span>
-                      <span className="text-[10px] text-stone-400">目前實測/目標 Band</span>
-                    </div>
-                    <select
-                      value={formData.currentScores.reading}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          currentScores: { ...formData.currentScores, reading: Number(e.target.value) },
-                        })
-                      }
-                      className="px-2.5 py-1 rounded-lg bg-stone-50 border border-stone-200 text-xs font-bold text-stone-900 cursor-pointer"
-                    >
-                      {[4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0].map((b) => (
-                        <option key={b} value={b}>
-                          Band {b.toFixed(1)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Current Writing */}
-                  <div className="p-3 rounded-2xl bg-white border border-stone-200 flex items-center justify-between">
-                    <div>
-                      <span className="block text-xs font-semibold text-stone-800">寫作當前基準</span>
-                      <span className="text-[10px] text-stone-400">目前實測/目標 Band</span>
-                    </div>
-                    <select
-                      value={formData.currentScores.writing}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          currentScores: { ...formData.currentScores, writing: Number(e.target.value) },
-                        })
-                      }
-                      className="px-2.5 py-1 rounded-lg bg-stone-50 border border-stone-200 text-xs font-bold text-stone-900 cursor-pointer"
-                    >
-                      {[4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0].map((b) => (
-                        <option key={b} value={b}>
-                          Band {b.toFixed(1)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Current Speaking */}
-                  <div className="p-3 rounded-2xl bg-white border border-stone-200 flex items-center justify-between">
-                    <div>
-                      <span className="block text-xs font-semibold text-stone-800">口說當前基準</span>
-                      <span className="text-[10px] text-stone-400">目前實測/目標 Band</span>
-                    </div>
-                    <select
-                      value={formData.currentScores.speaking}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          currentScores: { ...formData.currentScores, speaking: Number(e.target.value) },
-                        })
-                      }
-                      className="px-2.5 py-1 rounded-lg bg-stone-50 border border-stone-200 text-xs font-bold text-stone-900 cursor-pointer"
-                    >
-                      {[4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0].map((b) => (
-                        <option key={b} value={b}>
-                          Band {b.toFixed(1)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                {/* Current overall derived summary */}
-                <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs flex items-center justify-between text-amber-900">
-                  <div className="flex items-center gap-1.5 font-medium">
-                    <Info className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                    <span>
-                      當前基準公式：({formData.currentScores.listening} + {formData.currentScores.speaking} + {formData.currentScores.reading} + {formData.currentScores.writing}) ÷ 4 = {currentRawAvg}
-                    </span>
-                  </div>
-                  <span className="font-bold text-amber-950 text-sm">
-                    ➔ 官方總分: Band {currentDerivedBand.toFixed(1)}
-                  </span>
                 </div>
               </div>
             </div>

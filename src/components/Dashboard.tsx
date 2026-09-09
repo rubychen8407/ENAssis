@@ -31,8 +31,6 @@ import {
   IELTSMistakeItem,
   IELTSRecord,
   IELTSWritingRecord,
-  IELTSSpeakingRecord,
-  IELTSListeningRecord,
 } from '../types/ielts';
 import {
   calculateWritingStats,
@@ -40,18 +38,14 @@ import {
   exportIELTSPracticeReportMarkdown,
   seedSampleWritingRecords,
 } from '../utils/ielts';
-import { IELTSOverallScorecard } from './ielts/IELTSOverallScorecard';
 
 interface Props {
   savedWords: VocabWord[];
   records: IELTSRecord[];
   mistakes: IELTSMistakeItem[];
   writingRecords: IELTSWritingRecord[];
-  speakingRecords: IELTSSpeakingRecord[];
-  listeningRecords: IELTSListeningRecord[];
   settings: GeneralSettings;
   onOpenSettings: () => void;
-  onUpdateSettings: (updated: GeneralSettings) => void;
   onNavigate: (tab: SkillTab, promptId?: string) => void;
   onRefreshRecords: () => void;
 }
@@ -61,11 +55,8 @@ export const Dashboard: React.FC<Props> = ({
   records,
   mistakes,
   writingRecords,
-  speakingRecords,
-  listeningRecords,
   settings,
   onOpenSettings,
-  onUpdateSettings,
   onNavigate,
   onRefreshRecords,
 }) => {
@@ -130,14 +121,7 @@ export const Dashboard: React.FC<Props> = ({
 
   // Handle export markdown
   const handleExportMarkdown = () => {
-    const md = exportIELTSPracticeReportMarkdown(
-      records,
-      mistakes,
-      writingRecords,
-      speakingRecords,
-      listeningRecords,
-      settings
-    );
+    const md = exportIELTSPracticeReportMarkdown(records, mistakes, writingRecords);
     navigator.clipboard.writeText(md);
     setExportCopied(true);
     setTimeout(() => setExportCopied(false), 3000);
@@ -166,18 +150,6 @@ export const Dashboard: React.FC<Props> = ({
 
   return (
     <div className="space-y-6">
-      {/* 0. Comprehensive 4-Skills Overall Scorecard (聽說讀寫四科總成績) */}
-      <IELTSOverallScorecard
-        records={records}
-        writingRecords={writingRecords}
-        speakingRecords={speakingRecords}
-        listeningRecords={listeningRecords}
-        settings={settings}
-        onUpdateSettings={onUpdateSettings}
-        onNavigate={onNavigate}
-        onOpenSettings={onOpenSettings}
-      />
-
       {/* 1. Target & Exam Countdown Hero Banner */}
       <section className="relative overflow-hidden rounded-3xl bg-stone-900 px-6 py-7 text-white shadow-sm sm:px-8">
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">

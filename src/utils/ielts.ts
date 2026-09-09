@@ -3,9 +3,6 @@ import {
   IELTSMistakeItem,
   IELTSExam,
   IELTSWritingRecord,
-  IELTSSpeakingRecord,
-  IELTSListeningRecord,
-  IELTSFourSkillsSummary,
   GeneralSettings,
 } from '../types/ielts';
 
@@ -13,8 +10,6 @@ const IELTS_RECORDS_KEY = 'linguacraft_ielts_records_v1';
 const IELTS_MISTAKES_KEY = 'linguacraft_ielts_mistakes_v1';
 const IELTS_CUSTOM_EXAMS_KEY = 'linguacraft_ielts_custom_exams_v1';
 const IELTS_WRITING_RECORDS_KEY = 'linguacraft_ielts_writing_records_v1';
-const IELTS_SPEAKING_RECORDS_KEY = 'linguacraft_ielts_speaking_records_v1';
-const IELTS_LISTENING_RECORDS_KEY = 'linguacraft_ielts_listening_records_v1';
 const GENERAL_SETTINGS_KEY = 'linguacraft_general_settings_v1';
 
 export const DEFAULT_GENERAL_SETTINGS: GeneralSettings = {
@@ -25,13 +20,6 @@ export const DEFAULT_GENERAL_SETTINGS: GeneralSettings = {
     writing: 7.0,
     speaking: 6.5,
   },
-  currentScores: {
-    listening: 7.0,
-    reading: 7.0,
-    writing: 6.5,
-    speaking: 6.5,
-  },
-  scoreCalculationMode: 'auto',
   examDate: '',
   dailyVocabGoal: 15,
   weeklyWritingGoal: 3,
@@ -104,132 +92,6 @@ export const INITIAL_SAMPLE_WRITING_RECORDS: IELTSWritingRecord[] = [
     polishedVersion: 'The line chart details the proportion of energy produced from renewable resources across four European countries from 2000 to 2020. Overall, clean energy usage experienced a persistent upward trajectory in all four nations, with Sweden maintaining its dominant position throughout the timeframe.',
   },
 ];
-
-export const INITIAL_SAMPLE_SPEAKING_RECORDS: IELTSSpeakingRecord[] = [
-  {
-    id: 'sample_speak_1',
-    timestamp: Date.now() - 86400000 * 3,
-    date: '2026/03/06 16:30',
-    part: 'part2',
-    topic: 'Describe an environmental challenge your city faces (環境議題)',
-    overallBand: 6.5,
-    criteriaScores: {
-      fluencyCoherence: 6.5,
-      lexicalResource: 7.0,
-      grammarAccuracy: 6.0,
-      pronunciation: 6.5,
-    },
-    feedbackZh: '論述連貫性佳，運用了 sustainable, ecological footprint 等精準詞彙。少數長複合句主謂一致與時態稍有頓挫，多練長句連貫可直衝 7.0。',
-  },
-  {
-    id: 'sample_speak_2',
-    timestamp: Date.now() - 86400000 * 6,
-    date: '2026/03/03 11:15',
-    part: 'part3',
-    topic: 'Technology and Human Relationships (科技與人際關係)',
-    overallBand: 6.0,
-    criteriaScores: {
-      fluencyCoherence: 6.0,
-      lexicalResource: 6.5,
-      grammarAccuracy: 6.0,
-      pronunciation: 6.0,
-    },
-    feedbackZh: '觀點清晰，回答有深度。建議減少 "you know" 等口頭填充詞，加強關鍵字重音與語調起伏。',
-  },
-];
-
-export const INITIAL_SAMPLE_LISTENING_RECORDS: IELTSListeningRecord[] = [
-  {
-    id: 'sample_listen_1',
-    timestamp: Date.now() - 86400000 * 1,
-    date: '2026/03/08 09:30',
-    title: 'Cambridge 18 Academic Test 1 (Full Sections 1-4)',
-    score: 33,
-    totalQuestions: 40,
-    bandScore: 7.5,
-  },
-  {
-    id: 'sample_listen_2',
-    timestamp: Date.now() - 86400000 * 4,
-    date: '2026/03/05 15:40',
-    title: 'Cambridge 17 Academic Test 3 (Sections 3 & 4 Academic Talk)',
-    score: 30,
-    totalQuestions: 40,
-    bandScore: 7.0,
-  },
-];
-
-/**
- * Official IELTS Overall Band Score calculation based on British Council & Cambridge criteria
- * Average of the 4 skills:
- * - < .25 rounds DOWN to .0
- * - >= .25 and < .75 rounds to .5
- * - >= .75 rounds UP to next whole band
- */
-export function calculateIELTSOverallBand(
-  listening: number,
-  speaking: number,
-  reading: number,
-  writing: number
-): number {
-  const avg = (listening + speaking + reading + writing) / 4;
-  const whole = Math.floor(avg);
-  const decimal = Math.round((avg - whole) * 1000) / 1000;
-
-  if (decimal < 0.25) {
-    return whole;
-  } else if (decimal < 0.75) {
-    return whole + 0.5;
-  } else {
-    return whole + 1.0;
-  }
-}
-
-export function calculateFourSkillsSummary(
-  listening: number,
-  speaking: number,
-  reading: number,
-  writing: number,
-  targetOverallBand: number = 7.0
-): IELTSFourSkillsSummary {
-  const rawAvg = Math.round(((listening + speaking + reading + writing) / 4) * 100) / 100;
-  const overallBand = calculateIELTSOverallBand(listening, speaking, reading, writing);
-  const targetGap = Math.round((overallBand - targetOverallBand) * 10) / 10;
-  const isTargetMet = overallBand >= targetOverallBand;
-
-  const nextBand = overallBand < 9.0 ? overallBand + 0.5 : 9.0;
-  const currentSum = listening + speaking + reading + writing;
-  const neededSum = (nextBand - 0.25) * 4;
-  const rawGap = neededSum - currentSum;
-  const pointsToNextBand = overallBand < 9.0 ? Math.max(0.5, Math.ceil(rawGap * 2) / 2) : 0;
-
-  const skills = [
-    { name: '聽力 (Listening)', band: listening, key: 'listening' as const },
-    { name: '口說 (Speaking)', band: speaking, key: 'speaking' as const },
-    { name: '閱讀 (Reading)', band: reading, key: 'reading' as const },
-    { name: '寫作 (Writing)', band: writing, key: 'writing' as const },
-  ];
-
-  const sorted = [...skills].sort((a, b) => b.band - a.band);
-  const strongestSkill = sorted[0];
-  const weakestSkill = sorted[sorted.length - 1];
-
-  return {
-    listening,
-    speaking,
-    reading,
-    writing,
-    rawAverage: rawAvg,
-    overallBand,
-    targetOverallBand,
-    targetGap,
-    isTargetMet,
-    pointsToNextBand,
-    nextBand,
-    strongestSkill,
-    weakestSkill,
-  };
-}
 
 /**
  * Converts a raw score to IELTS 9-band scale (Academic Reading standard)
@@ -390,70 +252,6 @@ export function seedSampleWritingRecords(): IELTSWritingRecord[] {
   }
 }
 
-export function getIELTSSpeakingRecords(): IELTSSpeakingRecord[] {
-  try {
-    const raw = localStorage.getItem(IELTS_SPEAKING_RECORDS_KEY);
-    if (!raw) {
-      localStorage.setItem(IELTS_SPEAKING_RECORDS_KEY, JSON.stringify(INITIAL_SAMPLE_SPEAKING_RECORDS));
-      return INITIAL_SAMPLE_SPEAKING_RECORDS;
-    }
-    return JSON.parse(raw);
-  } catch {
-    return INITIAL_SAMPLE_SPEAKING_RECORDS;
-  }
-}
-
-export function saveIELTSSpeakingRecord(record: IELTSSpeakingRecord): void {
-  try {
-    const list = getIELTSSpeakingRecords();
-    list.unshift(record);
-    localStorage.setItem(IELTS_SPEAKING_RECORDS_KEY, JSON.stringify(list.slice(0, 100)));
-  } catch (e) {
-    console.error('Failed to save IELTS speaking record', e);
-  }
-}
-
-export function deleteIELTSSpeakingRecord(id: string): void {
-  try {
-    const list = getIELTSSpeakingRecords().filter((r) => r.id !== id);
-    localStorage.setItem(IELTS_SPEAKING_RECORDS_KEY, JSON.stringify(list));
-  } catch (e) {
-    console.error('Failed to delete IELTS speaking record', e);
-  }
-}
-
-export function getIELTSListeningRecords(): IELTSListeningRecord[] {
-  try {
-    const raw = localStorage.getItem(IELTS_LISTENING_RECORDS_KEY);
-    if (!raw) {
-      localStorage.setItem(IELTS_LISTENING_RECORDS_KEY, JSON.stringify(INITIAL_SAMPLE_LISTENING_RECORDS));
-      return INITIAL_SAMPLE_LISTENING_RECORDS;
-    }
-    return JSON.parse(raw);
-  } catch {
-    return INITIAL_SAMPLE_LISTENING_RECORDS;
-  }
-}
-
-export function saveIELTSListeningRecord(record: IELTSListeningRecord): void {
-  try {
-    const list = getIELTSListeningRecords();
-    list.unshift(record);
-    localStorage.setItem(IELTS_LISTENING_RECORDS_KEY, JSON.stringify(list.slice(0, 100)));
-  } catch (e) {
-    console.error('Failed to save IELTS listening record', e);
-  }
-}
-
-export function deleteIELTSListeningRecord(id: string): void {
-  try {
-    const list = getIELTSListeningRecords().filter((r) => r.id !== id);
-    localStorage.setItem(IELTS_LISTENING_RECORDS_KEY, JSON.stringify(list));
-  } catch (e) {
-    console.error('Failed to delete IELTS listening record', e);
-  }
-}
-
 export function getGeneralSettings(): GeneralSettings {
   try {
     const raw = localStorage.getItem(GENERAL_SETTINGS_KEY);
@@ -543,10 +341,7 @@ export function calculateWritingStats(records: IELTSWritingRecord[]): WritingSta
 export function exportIELTSPracticeReportMarkdown(
   records: IELTSRecord[],
   mistakes: IELTSMistakeItem[],
-  writingRecords: IELTSWritingRecord[] = [],
-  speakingRecords: IELTSSpeakingRecord[] = [],
-  listeningRecords: IELTSListeningRecord[] = [],
-  settings?: GeneralSettings
+  writingRecords: IELTSWritingRecord[] = []
 ): string {
   const dateStr = new Date().toLocaleDateString('zh-TW', {
     year: 'numeric',
@@ -555,53 +350,21 @@ export function exportIELTSPracticeReportMarkdown(
   });
 
   const totalExams = records.length;
-  const avgReadingScore =
+  const avgScore =
     totalExams > 0
-      ? records.reduce((acc, r) => acc + r.bandScore, 0) / totalExams
-      : (settings?.currentScores.reading ?? 7.0);
+      ? (records.reduce((acc, r) => acc + r.bandScore, 0) / totalExams).toFixed(1)
+      : '0.0';
 
   const writingStats = calculateWritingStats(writingRecords);
-  const avgWriting = writingStats.averageBand ?? (settings?.currentScores.writing ?? 6.5);
 
-  const avgSpeaking =
-    speakingRecords.length > 0
-      ? speakingRecords.reduce((acc, s) => acc + s.overallBand, 0) / speakingRecords.length
-      : (settings?.currentScores.speaking ?? 6.5);
-
-  const avgListening =
-    listeningRecords.length > 0
-      ? listeningRecords.reduce((acc, l) => acc + l.bandScore, 0) / listeningRecords.length
-      : (settings?.currentScores.listening ?? 7.0);
-
-  const roundedL = Math.round(avgListening * 2) / 2;
-  const roundedS = Math.round(avgSpeaking * 2) / 2;
-  const roundedR = Math.round(avgReadingScore * 2) / 2;
-  const roundedW = Math.round(avgWriting * 2) / 2;
-
-  const fourSkills = calculateFourSkillsSummary(
-    roundedL,
-    roundedS,
-    roundedR,
-    roundedW,
-    settings?.targetOverallBand ?? 7.0
-  );
-
-  let md = `# 雅思全科四維備考與總成績報告 (IELTS 4-Skills Master Report)\n\n`;
+  let md = `# 雅思備考練習與錯題報告 (IELTS Practice & Writing Report)\n\n`;
   md += `- **導出日期**：${dateStr}\n`;
-  md += `- **🎯 當前雅思總成績 (Overall Band)**：**Band ${fourSkills.overallBand.toFixed(1)}** (算術平均 ${fourSkills.rawAverage.toFixed(2)})\n`;
-  md += `- **🎯 目標總成績 (Target Band)**：Band ${fourSkills.targetOverallBand.toFixed(1)} (${fourSkills.isTargetMet ? '🎉 已達標！' : `差距 ${fourSkills.targetGap.toFixed(1)} 分`})\n\n`;
+  md += `- **已完成模考篇數 (聽讀)**：${totalExams} 篇\n`;
+  md += `- **平均預估雅思成績 (聽讀)**：Band ${avgScore}\n`;
+  md += `- **已評分寫作篇數**：${writingStats.totalCount} 篇 (平均 Band ${writingStats.averageBand ?? '—'})\n`;
+  md += `- **累積未掌握錯題**：${mistakes.length} 題\n\n`;
 
-  md += `## 1. 聽說讀寫四科成績總覽 (Four Skills Scorecard)\n\n`;
-  md += `| 科目 (Skill) | 當前實測/預估分 | 目標成績 | 達標狀態 |\n`;
-  md += `| :--- | :---: | :---: | :---: |\n`;
-  md += `| 🎧 聽力 (Listening) | **Band ${fourSkills.listening.toFixed(1)}** | Band ${(settings?.targetScores.listening ?? 7.5).toFixed(1)} | ${fourSkills.listening >= (settings?.targetScores.listening ?? 7.5) ? '✓ 已達標' : '進行中'} |\n`;
-  md += `| 🗣️ 口說 (Speaking) | **Band ${fourSkills.speaking.toFixed(1)}** | Band ${(settings?.targetScores.speaking ?? 6.5).toFixed(1)} | ${fourSkills.speaking >= (settings?.targetScores.speaking ?? 6.5) ? '✓ 已達標' : '進行中'} |\n`;
-  md += `| 📖 閱讀 (Reading) | **Band ${fourSkills.reading.toFixed(1)}** | Band ${(settings?.targetScores.reading ?? 7.5).toFixed(1)} | ${fourSkills.reading >= (settings?.targetScores.reading ?? 7.5) ? '✓ 已達標' : '進行中'} |\n`;
-  md += `| ✍️ 寫作 (Writing) | **Band ${fourSkills.writing.toFixed(1)}** | Band ${(settings?.targetScores.writing ?? 7.0).toFixed(1)} | ${fourSkills.writing >= (settings?.targetScores.writing ?? 7.0) ? '✓ 已達標' : '進行中'} |\n`;
-  md += `| **🏆 雅思總分 (Overall)** | **Band ${fourSkills.overallBand.toFixed(1)}** | **Band ${fourSkills.targetOverallBand.toFixed(1)}** | **${fourSkills.isTargetMet ? '🎉 達成目標' : '衝刺中'}** |\n\n`;
-  md += `> **計分說明**：依據雅思官方計分進位準則，(聽 ${fourSkills.listening} + 說 ${fourSkills.speaking} + 讀 ${fourSkills.reading} + 寫 ${fourSkills.writing}) ÷ 4 = ${fourSkills.rawAverage.toFixed(2)}，最終換算為 **Band ${fourSkills.overallBand.toFixed(1)}**。\n\n`;
-
-  md += `## 2. 雅思寫作評分歷史紀錄 (Writing Evaluation History)\n\n`;
+  md += `## 1. 雅思寫作評分歷史紀錄 (Writing Evaluation History)\n\n`;
   if (writingRecords.length === 0) {
     md += `*目前尚無寫作評分紀錄*\n\n`;
   } else {
@@ -613,25 +376,7 @@ export function exportIELTSPracticeReportMarkdown(
     md += `\n`;
   }
 
-  md += `## 3. 聽力與口說測驗紀錄 (Listening & Speaking Records)\n\n`;
-  if (speakingRecords.length > 0) {
-    md += `### 口說練習與評分 (Speaking)\n`;
-    speakingRecords.forEach((s) => {
-      md += `- **${s.date} [${s.part.toUpperCase()}]**：${s.topic} → **Band ${s.overallBand.toFixed(1)}** (FC: ${s.criteriaScores.fluencyCoherence} / LR: ${s.criteriaScores.lexicalResource} / GRA: ${s.criteriaScores.grammarAccuracy} / PR: ${s.criteriaScores.pronunciation})\n`;
-      if (s.feedbackZh) md += `  > 點評：${s.feedbackZh}\n`;
-    });
-    md += `\n`;
-  }
-
-  if (listeningRecords.length > 0) {
-    md += `### 聽力模考紀錄 (Listening)\n`;
-    listeningRecords.forEach((l) => {
-      md += `- **${l.date}**：${l.title} → **Band ${l.bandScore.toFixed(1)}** (${l.score}/${l.totalQuestions})\n`;
-    });
-    md += `\n`;
-  }
-
-  md += `## 4. 閱讀模考練習記錄 (Reading Practice History)\n\n`;
+  md += `## 2. 聽讀模考練習記錄 (Reading/Listening Practice History)\n\n`;
   if (records.length === 0) {
     md += `*目前尚無練習記錄*\n\n`;
   } else {
@@ -645,7 +390,7 @@ export function exportIELTSPracticeReportMarkdown(
     md += `\n`;
   }
 
-  md += `## 5. 核心錯題本 (Mistake Notebook)\n\n`;
+  md += `## 3. 核心錯題本 (Mistake Notebook)\n\n`;
   if (mistakes.length === 0) {
     md += `*太棒了！目前錯題本中沒有未解決的錯題。*\n\n`;
   } else {

@@ -119,48 +119,6 @@ export interface IELTSWritingRecord {
   polishedVersion?: string;
 }
 
-export interface IELTSSpeakingRecord {
-  id: string;
-  timestamp: number;
-  date: string;
-  part: 'part1' | 'part2' | 'part3' | 'mock';
-  topic: string;
-  overallBand: number;
-  criteriaScores: {
-    fluencyCoherence: number;
-    lexicalResource: number;
-    grammarAccuracy: number;
-    pronunciation: number;
-  };
-  feedbackZh?: string;
-}
-
-export interface IELTSListeningRecord {
-  id: string;
-  timestamp: number;
-  date: string;
-  title: string;
-  score: number;
-  totalQuestions: number;
-  bandScore: number;
-}
-
-export interface IELTSFourSkillsSummary {
-  listening: number;
-  speaking: number;
-  reading: number;
-  writing: number;
-  rawAverage: number;
-  overallBand: number;
-  targetOverallBand: number;
-  targetGap: number;
-  isTargetMet: boolean;
-  pointsToNextBand: number; // raw sum points (in 0.5 steps) needed to reach next rounded band
-  nextBand: number;
-  strongestSkill: { name: string; band: number; key: 'listening' | 'speaking' | 'reading' | 'writing' };
-  weakestSkill: { name: string; band: number; key: 'listening' | 'speaking' | 'reading' | 'writing' };
-}
-
 export interface GeneralSettings {
   targetOverallBand: number;
   targetScores: {
@@ -169,13 +127,6 @@ export interface GeneralSettings {
     writing: number;
     speaking: number;
   };
-  currentScores: {
-    listening: number;
-    reading: number;
-    writing: number;
-    speaking: number;
-  };
-  scoreCalculationMode: 'auto' | 'manual';
   examDate: string; // YYYY-MM-DD
   dailyVocabGoal: number;
   weeklyWritingGoal: number;
