@@ -1,1 +1,152 @@
 @import "tailwindcss";
+
+/* LinguaCraft dark mode: follows the user's OS/browser preference. */
+@media (prefers-color-scheme: dark) {
+  html,
+  body {
+    background: #1c1917;
+    color-scheme: dark;
+  }
+
+  .bg-stone-100\/60 {
+    background-color: rgb(28 25 23 / 0.9) !important;
+  }
+
+  .bg-white,
+  .bg-white\/95,
+  .bg-white\/90,
+  .bg-white\/80,
+  .bg-white\/70,
+  .bg-white\/60 {
+    background-color: #292524 !important;
+  }
+
+  .bg-stone-50 {
+    background-color: #292524 !important;
+  }
+
+  .bg-stone-100 {
+    background-color: #44403c !important;
+  }
+
+  .bg-stone-200 {
+    background-color: #57534e !important;
+  }
+
+  .bg-stone-900 {
+    background-color: #0c0a09 !important;
+  }
+
+  .hover\:bg-stone-100:hover,
+  .hover\:bg-stone-50:hover {
+    background-color: #44403c !important;
+  }
+
+  .text-stone-900 {
+    color: #fafaf9 !important;
+  }
+
+  .text-stone-800 {
+    color: #e7e5e4 !important;
+  }
+
+  .text-stone-700 {
+    color: #d6d3d1 !important;
+  }
+
+  .text-stone-600,
+  .text-stone-500 {
+    color: #a8a29e !important;
+  }
+
+  .text-stone-400 {
+    color: #78716c !important;
+  }
+
+  .border-stone-100,
+  .border-stone-200,
+  .border-stone-300 {
+    border-color: #44403c !important;
+  }
+
+  .bg-emerald-50 {
+    background-color: #022c22 !important;
+  }
+
+  .bg-emerald-100 {
+    background-color: #064e3b !important;
+  }
+
+  .text-emerald-900,
+  .text-emerald-800,
+  .text-emerald-700 {
+    color: #6ee7b7 !important;
+  }
+
+  .border-emerald-200,
+  .border-emerald-300 {
+    border-color: #065f46 !important;
+  }
+
+  .bg-amber-50 {
+    background-color: #422006 !important;
+  }
+
+  .bg-amber-100 {
+    background-color: #78350f !important;
+  }
+
+  .text-amber-900 {
+    color: #fde68a !important;
+  }
+
+  .text-amber-800,
+  .text-amber-700,
+  .text-amber-600 {
+    color: #fbbf24 !important;
+  }
+
+  .border-amber-200,
+  .border-amber-300 {
+    border-color: #92400e !important;
+  }
+
+  .bg-rose-50 {
+    background-color: #4c0519 !important;
+  }
+
+  .text-rose-900,
+  .text-rose-800,
+  .text-rose-700 {
+    color: #fda4af !important;
+  }
+
+  .border-rose-200,
+  .border-rose-300 {
+    border-color: #9f1239 !important;
+  }
+
+  input,
+  textarea,
+  select {
+    background-color: #292524;
+    color: #fafaf9;
+    border-color: #57534e;
+    color-scheme: dark;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #78716c;
+  }
+
+  option {
+    background: #292524;
+    color: #fafaf9;
+  }
+
+  /* Prevent white cards and panels in child components from staying bright. */
+  [class*="bg-white"] {
+    background-color: #292524 !important;
+  }
+}
