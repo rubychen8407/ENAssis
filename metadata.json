@@ -1,0 +1,10 @@
+{
+  "name": "LinguaCraft 英文聽說讀寫學習",
+  "description": "全方位英文學習平台，整合雅思全真題庫（IELTS Practice）、真題模考與9分制計時測驗、背題定位精析、3,600+雅思核心詞庫、AI即時語音對話與聽說讀寫精修。",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

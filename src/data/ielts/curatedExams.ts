@@ -1,0 +1,2086 @@
+import { IELTSExam } from "../../types/ielts";
+
+export const INITIAL_IELTS_EXAMS: IELTSExam[] = [
+  {
+    "id": "p1-high-01",
+    "title": "A Brief History of Tea 茶叶简史",
+    "category": "P1",
+    "frequency": "高频",
+    "difficultyScore": 2.5,
+    "passageHtml": "<h2>READING PASSAGE 1</h2>\n            <p>You should spend about 20 minutes on Questions 1-13, which are based on Reading Passage 1 on the following pages.</p>\n            \n            <h3>A Brief History of Tea</h3>\n            \n            <div class=\"paragraph-wrapper\" id=\"q1-anchor\">\n                <div class=\"paragraph-dropzone dropzone\" data-paragraph=\"A\" data-question=\"q1\">\n                    <span class=\"paragraph-label\">Paragraph A (Q1):</span>\n                    <div class=\"dropped-items\"></div>\n                </div>\n                <p><strong>A</strong> The story of tea began in ancient China over 5,000 years ago. According to legend, the Emperor Shen Nung was a skilled ruler, creative scientist and patron of the arts. His far-sighted edicts required, among other things, that all drinking water be boiled as a hygienic precaution. One summer day, while visiting a distant region of his realm, he and the court stopped to rest. In accordance with his ruling, the servants began to boil water for the court to drink. Dried leaves from a nearby bush fell into the boiling water, and as the leaves infused the water turned brown. As a scientist, the Emperor was intrigued by the new liquid, drank some, and found it very refreshing. And so, according to legend, tea was created.</p>\n            </div>\n            <div class=\"paragraph-wrapper\" id=\"q2-anchor\">\n                <div class=\"paragraph-dropzone dropzone\" data-paragraph=\"B\" data-question=\"q2\">\n                    <span class=\"paragraph-label\">Paragraph B (Q2):</span>\n                    <div class=\"dropped-items\"></div>\n                </div>\n                <p><strong>B</strong> Tea consumption spread throughout Chinese culture, reaching into every aspect of society. The first definitive book was written on tea a book clearly reflecting Zen Buddhist philosophy – 1,200 years ago. The first tea seeds were brought to Japan by a returning Buddhist priest, who had seen the value of tea in enhancing meditation in China. As a result, he is known as the “Father of Tea” in Japan. Because of this early association, tea in Japan has always been linked with Zen Buddhism. Tea received the Japanese Emperor's support almost instantly and spread rapidly from the royal court and monasteries to other sections of society.</p>\n            </div>\n            <div class=\"paragraph-wrapper\" id=\"q3-anchor\">\n                 <div class=\"paragraph-dropzone dropzone\" data-paragraph=\"C\" data-question=\"q3\">\n                    <span class=\"paragraph-label\">Paragraph C (Q3):</span>\n                    <div class=\"dropped-items\"></div>\n                </div>\n                <p><strong>C</strong> Tea was elevated to an art form in the Japanese tea ceremony, in which supreme importance is given to making tea in the most perfect, most polite, most graceful, most charming manner possible. Such a purity of expression prompted the creation of a particular form of architecture for tea houses, duplicating the simplicity of a forest cottage. The cultural/artistic hostesses of Japan, the geishas, began to specialise in the presentation of the tea ceremony. However, as more and more people became involved in the excitement surrounding tea, the purity of the original concept was lost, and for a period the tea ceremony became corrupted, boisterous and highly embellished. Efforts were then made to return to the earlier simplicity, with the result that, in the 15th and 16th centuries, tea was viewed as the ultimate gift. Even warlords paused for tea before battles.</p>\n            </div>\n            <div class=\"paragraph-wrapper\" id=\"q4-anchor\">\n                <div class=\"paragraph-dropzone dropzone\" data-paragraph=\"D\" data-question=\"q4\">\n                    <span class=\"paragraph-label\">Paragraph D (Q4):</span>\n                    <div class=\"dropped-items\"></div>\n                </div>\n                <p><strong>D</strong> While tea was at this high level of development in parts of Asia, information concerning the then-unknown beverage began to filter back to Europe. Earlier traders had mentioned it, but were unclear as to whether tea should be eaten or drunk. The first European to personally encounter tea and write about it was Portuguese – Portugal, with her technologically advanced navy, had been successful in gaining the first right of trade with China.</p>\n            </div>\n             <div class=\"paragraph-wrapper\" id=\"q5-anchor\">\n                 <div class=\"paragraph-dropzone dropzone\" data-paragraph=\"E\" data-question=\"q5\">\n                    <span class=\"paragraph-label\">Paragraph E (Q5):</span>\n                    <div class=\"dropped-items\"></div>\n                </div>\n                <p><strong>E</strong> Tea finally arrived in Europe in the 16th century, brought to Holland by the country's navy, and became very fashionable in the Dutch capital, The Hague. This was due in part to tea being very expensive (over $100 per pound), which immediately made it the domain of the wealthy. Slowly, as the amount of tea imported increased, the price fell, and by 1675 it was available in common food shops throughout Holland.</p>\n            </div>\n            <div class=\"paragraph-wrapper\" id=\"q6-anchor\">\n                 <div class=\"paragraph-dropzone dropzone\" data-paragraph=\"F\" data-question=\"q6\">\n                    <span class=\"paragraph-label\">Paragraph F (Q6):</span>\n                    <div class=\"dropped-items\"></div>\n                </div>\n                <p><strong>F</strong> As the consumption of tea increased dramatically in Dutch society, doctors and university authorities in Holland argued as to its benefits or drawbacks. The public largely ignored the scholarly debate and continued to enjoy their new beverage, though the controversy lasted from 1635 to roughly 1657. Throughout this period, France and Holland led Europe in the use of tea.</p>\n            </div>\n            <div class=\"paragraph-wrapper\" id=\"q7-anchor\">\n                 <div class=\"paragraph-dropzone dropzone\" data-paragraph=\"G\" data-question=\"q7\">\n                    <span class=\"paragraph-label\">Paragraph G (Q7):</span>\n                    <div class=\"dropped-items\"></div>\n                </div>\n                <p><strong>G</strong> As the craze for all things oriental swept through Europe, tea became part of everyday life. Adding milk to the drink was first mentioned in 1680. Around that time, Dutch inns provided the first restaurant service of tea. Innkeepers would furnish guests with a portable tea set complete with a heating unit. The Dutchman would then prepare tea for himself and his friends outside in the inn garden. Tea remained popular in France for only about fifty years, being replaced by a preference for wine, chocolate and exotic coffees. Tea was introduced into England in 1660 by King Charles II and his Portuguese queen, who were both confirmed tea drinkers. Tea mania swept across England as it had earlier spread throughout France and Holland. By 1708, tea importation had risen to thirteen times the 1699 level. Tea was drunk by all levels of society.</p>\n            </div>\n            <div class=\"paragraph-wrapper\" id=\"q8-anchor\">\n                 <div class=\"paragraph-dropzone dropzone\" data-paragraph=\"H\" data-question=\"q8\">\n                    <span class=\"paragraph-label\">Paragraph H (Q8):</span>\n                    <div class=\"dropped-items\"></div>\n                </div>\n                <p><strong>H</strong> Russian interest in tea began as early as 1618, when the Chinese embassy in Moscow presented several chests of tea to the Emperor, Czar Alexis. Later in the century, a trade treaty between Russia and China allowed caravans to cross back and forth freely between the two countries. Still, the journey was not easy. The average caravan consisted of 200 to 300 camels, and the 18,000-kilometre trip took over 16 months to complete. Eventually, however, tea became – as it still is – one of the most popular drinks in the country.</p>\n            </div>\n            \n            <div class=\"empty-space\"></div>\n        </section>\n        \n        <div id=\"divider\"></div>",
+    "questionGroups": [
+      {
+        "groupId": "group-1",
+        "kind": "matching",
+        "questionIds": [
+          "q1",
+          "q2",
+          "q3",
+          "q4",
+          "q5",
+          "q6",
+          "q7",
+          "q8"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q1-2-3-4-5-6-7-8-anchor-right\">\n                <h4>Questions 1–8</h4>\n                <p>Reading Passage 1 has eight paragraphs <strong>A–H</strong>.</p>\n                <p>Choose the correct heading for each paragraph from the list of headings below.</p>\n                <p><em>Drag a heading from the list and drop it onto the correct paragraph's answer box on the left.</em></p>\n                \n                <div class=\"headings-pool\" id=\"headings-pool-container\">\n                    <strong>List of Headings</strong>\n                    <div class=\"pool-items\">\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"i\">i. Not enough tea to meet demand</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"ii\">ii. Religious objections</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"iii\">iii. In - and sometimes out – of fashion</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"iv\">iv. A connection between tea and religion</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"v\">v. A luxury item</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"vi\">vi. News of tea reaches another continent</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"vii\">vii. Is tea a good or a bad thing?</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"viii\">viii. A chance discovery</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"ix\">ix. Tea-making as a ritual</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"x\">x. Difficulties in importing tea</div>\n                    </div>\n                </div>\n            </div>",
+        "allowOptionReuse": false,
+        "leadHtml": "<h3>Questions</h3>"
+      },
+      {
+        "groupId": "group-2",
+        "kind": "matching",
+        "questionIds": [
+          "q9",
+          "q10",
+          "q11",
+          "q12",
+          "q13"
+        ],
+        "bodyHtml": "<div class=\"group\">\n                <h4>Questions 9–13</h4>\n                <p>Look at the following statements (Questions 9–13) and the list of countries below.</p>\n                <p>Match each statement with the correct country, <strong>A–G</strong>.</p>\n\n                <div class=\"question-item\" id=\"q9-anchor\">\n                     <div class=\"match-question-item\">\n                        <div class=\"match-dropzone\" data-question=\"q9\"></div>\n                        <p><strong>9</strong> Claims that tea might be harmful failed to affect its popularity.</p>\n                     </div>\n                </div>\n                <div class=\"question-item\" id=\"q10-anchor\">\n                     <div class=\"match-question-item\">\n                        <div class=\"match-dropzone\" data-question=\"q10\"></div>\n                        <p><strong>10</strong> Tea lost favour to other drinks.</p>\n                     </div>\n                </div>\n                <div class=\"question-item\" id=\"q11-anchor\">\n                     <div class=\"match-question-item\">\n                        <div class=\"match-dropzone\" data-question=\"q11\"></div>\n                        <p><strong>11</strong> Special buildings were constructed in which to drink tea.</p>\n                     </div>\n                </div>\n                <div class=\"question-item\" id=\"q12-anchor\">\n                     <div class=\"match-question-item\">\n                        <div class=\"match-dropzone\" data-question=\"q12\"></div>\n                        <p><strong>12</strong> Animals were involved in importing tea.</p>\n                     </div>\n                </div>\n                <div class=\"question-item\" id=\"q13-anchor\">\n                     <div class=\"match-question-item\">\n                        <div class=\"match-dropzone\" data-question=\"q13\"></div>\n                        <p><strong>13</strong> A ruler's specialist knowledge led to an interest in tea.</p>\n                     </div>\n                </div>\n                \n                <div class=\"options-pool\" id=\"country-options-pool\">\n                    <strong>List of Countries</strong>\n                    <div class=\"pool-items\" style=\"flex-direction: column; align-items: flex-start;\">\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"A\">A China</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"B\">B Japan</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"C\">C Portugal</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"D\">D Holland</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"E\">E France</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"F\">F England</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"G\">G Russia</div>\n                    </div>\n                </div>\n            </div>",
+        "allowOptionReuse": true
+      }
+    ],
+    "answerKey": {
+      "q1": "viii",
+      "q2": "iv",
+      "q3": "ix",
+      "q4": "vi",
+      "q5": "v",
+      "q6": "vii",
+      "q7": "iii",
+      "q8": "x",
+      "q9": "D",
+      "q10": "E",
+      "q11": "B",
+      "q12": "G",
+      "q13": "A"
+    },
+    "questionDisplayMap": {
+      "q1": "1",
+      "q2": "2",
+      "q3": "3",
+      "q4": "4",
+      "q5": "5",
+      "q6": "6",
+      "q7": "7",
+      "q8": "8",
+      "q9": "9",
+      "q10": "10",
+      "q11": "11",
+      "q12": "12",
+      "q13": "13"
+    },
+    "questionOrder": [
+      "q1",
+      "q2",
+      "q3",
+      "q4",
+      "q5",
+      "q6",
+      "q7",
+      "q8",
+      "q9",
+      "q10",
+      "q11",
+      "q12",
+      "q13"
+    ],
+    "explanations": [
+      {
+        "sectionTitle": "1. 段落标题匹配（Questions 1–8）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 1,
+            "text": "（1）题目 1：为 Paragraph A 选择正确标题\n题目翻译：为 A 段选择正确的标题\n答案：viii（A chance discovery，一次偶然的发现）\n解析：定位 Paragraph A 中 “Dried leaves from a nearby bush fell into the boiling water... the Emperor... drank some, and found it very refreshing. And so, according to legend, tea was created”。该段核心内容是神农帝因干叶偶然落入沸水而发现茶的起源过程，与 “一次偶然的发现” 这一标题的含义完全相符，因此选择 viii。",
+            "questionId": "q1"
+          },
+          {
+            "questionNumber": 2,
+            "text": "（2）题目 2：为 Paragraph B 选择正确标题\n题目翻译：为 B 段选择正确的标题\n答案：iv（A connection between tea and religion，茶与宗教的关联）\n解析：定位 Paragraph B 中 “The first definitive book was written on tea – a book clearly reflecting Zen Buddhist philosophy... tea in Japan has always been linked with Zen Buddhism”。该段重点阐述了茶与宗教的紧密联系，既提到中国首部茶书体现禅宗哲学，又说明日本茶因佛教僧人传入而始终与禅宗绑定，与 “茶与宗教的关联” 这一标题对应，因此选择 iv。",
+            "questionId": "q2"
+          },
+          {
+            "questionNumber": 3,
+            "text": "（3）题目 3：为 Paragraph C 选择正确标题\n题目翻译：为 C 段选择正确的标题\n答案：ix（Tea-making as a ritual，泡茶作为一种仪式）\n解析：定位 Paragraph C 中 “Tea was elevated to an art form in the Japanese tea ceremony, in which supreme importance is given to making tea in the most perfect, most polite... manner possible”。该段核心围绕日本茶道展开，强调泡茶需遵循极致规范、礼貌的流程，还提及为茶道建造专属茶室，体现了泡茶的仪式化特征，与 “泡茶作为一种仪式” 这一标题契合，因此选择 ix。",
+            "questionId": "q3"
+          },
+          {
+            "questionNumber": 4,
+            "text": "（4）题目 4：为 Paragraph D 选择正确标题\n题目翻译：为 D 段选择正确的标题\n答案：vi（News of tea reaches another continent，茶的消息传到另一大洲）\n解析：定位 Paragraph D 中 “information concerning the then-unknown beverage began to filter back to Europe... The first European to personally encounter tea and write about it was Portuguese...”。该段记录了茶的信息首次从亚洲（茶的发源地）传入欧洲（另一大洲）的过程，葡萄牙人成为首个记录茶的欧洲人，与 “茶的消息传到另一大洲” 这一标题对应��因此选择 vi。",
+            "questionId": "q4"
+          },
+          {
+            "questionNumber": 5,
+            "text": "（5）题目 5：为 Paragraph E 选择正确标题\n题目翻译：为 E 段选择正确的标题\n答案：v（A luxury item，一种奢侈品）\n解析：定位 Paragraph E 中 “This was due in part to tea being very expensive (over $100 per pound), which immediately made it the domain of the wealthy”。该段核心内容是茶初入欧洲时因价格高昂，仅为荷兰富人专属，体现了 “奢侈品” 的属性，与 “一种奢侈品” 这一标题完全对应，因此选择 v。",
+            "questionId": "q5"
+          },
+          {
+            "questionNumber": 6,
+            "text": "（6）题目 6：为 Paragraph F 选择正确标题\n题目翻译：为 F 段选择正确的标题\n答案：vii（Is tea a good or a bad thing?，茶是好是坏？）\n解析：定位 Paragraph F 中 “doctors and university authorities in Holland argued as to its benefits or drawbacks... the public largely ignored the scholarly debate and continued to enjoy their new beverage”。该段围绕荷兰学界对茶的利弊争论展开，尽管民众忽视争论，但争论本身是段落核心，与 “茶是好是坏？” 这一标题直接对应，因此选择 vii。",
+            "questionId": "q6"
+          },
+          {
+            "questionNumber": 7,
+            "text": "（7）题目 7：为 Paragraph G 选择正确标题\n题目翻译：为 G 段选择正确的标题\n答案：iii（In – and sometimes out – of fashion，时而流行，时而过时）\n解析：定位 Paragraph G 中 “Tea remained popular in France for only about fifty years, being replaced by a preference for wine, chocolate and exotic coffees... Tea mania swept across England as it had earlier spread throughout France and Holland”。该段描述了茶在法国从流行到被其他饮品取代（过时），随后又在英国掀起饮茶热潮的过程，体现了 “时而流行、时而过时” 的时尚更替特征，与标题对应，因此选择 iii。",
+            "questionId": "q7"
+          },
+          {
+            "questionNumber": 8,
+            "text": "（8）题目 8：为 Paragraph H 选择正确标题\n题目翻译：为 H 段选择正确的标题\n答案：x（Difficulties in importing tea，进口茶的困难）\n解析：定位 Paragraph H 中 “the journey was not easy. The average caravan consisted of 200 to 300 camels, and the 18,000-kilometre trip took over 16 months to complete”。该段详细说明了俄罗斯进口茶的运输难题 —— 商队规模大、行程漫长、耗时久，突出了 “进口困难” 的特点，与 “进口茶的困难” 这一标题契合，因此选择 x。",
+            "questionId": "q8"
+          }
+        ],
+        "questionRange": {
+          "start": 1,
+          "end": 8
+        },
+        "text": "题目翻译：为 A 段选择正确的标题\n答案：viii（A chance discovery，一次偶然的发现）\n解析：定位 Paragraph A 中 “Dried leaves from a nearby bush fell into the boiling water... the Emperor... drank some, and found it very refreshing. And so, according to legend, tea was created”。该段核心内容是神农帝因干叶偶然落入沸水而发现茶的起源过程，与 “一次偶然的发现” 这一标题的含义完全相符，因此选择 viii。\n题目翻译：为 B 段选择正确的标题\n答案：iv（A connection between tea and religion，茶与宗教的关联）\n解析：定位 Paragraph B 中 “The first definitive book was written on tea – a book clearly reflecting Zen Buddhist philosophy... tea in Japan has always been linked with Zen Buddhism”。该段重点阐述了茶与宗教的紧密联系，既提到中国首部茶书体现禅宗哲学，又说明日本茶因佛教僧人传入而始终与禅宗绑定，与 “茶与宗教的关联” 这一标题对应，因此选择 iv。\n题目翻译：为 C 段选择正确的标题\n答案：ix（Tea-making as a ritual，泡茶作为一种仪式）\n解析：定位 Paragraph C 中 “Tea was elevated to an art form in the Japanese tea ceremony, in which supreme importance is given to making tea in the most perfect, most polite... manner possible”。该段核心围绕日本茶道展开，强调泡茶需遵循极致规范、礼貌的流程，还提及为茶道建造专属茶室，体现了泡茶的仪式化特征，与 “泡茶作为一种仪式” 这一标题契合，因此选择 ix。\n题目翻译：为 D 段选择正确的标题\n答案：vi（News of tea reaches another continent，茶的消息传到另一大洲）\n解析：定位 Paragraph D 中 “information concerning the then-unknown beverage began to filter back to Europe... The first European to personally encounter tea and write about it was Portuguese...”。该段记录了茶的信息首次从亚洲（茶的发源地）传入欧洲（另一大洲）的过程，葡萄牙人成为首个记录茶的欧洲人，与 “茶的消息传到另一大洲” 这一标题对应，因此选择 vi。\n题目翻译：为 E 段选择正确的标题\n答案：v（A luxury item，一种奢侈品）\n解析：定位 Paragraph E 中 “This was due in part to tea being very expensive (over $100 per pound), which immediately made it the domain of the wealthy”。该段核心内容是茶初入欧洲时因价格高昂，仅为荷兰富人专属，体现了 “奢侈品” 的属性，与 “一种奢侈品” 这一标题完��对应，因此选择 v。\n题目翻译：为 F 段选择正确的标题\n答案：vii（Is tea a good or a bad thing?，茶是好是坏？）\n解析：定位 Paragraph F 中 “doctors and university authorities in Holland argued as to its benefits or drawbacks... the public largely ignored the scholarly debate and continued to enjoy their new beverage”。该段围绕荷兰学界对茶的利弊争论展开，尽管民众忽视争论，但争论本身是段落核心，与 “茶是好是坏？” 这一标题直接对应，因此选择 vii。\n题目翻译：为 G 段选择正确的标题\n答案：iii（In – and sometimes out – of fashion，时而流行，时而过时）\n解析：定位 Paragraph G 中 “Tea remained popular in France for only about fifty years, being replaced by a preference for wine, chocolate and exotic coffees... Tea mania swept across England as it had earlier spread throughout France and Holland”。该段描述了茶在法国从流行到被其他饮品取代（过时），随后又在英国掀起饮茶热潮的过程，体现了 “时而流行、时而过时” 的时尚更替特征，与标题对应，因此选择 iii。\n题目翻译：为 H 段选择正确的标题\n答案：x（Difficulties in importing tea，进口茶的困难）\n解析：定位 Paragraph H 中 “the journey was not easy. The average caravan consisted of 200 to 300 camels, and the 18,000-kilometre trip took over 16 months to complete”。该段详细说明了俄罗斯进口茶的运输难题 —— 商队规模大、行程漫长、耗时久，突出了 “进口困难” 的特点，与 “进口茶的困难” 这一标题契合，因此选择 x。"
+      },
+      {
+        "sectionTitle": "2. 国家配对（Questions 9–13）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 9,
+            "text": "（1）题目 9：Claims that tea might be harmful failed to affect its popularity.\n题目翻译：“茶可能有害” 的说法并未影响其受欢迎程度。\n答案：D（Holland，荷兰）\n解析：定位 Paragraph F 中 “doctors and university authorities in Holland argued as to its benefits or drawbacks... The public largely ignored the scholarly debate and continued to enjoy their new beverage”。荷兰的医生和大学学者就茶的弊端展开讨论，提出 “茶可能有害” 的观点，但荷兰民众无视这一学术争论，依然继续饮用茶，完全符合题干描述，因此答案为荷兰（D）。",
+            "questionId": "q9"
+          },
+          {
+            "questionNumber": 10,
+            "text": "（2）题目 10：Tea lost favour to other drinks.\n题目翻译：茶失宠，被其他饮品取代。\n答案：E（France，法国）\n解析：定位 Paragraph G 中 “Tea remained popular in France for only about fifty years, being replaced by a preference for wine, chocolate and exotic coffees”。茶在法国的流行仅持续了 50 年，之后人们的喜好转向葡萄酒、巧克力和特色咖啡，茶不再受欢迎，即 “茶失宠于其他饮品”，与题干对应，因此答案为法国（E）。",
+            "questionId": "q10"
+          },
+          {
+            "questionNumber": 11,
+            "text": "（3）题目 11：Special buildings were constructed in which to drink tea.\n题目翻译：人们建造了专门用于饮茶的特殊建筑。\n答案：B（Japan，日本）\n解析：定位 Paragraph C 中 “prompted the creation of a particular form of architecture for tea houses, duplicating the simplicity of a forest cottage”。日本为开展茶道，专门建造了 “茶室” 这种独特建筑，用于饮茶和举行茶道仪式，符合题干中 “建造专门用于饮茶的特殊建筑” 的描述，因此答案为日本（B）。",
+            "questionId": "q11"
+          },
+          {
+            "questionNumber": 12,
+            "text": "（4）题目 12：Animals were involved in importing tea.\n题目翻译：动物参与了茶的进口过程。\n答案：G（Russia，俄罗斯）\n解析：定位 Paragraph H 中 “The average caravan consisted of 200 to 300 camels...”。俄罗斯通过由 200 至 300 头骆驼组成的商队运输进口茶，骆驼（动物）直接参与了茶的进口运输，与题干对应，因此答案为俄罗斯（G）。",
+            "questionId": "q12"
+          },
+          {
+            "questionNumber": 13,
+            "text": "（5）题目 13：A ruler’s specialist knowledge led to an interest in tea.\n题目翻译：一位统治者的专业知识促使其对茶产生兴趣。\n答案：A（China，中国）\n解析：定位 Paragraph A 中 “the Emperor Shen Nung was a... creative scientist. As a scientist, the Emperor was intrigued by the new liquid, drank some, and found it very refreshing”。中国神农帝具备 “科学家” 的专业素养，正是凭借这种专业知识，他对偶然出现的茶液体产生了兴趣，进而发现了茶的价值，符合题干描述，因此答案为中国（A）。",
+            "questionId": "q13"
+          }
+        ],
+        "questionRange": {
+          "start": 9,
+          "end": 13
+        },
+        "text": "题目翻译：“茶可能有害” 的说法并未影响其受欢迎程度。\n答案：D（Holland，荷兰）\n解析：定位 Paragraph F 中 “doctors and university authorities in Holland argued as to its benefits or drawbacks... The public largely ignored the scholarly debate and continued to enjoy their new beverage”。荷兰的医生和大学学者就茶的弊端展开讨论，提出 “茶可能有害” 的观点，但荷兰民众无视这一学术争论，依然继续饮用茶，完全符合题干描述，因此答案为荷兰（D）。\n题目翻译：茶失宠，被其他饮品取代。\n答案：E（France，法国）\n解析：定位 Paragraph G 中 “Tea remained popular in France for only about fifty years, being replaced by a preference for wine, chocolate and exotic coffees”。茶在法国的流行仅持续了 50 年，之后人们的喜好转向葡萄酒、巧克力和特色咖啡，茶不再受欢迎，即 “茶失宠于其他饮品”，与题干对应，因此答案为法国（E）。\n题目翻译：人们建造了专门用于饮茶的特殊建筑。\n答案：B（Japan，日本）\n解析：定位 Paragraph C 中 “prompted the creation of a particular form of architecture for tea houses, duplicating the simplicity of a forest cottage”。日本为开展茶道，专门建造了 “茶室” 这种独特建筑，用于饮茶和举行茶道仪式，符合题干中 “建造专门用于饮茶的特殊建筑” 的描述，因此答案为日本（B）。\n题目翻译：动物参与了茶的进口过程。\n答案：G（Russia，俄罗斯）\n解析：定位 Paragraph H 中 “The average caravan consisted of 200 to 300 camels...”。俄罗斯通过由 200 �� 300 头骆驼组成的商队运输进口茶，骆驼（动物）直接参与了茶的进口运输，与题干对应，因此答案为俄罗斯（G）。\n题目翻译：一位统治者的专业知识促使其对茶产生兴趣。\n答案：A（China，中国）\n解析：定位 Paragraph A 中 “the Emperor Shen Nung was a... creative scientist. As a scientist, the Emperor was intrigued by the new liquid, drank some, and found it very refreshing”。中国神农帝具备 “科学家” 的专业素养，正是凭借这种专业知识，他对偶然出现的茶液体产生了兴趣，进而发现了茶的价值，符合题干描述，因此答案为中国（A）。"
+      }
+    ],
+    "passageNotes": [
+      {
+        "label": "Paragraph A",
+        "text": "茶的起源可追溯至 5000 多年前的中国古代传说 —— 神农帝是一位技艺娴熟的统治者、富有创造力的科学家，同时也是艺术的赞助人。他颁布的富有远见的法令中，有一项要求所有饮用水必须煮沸，以作为卫生预防措施。某个夏日，他在巡视国土偏远地区时，与随从停下休息。遵照他的规定，侍从们开始烧水供随从饮用。附近一丛灌木的干叶落入沸水中，叶子浸泡后，水变成了棕色。作为科学家，神农帝对这种新液体产生了兴趣，他尝了一些，发现口感十分清爽。传说中，茶就这样诞生了。"
+      },
+      {
+        "label": "Paragraph B",
+        "text": "饮茶习俗在中国文化中广泛传播，渗透到社会生活的方方面面。1200 年前，世上出现了第一部关于茶的权威著作，这部著作鲜明地体现了禅宗哲学思想。第一位将茶籽带回日本的是一位返程的佛教僧人，他在中国发现茶有助于禅修。因此，他在日本被尊为 “茶祖”。由于这种早期关联，茶在日本始终与禅宗紧密相连。茶很快得到了日本天皇的支持，并迅速从皇室宫廷和寺院传播到社会的其他阶层。"
+      },
+      {
+        "label": "Paragraph C",
+        "text": "在日本，茶被提升为一种艺术形式，即茶道。在茶道中，人们极其重视以最完美、最礼貌、最优雅、最具魅力的方式泡茶。这种纯粹的表达方式，催生了专为茶室设计的独特建筑风格，其风格模仿森林小屋的简约感。日本的文化艺术从业者 —— 艺伎，开始专门研习茶道的展示技艺。然而，随着越来越多的人沉迷于茶带来的热潮，茶道最初的纯粹理念逐渐丢失，有一段时间，茶道变得粗俗喧闹、过度装饰。随后，人们努力回归早期的简约风格，结果在 15 至 16 世纪，茶被视为最珍贵的礼物。即便是军阀，在开战前也会停下来品茶。"
+      },
+      {
+        "label": "Paragraph D",
+        "text": "当茶在亚洲部分地区发展到如此高的水平时，有关这种当时尚不为人知的饮品的信息开始慢慢传回欧洲。早期的商人曾提及过茶，但不确定茶究竟是该吃还是该喝。第一位亲身接触茶并记录下来的欧洲人是葡萄牙人 —— 葡萄牙凭借其技术先进的海军，成功获得了与中国进行贸易的优先权。"
+      },
+      {
+        "label": "Paragraph E",
+        "text": "茶最终在 16 世纪传入欧洲，由荷兰海军带到荷兰，并在荷兰首都海牙迅速成为时尚饮品。部分原因是茶的价格十分昂贵（每磅超过 100 美元），这使其立刻成为富人的专属品。随着进口茶叶数量逐渐增加，茶价慢慢下降，到 1675 年，荷兰各地的普通食品店都能买到茶了。"
+      },
+      {
+        "label": "Paragraph F",
+        "text": "随着荷兰社会对茶的消费量大幅增长，荷兰的医生和大学学者们就茶的益处与弊端展开了争论。这场争议从 1635 年持续到 1657 年左右，但民众大多无视这场学术争论，继续享用这种新饮品。在此期间，法国和荷兰在欧洲的饮茶风潮中处于领先地位。"
+      },
+      {
+        "label": "Paragraph G",
+        "text": "当对东方事物的狂热席卷欧洲时，茶成为了日常生活的一部分。1680 年，首次有记载提及在茶中加奶。大约在那个时候，荷兰的小旅馆开始提供最早的茶餐服务。店主会为客人提供一套便携茶具，其中还配有加热装置。随后，荷兰人会在旅馆的花园里为自己和朋友泡茶。茶在法国的流行只持续了大约 50 年，之后人们的喜好转向了葡萄酒、巧克力和特色咖啡，茶便不再流行。1660 年，英国国王查理二世和他的葡萄牙王后将茶引入英国，两人都是忠实的饮茶爱好者。就像之前在法国和荷兰流行一样，饮茶热潮席卷了英国。到 1708 年，茶叶进口量已达到 1699 年的 13 倍。社会各阶层的人都开始饮茶。"
+      },
+      {
+        "label": "Paragraph H",
+        "text": "俄罗斯对茶的兴趣早在 1618 年就已产生，当时中国驻莫斯科大使馆向沙皇阿列克谢赠送了几箱茶。17 世纪后期，俄中签订的一项贸易条约允许商队在两国之间自由往返。即便如此，这段旅程也绝非易事。一支普通的商队由 200 至 300 头骆驼组成，这段 1.8 万公里的旅程需要耗时 16 个月以上才能完成。然而，茶最终还是成为了俄罗斯最受欢迎的饮品之一，并且至今依然如此。"
+      }
+    ]
+  },
+  {
+    "id": "p1-low-02",
+    "title": "Maori Fish Hooks 毛利鱼钩",
+    "category": "P1",
+    "frequency": "高频",
+    "difficultyScore": 2.5,
+    "passageHtml": "<h2>READING PASSAGE 1</h2>\n            <p>You should spend about 20 minutes on Questions 1–13, which are based on Reading Passage 1 below.</p>\n            \n            <h3>Maori Fish Hooks</h3>\n            \n            <p><strong>A</strong> Maori fish hooks, made from wood, bone, stone and flax, are intended to have the best possible design and function. The hooks are designed to target specific species with precision. In the industry of commercial long-line fishing, there are some Maori hook designs that are making a splash.</p>\n            <p><strong>B</strong> When Polynesians first came to New Zealand sometime between AD 1100–1300, they didn't have the technology necessary to melt and manipulate metal from ore. Meanwhile, fish were the settlers' main food source, so fishermen made their hooks and fishing gear out of wood, bone, stone and shells. Other plants native to New Zealand, such as flax (harakeke), cabbage tree (ti), and astelia (kiekie), provided the necessary fibrous material to make fishing-lines and nets of greater or equal strength to the jute used by Europeans at the time. Metal is more malleable and can be shaped in various ways, whereas natural materials are limited in the forms they can take; the Maori fish hooks needed to be innovative in overcoming these limitations.</p>\n            <p><strong>C</strong> Early European explorers who settled and explored New Zealand claimed that Maori hooks, known as matau, were “odd”, “of doubtful efficacy”, “very clumsy affairs”, or “impossible looking”. Archaeologists from recent times have also described the round hook as odd, with comments such as \"shaped in a manner which makes it very difficult to imagine could ever be effective in catching a fish”. William Anderson, who was aboard the Resolution during Cook's third voyage in 1777 as the ship's surgeon, remarked that the Maori “live chiefly by fishing, making use ... of wooden fish hooks pointed with bone, but so oddly made that a stranger is at a loss to know how they can answer such a purpose.\"</p>\n            <p><strong>D</strong> The Museum of New Zealand Te Papa Tongarewa conducted a study on Maori fish hooks 230 years later and demonstrated that the unique hook design was a matter of function. The hook's design allowed it to catch fish by spinning away from the direction of the point and catching their jaws, instead of poking a hole through the fish or being used as a lever, as some archaeologists had suggested. It appears that the design of the Maori fish hook is perhaps the world's most efficiently and masterfully designed, likely superior to any modern metal fish hook today.</p>\n            <p><strong>E</strong> To make larger hooks, Maori used shanks made of strong wood, with stout points made of bone or shell. They tied tree branches and saplings together to grow them into ideal shapes for building, then harvested the plants when they reached the appropriate size. They hardened wood by carefully drying it and burying it underground with fires lit above. Human bone was often used for bone points, which were securely lashed to a groove at the end of the shank using pre-made flax materials (muka). When they wanted to catch larger species like sharks, groper and ling, they used composite hooks. However, on average, the traditional hook was usually no longer than a three-finger breadth (128 mm in length).</p>\n            <p><strong>F</strong> To capture seabirds for food and feathers, like albatross, the islanders used slender hooks that can be differentiated from other hooks intended for fish by their lighter build and lack of an in-turned point. Many of these hooks were collected by early explorers, suggesting that seabird catching with hook and line was an important source of food and feathers for the Maori (105 mm in length). Slender hooks with wide gaps were used to capture albatross and other seabirds and can be distinguished from fish hooks by their lighter construction and absence of an in-turned point. Early explorers collected many of these hooks, which could indicate that catching seabirds provided significant amounts of food and feathers for the Maori.</p>\n            <p><strong>G</strong> The Maori quickly adopted new materials once they became available through European explorers, sealers and whalers who began arriving towards the end of the 1700s. At this point, the Maori were still making their fish hooks but were now using metals and imported materials. Wooden and flax components of old, abandoned fish hooks decomposed quickly as traditional hooks were discarded in favour of new ones. Tools made of luxury materials such as ivory or greenstone may have been kept as decorative items, with stylised Maori fish hooks today serving as a symbol of cultural revitalisation.</p>\n            <p><strong>H</strong> The Maori continued to recreate traditional designs even as new materials became available, preferring hook shapes introduced by Pakeha in the 1800s. By maintaining the tradition of the rotating hook design, they remained connected to an essential part of their cultural heritage. In the end, however, mass-produced European metal hooks eventually dominated, making it difficult to continue crafting hooks from nails, horseshoes and other metal objects. Eventually, traditional designs fell out of favour.</p>\n            <p><strong>I</strong> By the late 19th and early 20th centuries, tourist and collector demand for Maori artefacts had grown, leading manufacturers to produce large quantities of forged hooks. These replicas were then traded with both Maori and Europeans as forgeries of the real thing, sometimes directly commissioned by artefact dealers. Fake hooks can be identified by their cheap construction, inconsistent materials, rudimentary lashings, odd or overly elaborate decorative carvings, and the absence of in-turned points or angled grooves used to attach the fishing-line properly.</p>\n            <p><strong>J</strong> The evolution of matau throughout history symbolises how the Maori have adapted to European tools, materials and technology over time. It also reflects how European influence contributed to, rather than completely replaced, traditional Maori skills, as native materials were replaced or complemented by metals and, more recently, artificial materials. Today, commercial long-line fishermen around the world have begun using the circle-hook design—one that is nearly identical in appearance and function to the traditional matau. It appears that the advantages and improved catch-rates of this Maori technology have once again been recognised.</p>\n            <div class=\"empty-space\"></div>\n        </section>\n        \n        <div id=\"divider\"></div>",
+    "questionGroups": [
+      {
+        "groupId": "group-1",
+        "kind": "table_completion",
+        "questionIds": [
+          "q1",
+          "q2",
+          "q3",
+          "q4",
+          "q5",
+          "q6",
+          "q7",
+          "q8"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q1-2-3-4-5-6-7-8-anchor\">\n                <h4>Questions 1–8</h4>\n                <p>The reading passage has ten paragraphs labelled <strong>A–J</strong>.</p>\n                <p>Which paragraph contains the following information?</p>\n                <p><em>Write the correct letter <strong>A–J</strong> in boxes 1–8 on your answer sheet.</em></p>\n                <div style=\"overflow-x: auto;\">\n                    <table class=\"matching-table\">\n                        <thead>\n                            <tr>\n                                <th style=\"min-width: 250px;\"></th>\n                                <th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th><th>I</th><th>J</th>\n                            </tr>\n                        </thead>\n                        <tbody>\n                            <tr>\n                                <td><strong>1</strong> Instruction on how to recognise authentic Maori hooks from counterfeit ones</td>\n                                <td><input type=\"radio\" name=\"q1\" value=\"A\"></td><td><input type=\"radio\" name=\"q1\" value=\"B\"></td><td><input type=\"radio\" name=\"q1\" value=\"C\"></td><td><input type=\"radio\" name=\"q1\" value=\"D\"></td><td><input type=\"radio\" name=\"q1\" value=\"E\"></td><td><input type=\"radio\" name=\"q1\" value=\"F\"></td><td><input type=\"radio\" name=\"q1\" value=\"G\"></td><td><input type=\"radio\" name=\"q1\" value=\"H\"></td><td><input type=\"radio\" name=\"q1\" value=\"I\"></td><td><input type=\"radio\" name=\"q1\" value=\"J\"></td>\n                            </tr>\n                             <tr>\n                                <td><strong>2</strong> A description of a different type of hooks that are not used to catch fish</td>\n                                <td><input type=\"radio\" name=\"q2\" value=\"A\"></td><td><input type=\"radio\" name=\"q2\" value=\"B\"></td><td><input type=\"radio\" name=\"q2\" value=\"C\"></td><td><input type=\"radio\" name=\"q2\" value=\"D\"></td><td><input type=\"radio\" name=\"q2\" value=\"E\"></td><td><input type=\"radio\" name=\"q2\" value=\"F\"></td><td><input type=\"radio\" name=\"q2\" value=\"G\"></td><td><input type=\"radio\" name=\"q2\" value=\"H\"></td><td><input type=\"radio\" name=\"q2\" value=\"I\"></td><td><input type=\"radio\" name=\"q2\" value=\"J\"></td>\n                            </tr>\n                             <tr>\n                                <td><strong>3</strong> An acknowledgement that Maori design and craftsmanship are still relevant in the modern world</td>\n                                <td><input type=\"radio\" name=\"q3\" value=\"A\"></td><td><input type=\"radio\" name=\"q3\" value=\"B\"></td><td><input type=\"radio\" name=\"q3\" value=\"C\"></td><td><input type=\"radio\" name=\"q3\" value=\"D\"></td><td><input type=\"radio\" name=\"q3\" value=\"E\"></td><td><input type=\"radio\" name=\"q3\" value=\"F\"></td><td><input type=\"radio\" name=\"q3\" value=\"G\"></td><td><input type=\"radio\" name=\"q3\" value=\"H\"></td><td><input type=\"radio\" name=\"q3\" value=\"I\"></td><td><input type=\"radio\" name=\"q3\" value=\"J\"></td>\n                            </tr>\n                             <tr>\n                                <td><strong>4</strong> An investigation into how the hooks functioned so effectively</td>\n                                <td><input type=\"radio\" name=\"q4\" value=\"A\"></td><td><input type=\"radio\" name=\"q4\" value=\"B\"></td><td><input type=\"radio\" name=\"q4\" value=\"C\"></td><td><input type=\"radio\" name=\"q4\" value=\"D\"></td><td><input type=\"radio\" name=\"q4\" value=\"E\"></td><td><input type=\"radio\" name=\"q4\" value=\"F\"></td><td><input type=\"radio\" name=\"q4\" value=\"G\"></td><td><input type=\"radio\" name=\"q4\" value=\"H\"></td><td><input type=\"radio\" name=\"q4\" value=\"I\"></td><td><input type=\"radio\" name=\"q4\" value=\"J\"></td>\n                            </tr>\n                             <tr>\n                                <td><strong>5</strong> A description of how modern technology began to dominate and eventually took over from traditional hook construction</td>\n                                <td><input type=\"radio\" name=\"q5\" value=\"A\"></td><td><input type=\"radio\" name=\"q5\" value=\"B\"></td><td><input type=\"radio\" name=\"q5\" value=\"C\"></td><td><input type=\"radio\" name=\"q5\" value=\"D\"></td><td><input type=\"radio\" name=\"q5\" value=\"E\"></td><td><input type=\"radio\" name=\"q5\" value=\"F\"></td><td><input type=\"radio\" name=\"q5\" value=\"G\"></td><td><input type=\"radio\" name=\"q5\" value=\"H\"></td><td><input type=\"radio\" name=\"q5\" value=\"I\"></td><td><input type=\"radio\" name=\"q5\" value=\"J\"></td>\n                            </tr>\n                             <tr>\n                                <td><strong>6</strong> A list of raw materials used to construct hooks</td>\n                                <td><input type=\"radio\" name=\"q6\" value=\"A\"></td><td><input type=\"radio\" name=\"q6\" value=\"B\"></td><td><input type=\"radio\" name=\"q6\" value=\"C\"></td><td><input type=\"radio\" name=\"q6\" value=\"D\"></td><td><input type=\"radio\" name=\"q6\" value=\"E\"></td><td><input type=\"radio\" name=\"q6\" value=\"F\"></td><td><input type=\"radio\" name=\"q6\" value=\"G\"></td><td><input type=\"radio\" name=\"q6\" value=\"H\"></td><td><input type=\"radio\" name=\"q6\" value=\"I\"></td><td><input type=\"radio\" name=\"q6\" value=\"J\"></td>\n                            </tr>\n                             <tr>\n                                <td><strong>7</strong> An outline of how different styles of hooks and types of materials were employed to catch larger fish</td>\n                                <td><input type=\"radio\" name=\"q7\" value=\"A\"></td><td><input type=\"radio\" name=\"q7\" value=\"B\"></td><td><input type=\"radio\" name=\"q7\" value=\"C\"></td><td><input type=\"radio\" name=\"q7\" value=\"D\"></td><td><input type=\"radio\" name=\"q7\" value=\"E\"></td><td><input type=\"radio\" name=\"q7\" value=\"F\"></td><td><input type=\"radio\" name=\"q7\" value=\"G\"></td><td><input type=\"radio\" name=\"q7\" value=\"H\"></td><td><input type=\"radio\" name=\"q7\" value=\"I\"></td><td><input type=\"radio\" name=\"q7\" value=\"J\"></td>\n                            </tr>\n                             <tr>\n                                <td><strong>8</strong> An account of how the Maori employed new technology and adapted it</td>\n                                <td><input type=\"radio\" name=\"q8\" value=\"A\"></td><td><input type=\"radio\" name=\"q8\" value=\"B\"></td><td><input type=\"radio\" name=\"q8\" value=\"C\"></td><td><input type=\"radio\" name=\"q8\" value=\"D\"></td><td><input type=\"radio\" name=\"q8\" value=\"E\"></td><td><input type=\"radio\" name=\"q8\" value=\"F\"></td><td><input type=\"radio\" name=\"q8\" value=\"G\"></td><td><input type=\"radio\" name=\"q8\" value=\"H\"></td><td><input type=\"radio\" name=\"q8\" value=\"I\"></td><td><input type=\"radio\" name=\"q8\" value=\"J\"></td>\n                            </tr>\n                        </tbody>\n                    </table>\n                </div>\n            </div>",
+        "leadHtml": "<h3>Questions</h3>"
+      },
+      {
+        "groupId": "group-2",
+        "kind": "true_false_not_given",
+        "questionIds": [
+          "q9",
+          "q10",
+          "q11",
+          "q12",
+          "q13"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q9-10-11-12-13-anchor\">\n                 <h4>Questions 9–13</h4>\n                <p>Do the following statements agree with the information given in Reading Passage 1?</p>\n                <p>In boxes 9–13 on your answer sheet, write</p>\n                <ul>\n                    <li><strong>TRUE</strong> if the statement agrees with the information</li>\n                    <li><strong>FALSE</strong> if the statement contradicts the information</li>\n                    <li><strong>NOT GIVEN</strong> if there is no information on this</li>\n                </ul>\n\n                <div class=\"tfng-item\">\n                    <p><strong>9</strong> The early European settlers quickly understood how the Maori fish hook worked.</p>\n                    <div class=\"tfng-options\">\n                        <label><input type=\"radio\" name=\"q9\" value=\"TRUE\"> TRUE</label>\n                        <label><input type=\"radio\" name=\"q9\" value=\"FALSE\"> FALSE</label>\n                        <label><input type=\"radio\" name=\"q9\" value=\"NOT GIVEN\"> NOT GIVEN</label>\n                    </div>\n                </div>\n                <div class=\"tfng-item\">\n                    <p><strong>10</strong> The hook works by making a hole and embedding itself in the mouth of the fish.</p>\n                    <div class=\"tfng-options\">\n                        <label><input type=\"radio\" name=\"q10\" value=\"TRUE\"> TRUE</label>\n                        <label><input type=\"radio\" name=\"q10\" value=\"FALSE\"> FALSE</label>\n                        <label><input type=\"radio\" name=\"q10\" value=\"NOT GIVEN\"> NOT GIVEN</label>\n                    </div>\n                </div>\n                <div class=\"tfng-item\">\n                    <p><strong>11</strong> The Maoris catch seabirds by their feet.</p>\n                    <div class=\"tfng-options\">\n                        <label><input type=\"radio\" name=\"q11\" value=\"TRUE\"> TRUE</label>\n                        <label><input type=\"radio\" name=\"q11\" value=\"FALSE\"> FALSE</label>\n                        <label><input type=\"radio\" name=\"q11\" value=\"NOT GIVEN\"> NOT GIVEN</label>\n                    </div>\n                </div>\n                <div class=\"tfng-item\">\n                    <p><strong>12</strong> There used to be a demand for Maori fish hooks and many counterfeit ones were produced.</p>\n                    <div class=\"tfng-options\">\n                        <label><input type=\"radio\" name=\"q12\" value=\"TRUE\"> TRUE</label>\n                        <label><input type=\"radio\" name=\"q12\" value=\"FALSE\"> FALSE</label>\n                        <label><input type=\"radio\" name=\"q12\" value=\"NOT GIVEN\"> NOT GIVEN</label>\n                    </div>\n                </div>\n                <div class=\"tfng-item\">\n                    <p><strong>13</strong> Today European-style hooks have completely replaced the traditional styles used by the Maoris.</p>\n                    <div class=\"tfng-options\">\n                        <label><input type=\"radio\" name=\"q13\" value=\"TRUE\"> TRUE</label>\n                        <label><input type=\"radio\" name=\"q13\" value=\"FALSE\"> FALSE</label>\n                        <label><input type=\"radio\" name=\"q13\" value=\"NOT GIVEN\"> NOT GIVEN</label>\n                    </div>\n                </div>\n            </div>"
+      }
+    ],
+    "answerKey": {
+      "q1": "I",
+      "q2": "F",
+      "q3": "J",
+      "q4": "D",
+      "q5": "H",
+      "q6": "B",
+      "q7": "E",
+      "q8": "G",
+      "q9": "FALSE",
+      "q10": "FALSE",
+      "q11": "NOT GIVEN",
+      "q12": "TRUE",
+      "q13": "FALSE"
+    },
+    "questionDisplayMap": {
+      "q1": "1",
+      "q2": "2",
+      "q3": "3",
+      "q4": "4",
+      "q5": "5",
+      "q6": "6",
+      "q7": "7",
+      "q8": "8",
+      "q9": "9",
+      "q10": "10",
+      "q11": "11",
+      "q12": "12",
+      "q13": "13"
+    },
+    "questionOrder": [
+      "q1",
+      "q2",
+      "q3",
+      "q4",
+      "q5",
+      "q6",
+      "q7",
+      "q8",
+      "q9",
+      "q10",
+      "q11",
+      "q12",
+      "q13"
+    ],
+    "explanations": [
+      {
+        "sectionTitle": "1. 段落匹配（Questions 1–8：Which paragraph contains the following information?）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 1,
+            "text": "（1）题目 1：Instruction on how to recognise authentic Maori hooks from counterfeit ones\n题目翻译：区分真假毛利鱼钩的方法说明\n答案：I\n解析：定位 Paragraph I 中 “Fake hooks can be identified by their cheap construction, inconsistent materials, rudimentary lashings, odd or overly elaborate decorative carvings, and the absence of in-turned points or angled grooves used to attach the fishing-line properly”，明确给出识别伪钩的具体特征（即区分真假的方法），与题干对应，因此答案为 I。",
+            "questionId": "q1"
+          },
+          {
+            "questionNumber": 2,
+            "text": "（2）题目 2：A description of a different type of hooks that are not used to catch fish\n题目翻译：对一种不用于捕鱼的其他类型鱼钩的描述\n答案：F\n解析：定位 Paragraph F 中 “To capture seabirds for food and feathers, like albatross, the islanders used slender hooks that can be differentiated from other hooks intended for fish by their lighter build and lack of an inturned point”，描述了 “用于捕捉海鸟而非捕鱼” 的细钩，与题干对应，因此答案为 F。",
+            "questionId": "q2"
+          },
+          {
+            "questionNumber": 3,
+            "text": "（3）题目 3：An acknowledgement that Maori design and craftsmanship are still relevant in the modern world\n题目翻译：承认毛利设计和工艺在现代世界仍具有相关性\n答案：J\n解析：定位 Paragraph J 中 “Today, commercial long-line fishermen around the world have begun using the circle-hook design-one that is nearly identical in appearance and function to the traditional matau. It appears that the advantages and improved catch-rates of this Maori technology have once again been recognised”，指出现代商业捕鱼采用与传统毛利鱼钩相似的设计，认可其在现代的实用性（相关性），与题干对应，因此答案为 J。",
+            "questionId": "q3"
+          },
+          {
+            "questionNumber": 4,
+            "text": "（4）题目 4：An investigation into how the hooks functioned so effectively\n题目翻译：对鱼钩为何能高效工作的研究\n答案：D\n解析：定位 Paragraph D 中 “The Museum of New Zealand Te Papa Tongarewa conducted a study on Maori fish hooks 230 years later and demonstrated that the unique hook design was a matter of function. The hook’s design allowed it to catch fish by spinning away from the direction of the point and catching their jaws”，博物馆通过研究揭示了毛利鱼钩高效捕鱼的原理（如何工作），与题干对应，因此答案为 D。",
+            "questionId": "q4"
+          },
+          {
+            "questionNumber": 5,
+            "text": "（5）题目 5：A description of how modern technology began to dominate and eventually took over from traditional hook construction\n题目翻译：对现代技术如何开始主导并最终取代传统鱼钩制作的描述\n答案：H\n解析：定位 Paragraph H 中 “By the end, however, mass-produced European metal hooks eventually dominated, making it difficult to continue crafting hooks from nails, horseshoes and other metal objects. Eventually, traditional designs fell out of favour”，描述了欧洲量产金属钩（现代技术）主导市场，取代传统手工钩制作的过程，与题干对应，因此答案为 H。",
+            "questionId": "q5"
+          },
+          {
+            "questionNumber": 6,
+            "text": "（6）题目 6：A list of raw materials used to construct hooks\n题目翻译：制作鱼钩所用原材料的清单\n答案：B\n解析：定位 Paragraph B 中 “fishermen made their hooks and fishing gear out of wood, bone, stone and shells. Other plants native to New Zealand, such as flax (harakeke), cabbage tree (ti), and astelia (kiekie), provided the necessary fibrous material to make fishing-lines and nets”，列举了制作鱼钩（及渔具）的原材料（木、骨、石、贝壳、亚麻等），即 “清单”，与题干对应，因此答案为 B。",
+            "questionId": "q6"
+          },
+          {
+            "questionNumber": 7,
+            "text": "（7）题目 7：An outline of how different styles of hooks and types of materials were employed to catch larger fish\n题目翻译：对捕捉大型鱼类所采用的不同鱼钩样式和材料类型的概述\n答案：E\n解析：定位 Paragraph E 中 “To make larger hooks, Maori used shanks made of strong wood, with stout points made of bone or shell... They hardened wood by carefully drying it and burying it underground with fires lit above. Human bone was often used for bone points... When they wanted to catch larger species like sharks, groper and ling, they used composite hooks”，概述了捕捉大型鱼类时使用的鱼钩样式（大型钩、复合钩）和材料（坚硬木材、骨 / 贝壳、人骨），与题干对应，因此答案为 E。",
+            "questionId": "q7"
+          },
+          {
+            "questionNumber": 8,
+            "text": "（8）题目 8：An account of how the Maori employed new technology and adapted it\n题目翻译：对毛利人如何采用并改造新技术的叙述\n答案：G\n解析：定位 Paragraph G 中 “The Maori quickly adopted new materials once they became available through European explorers, sealers and whalers... At this point, the Maori were still making their fish hooks but were now using metals and imported materials”，讲述了毛利人采用欧洲传入的新材料（金属）制作鱼钩，即 “采用并改造新技术”，与题干对应，因此答案为 G。",
+            "questionId": "q8"
+          }
+        ],
+        "questionRange": {
+          "start": 1,
+          "end": 8
+        },
+        "text": "题目翻译：区分真假毛利鱼钩的方法说明\n答案：I\n解析：定位 Paragraph I 中 “Fake hooks can be identified by their cheap construction, inconsistent materials, rudimentary lashings, odd or overly elaborate decorative carvings, and the absence of in-turned points or angled grooves used to attach the fishing-line properly”，明确给出识别伪钩的具体特征（即区分真假的方法），与题干对应，因此答案为 I。\n题目翻译：对一种不用于捕鱼的其他类型鱼钩的描述\n答案：F\n解析：定位 Paragraph F 中 “To capture seabirds for food and feathers, like albatross, the islanders used slender hooks that can be differentiated from other hooks intended for fish by their lighter build and lack of an inturned point”，描述了 “用于捕捉海鸟而非捕鱼” 的细钩，与题干对应，因此答案为 F。\n题目翻译：承认毛利设计和工艺在现代世界仍具有相关性\n答案：J\n解析：定位 Paragraph J 中 “Today, commercial long-line fishermen around the world have begun using the circle-hook design-one that is nearly identical in appearance and function to the traditional matau. It appears that the advantages and improved catch-rates of this Maori technology have once again been recognised”，指出现代商业捕鱼采用与传统毛利鱼钩相似的设计，认可其在现代的实用性（相关性），与题干对应，因此答案为 J。\n题目翻译：对鱼钩为何能高效工作的研究\n答案：D\n解析：定位 Paragraph D 中 “The Museum of New Zealand Te Papa Tongarewa conducted a study on Maori fish hooks 230 years later and demonstrated that the unique hook design was a matter of function. The hook’s design allowed it to catch fish by spinning away from the direction of the point and catching their jaws”，博物馆通过研究揭示了毛利鱼钩高效捕鱼的原理（如何工作），与题干对应，因此答案为 D。\n题目翻译：对现代技术如何开始主导并最终取代传统鱼钩制作的描述\n答案：H\n解析：定位 Paragraph H 中 “By the end, however, mass-produced European metal hooks eventually dominated, making it difficult to continue crafting hooks from nails, horseshoes and other metal objects. Eventually, traditional designs fell out of favour”，描述了欧洲量产金属钩（现代技术）主导市场，取代传统手工钩制作的过程，与题干对应，因此答案为 H。\n题目翻译：制作鱼钩所用原材料的清单\n答案：B\n解析：定位 Paragraph B 中 “fishermen made their hooks and fishing gear out of wood, bone, stone and shells. Other plants native to New Zealand, such as flax (harakeke), cabbage tree (ti), and astelia (kiekie), provided the necessary fibrous material to make fishing-lines and nets”，列举了制作鱼钩（及渔具）的原材料（木、骨、石、贝壳、亚麻等），即 “清单”，与题干对应，因此答案为 B。\n题目翻译：对捕捉大型鱼类所采用的不同鱼钩样式和材料类型的概述\n答案：E\n解析：定位 Paragraph E 中 “To make larger hooks, Maori used shanks made of strong wood, with stout points made of bone or shell... They hardened wood by carefully drying it and burying it underground with fires lit above. Human bone was often used for bone points... When they wanted to catch larger species like sharks, groper and ling, they used composite hooks”，概述了捕捉大型鱼类时使用的鱼钩样式（大型钩、复合钩）和材料（坚硬木材、骨 / 贝壳、人骨），与题干对应，因此答案为 E。\n题目翻译：对毛利人如何采用并改造新技术的叙述\n答案：G\n解析：定位 Paragraph G 中 “The Maori quickly adopted new materials once they became available through European explorers, sealers and whalers... At this point, the Maori were still making their fish hooks but were now using metals and imported materials”，讲述了毛利人采用欧洲传入的新材料（金属）制作鱼钩，即 “采用并改造新技术”，与题干对应，因此答案为 G。"
+      },
+      {
+        "sectionTitle": "2. 判断题（Questions 9–13：TRUE/FALSE/NOT GIVEN）",
+        "mode": "per_question",
+        "items": [
+          {
+            "questionNumber": 9,
+            "text": "（1）题目 9：The early European settlers quickly understood how the Maori fish hook worked.\n题目翻译：早期欧洲殖民者很快理解��毛利鱼钩的工作原理。\n答案：FALSE（错误）\n解析：定位 Paragraph C 中 “Early European explorers who settled and explored New Zealand claimed that Maori hooks... ‘of doubtful efficacy’, ‘very clumsy affairs’, ‘impossible looking’... William Anderson... remarked that... ‘so oddly made that a stranger is at a loss to know how they can answer such a purpose’”，早期欧洲人认为毛利鱼钩 “效果可疑”“不知如何使用”，并未 “很快理解其工作原理”，与题干描述矛盾，因此判定为 FALSE。",
+            "questionId": "q9"
+          },
+          {
+            "questionNumber": 10,
+            "text": "（2）题目 10：The hook works by making a hole and embedding itself in the mouth of the fish.\n题目翻译：这种鱼钩通过在鱼嘴打洞并嵌入其中来工作。\n答案：FALSE（错误）\n解析：定位 Paragraph D 中 “The hook’s design allowed it to catch fish by spinning away from the direction of the point and catching their jaws, instead of poking a hole through the fish or being used as a lever, as some archaeologists had suggested”，毛利鱼钩通过 “钩住鱼嘴” 捕鱼，而非 “打洞并嵌入”，与题干描述矛盾，因此判定为 FALSE。",
+            "questionId": "q10"
+          },
+          {
+            "questionNumber": 11,
+            "text": "（3）题目 11：The Maoris catch seabirds by their feet.\n题目翻译：毛利人通过钩住海鸟的脚来捕捉它们。\n答案：NOT GIVEN（未提及）\n解析：Paragraph F 仅提到毛利人用 “细钩” 捕捉海鸟，但未说明 “钩住海鸟的身体部位（如脚）”，无相关信息，因此判定为 NOT GIVEN。",
+            "questionId": "q11"
+          },
+          {
+            "questionNumber": 12,
+            "text": "（4）题目 12：There used to be a demand for Maori fish hooks and many counterfeit ones were produced.\n题目翻译：过去对毛利鱼钩有需求，因此生产了许多伪造品。\n答案：TRUE（正确）\n解析：定位 Paragraph I 中 “By the late 19th and early 20th centuries, tourist and collector demand for Maori artefacts had grown, leading manufacturers to produce large quantities of forged hooks”，明确提到因游客和收藏家的需求增长，制造商生产了大量伪造鱼钩，与题干描述一致，因此判定为 TRUE。",
+            "questionId": "q12"
+          },
+          {
+            "questionNumber": 13,
+            "text": "（5）题目 13：Today European-style hooks have completely replaced the traditional styles used by the Maoris.\n题目翻译：如今，欧洲风格的鱼钩已完全取代毛利人使用的传统样式。\n答案：FALSE（错误）\n解析：定位 Paragraph J 中 “Today, commercial long-line fishermen around the world have begun using the circle-hook design-one that is nearly identical in appearance and function to the traditional matau”，现代仍在使用与传统毛利鱼钩相似的设计，且 Paragraph G 提到 “程式化的毛利鱼钩是文化复兴象征”，说明传统设计未被 “完全取代”，与题干描述矛盾，因此判定为 FALSE。",
+            "questionId": "q13"
+          }
+        ],
+        "questionRange": {
+          "start": 9,
+          "end": 13
+        },
+        "text": "题目翻译：早期欧洲殖民者很快理解了毛利鱼钩的工作原理。\n答案：FALSE（错误）\n解析：定位 Paragraph C 中 “Early European explorers who settled and explored New Zealand claimed that Maori hooks... ‘of doubtful efficacy’, ‘very clumsy affairs’, ‘impossible looking’... William Anderson... remarked that... ‘so oddly made that a stranger is at a loss to know how they can answer such a purpose’”，早期欧洲人认为毛利鱼钩 “效果可疑”“不知如何使用”，并未 “很快理解其工作原理”，与题干描述矛盾，因此判定为 FALSE。\n题目翻译：这种鱼钩通过在鱼嘴打洞并嵌入其中来工作。\n答案：FALSE（错误）\n解析：定位 Paragraph D 中 “The hook’s design allowed it to catch fish by spinning away from the direction of the point and catching their jaws, instead of poking a hole through the fish or being used as a lever, as some archaeologists had suggested”，毛利鱼钩通过 “钩住鱼嘴” 捕鱼，而非 “打洞并嵌入”，与题干描述矛盾，因此判定为 FALSE。\n题目翻译：毛利人通过钩住海鸟的脚来捕捉它们。\n答案：NOT GIVEN（未提及）\n解析：Paragraph F 仅提到毛利人用 “细钩” 捕捉海鸟，但未说明 “钩住海鸟的身体部位（如脚）”，无相关信息，因此判定为 NOT GIVEN。\n题目翻译：过去对毛利鱼钩有需求，因此生产了许多伪造品。\n答案：TRUE（正确）\n解析：定位 Paragraph I 中 “By the late 19th and early 20th centuries, tourist and collector demand for Maori artefacts had grown, leading manufacturers to produce large quantities of forged hooks”，明确提到因游客和收藏家的需求增长，制造商生产了大量伪造鱼钩，与题干描述一致，因此判定为 TRUE。\n题目翻译：如今，欧洲风格的鱼钩已完全取代毛利人使用的传统样式。\n答案：FALSE（错误）\n解析：定位 Paragraph J 中 “Today, commercial long-line fishermen around the world have begun using the circle-hook design-one that is nearly identical in appearance and function to the traditional matau”，现代仍在使用与传统毛利鱼钩相似的设计，且 Paragraph G 提到 “程式化的毛利鱼钩是文化复兴象征”，说明传统设计未被 “完全取代”，与题干描述矛盾，因此判定为 FALSE。"
+      }
+    ],
+    "passageNotes": [
+      {
+        "label": "Paragraph A",
+        "text": "毛利鱼钩由木、骨、石、亚麻制成，设计和功能极致，可精准针对特定鱼类，部分设计在商业长线捕鱼行业中引起关注。"
+      },
+      {
+        "label": "Paragraph B",
+        "text": "1100-1300AD 波利尼西亚人抵达新西兰时，无冶炼金属技术，而鱼类是主要食物来源，因此用木、骨、石、贝壳制作鱼钩和渔具；新西兰本土植物（如亚麻、卷心菜树、星草）提供的纤维，制成的鱼线和渔网强度不亚于欧洲黄麻。金属易塑形，而天然材料形态受限，毛利鱼钩需通过创新克服这一局限。"
+      },
+      {
+        "label": "Paragraph C",
+        "text": "早期欧洲殖民者和探险家认为毛利鱼钩（称为 “matau”）“奇特”“效果可疑”“笨拙”“看似无法使用”，近代考古学家也认为圆钩 “设计怪异，难以想象能捕鱼”——1777 年库克第三次航行时，“决心号” 船医威廉・安德森（William Anderson）称毛利人 “主要靠捕鱼为生，用木钩配骨尖，但设计奇特，外人不知如何使用”。"
+      },
+      {
+        "label": "Paragraph D",
+        "text": "230 年后，新西兰特帕帕博物馆（Te Papa Tongarewa）研究证明，毛利鱼钩的独特设计是 “功能导向”：并非如部分考古学家认为的 “刺穿鱼嘴或作为杠杆”，而是通过 “偏离尖端方向旋转，钩住鱼嘴” 捕鱼。毛利鱼钩设计可能是世界上最高效、最精湛的，甚至优于现代金属鱼钩。"
+      },
+      {
+        "label": "Paragraph E",
+        "text": "制作大型鱼钩时，毛利人用坚硬木材做钩柄，骨或贝壳做粗钩尖；他们将树枝和树苗绑在一起，培育成理想形状后采伐，通过小心干燥并埋在地下（上方生火）硬化木材；骨尖常用人骨，用预制亚麻纤维（muka）牢固绑在钩柄末端的凹槽中。捕捉鲨鱼、石斑鱼等大型鱼类时用 “复合钩”，但传统鱼钩平均长度通常不超过三指宽（128 毫米）。"
+      },
+      {
+        "label": "Paragraph F",
+        "text": "捕捉信天翁等海鸟（获取食物和羽毛）时，毛利人用 “细钩”—— 这类鱼钩比钓鱼钩更轻，且无内弯尖，易于区分。早期探险家收集了许多细钩，说明用钩线捕海鸟是毛利人重要的食物和羽毛来源（细钩长 105 毫米）。"
+      },
+      {
+        "label": "Paragraph G",
+        "text": "18 世纪末欧洲探险家、海豹猎人、捕鲸人到来后，毛利人迅速采用新材料，仍制作鱼钩但改用金属和进口材料；旧鱼钩的木和亚麻部件易腐烂，传统鱼钩因被新鱼钩取代而遭丢弃；象牙、绿玉等贵重材料制作的工具可能被当作装饰品保存，如今程式化的毛利鱼钩是 “文化复兴” 的象征。"
+      },
+      {
+        "label": "Paragraph H",
+        "text": "即使有了新材料，毛利人仍继续复刻传统设计，但更偏爱 19 世纪欧洲人（Pakeha）引入的钩形；通过保留 “旋转钩” 设计，他们维系着文化遗产的核心部分。然而，量产欧洲金属钩最终占据主导，毛利人难以继续用钉子、马蹄铁等金属制作鱼钩，传统设计逐渐失宠。"
+      },
+      {
+        "label": "Paragraph I",
+        "text": "19 世纪末 20 世纪初，游客和收藏家对毛利手工艺品的需求增长，制造商大量生产 “伪造鱼钩”，作为真品与毛利人和欧洲人交易（有时由文物商直接委托制作）。伪钩可通过 “廉价工艺、材料不一致、简陋绑扎、怪异或过度复杂的装饰雕刻、无内弯尖或无正确绑鱼线的斜槽” 识别。"
+      },
+      {
+        "label": "Paragraph J",
+        "text": "毛利鱼钩（matau）的演变，象征着毛利人随时间适应欧洲工具、材料和技术的过程，也反映出欧洲影响 “补充而非完全取代” 传统毛利技艺 —— 天然材料被金属（近年被人造材料）取代或补充。如今，全球商业长线渔民开始使用 “圆钩”，其外观和功能与传统毛利鱼钩几乎一致，毛利技术的优势和更高捕鱼率再次得到认可。"
+      }
+    ]
+  },
+  {
+    "id": "p3-high-03",
+    "title": "What makes a musical expert_ 音乐天赋",
+    "category": "P3",
+    "frequency": "高频",
+    "difficultyScore": 4,
+    "passageHtml": "<h2>READING PASSAGE 3</h2>\n            <p>You should spend about 20 minutes on Questions 27-40, which are based on Reading Passage 3 below.</p>\n            \n            <h3>What makes a musical expert?</h3>\n            <h4>How does someone become expert in music?</h4>\n            <h4>And is it really possible to have a talent for music?</h4>\n            \n            <p>Does that class of people acknowledged to be musical experts just have more of the same basic skills we are all endowed with, or do they have a set of abilities — or neural structures — that are totally different from those of the rest of us? Are high levels of musical achievement simply the result of training and practice, or are they based on innate brain structure — what we refer to as talent? Talent can be defined as something that originates in genetic structures and that is identifiable by trained people who can recognize its existence before a person has achieved exceptional levels of performance. The emphasis on early identification means that to investigate it, we study the development of skills in children.</p>\n            <p>It is evident that some children acquire skills more rapidly than others: the age of onset for walking and talking varies widely, even between children in the same household. There may be genetic factors at work, but these are closely linked with other factors — with a presumably environmental component — such as motivation and family dynamics. Similar factors can influence musical development and can mask the contribution of genetics to musical ability.</p>\n            <p>Brain studies, so far, haven't been of much use in sorting out the issues. Gottfried Schlaug at Harvard collected brain scans of individuals with absolute pitch* (AP) and showed that a region in the brain called the planum temporale is larger in these people than in others. This suggests that the planum is involved in AP, but it's not clear if it starts out larger in people who eventually acquire AP, or if the acquisition of AP makes the planum increase in size.</p>\n            <p>Results of research into the areas of the brain involved in skilled motor movement are more conclusive. Studies of violin players have shown that the region of the brain responsible for controlling the movement of the left hand (the hand that requires greater precision in violin playing) increases in size as a result of practice. We do not know yet if the propensity for increase pre-exists in some people and not others.</p>\n            <p>The evidence against talent comes from research on how much training the experts do. Like experts in mathematics, chess, or sports, experts in music require lengthy periods of instruction and practice. In several studies, the very best music students were found to have practised more than twice as much as the others. In another study, students were secretly divided into two groups based on teachers' perceptions of their talent. Several years later, it was found that the students who achieved the highest performance ratings had practised the most, irrespective of which talent group they had been assigned to, suggesting that practice does not merely correlate with achievement, but causes it.</p>\n            <p>Anders Ericsson, at Florida State University, approaches the topic of musical expertise as a general problem in cognitive psychology. He takes as a starting point the assumption that there are certain issues involved in becoming an expert at anything; that we can learn about musical expertise by studying expert chess players, athletes, artists, mathematicians, as well as the musicians themselves. The emerging picture from such studies is that ten thousand hours of practice is required to achieve the level of mastery associated with being a world-class expert — in anything. In study after study, of composers, ice-skaters, concert pianists, chess players and master criminals, this number comes up again and again. Someone would do this amount of practice if they practised, for example, roughly 20 hours a week for ten years. Of course, this does not address why some people do not seem to get anywhere when they practise, and why some people get more out of their practice sessions than others. But no-one has yet found a case in which true world-class expertise was accomplished in less time. It seems that it takes the brain this long to assimilate all that it needs to know to achieve true mastery.</p>\n            <p>The ten-thousand-hour theory is consistent with what we know about how the brain learns. Learning requires the assimilation and consolidation of information in neural tissue. The more experiences we have with something, the stronger the memory/learning trace for that experience becomes. Although people differ in how long it takes them to consolidate information neurally, it remains true that increased practice leads to a greater number of neural traces, which create stronger memory representation.</p>\n            <p>The classic rebuttal to this theory goes something like this: What about Mozart? I hear that he composed his first symphony at the age of four! First, there is a factual error here: Mozart did not write it until he was eight. Still, this is unusual, to say the least. However, this early work received little acclaim and was not performed very often. In fact, the only reason we know about it is because the child who wrote it grew up to become Mozart. And Mozart had an expert teacher in his father, who was renowned as a teacher of musicians all over Europe. We do not know how much Mozart practised, but if he started at age two and worked thirty-two hours a week (quite possible, given that his father was a stern task-master) he would have made his ten thousand hours by the time he composed his first symphony. This does not mean that there are no genetic factors involved in Mozart's greatness, but that inborn traits may not be the only cause.</p>\n            \n            <p><em>*individuals with absolute pitch: people who can identify or sing any musical note correctly without help</em></p>\n            <div class=\"empty-space\"></div>\n        </section>\n        \n        <div id=\"divider\"></div>",
+    "questionGroups": [
+      {
+        "groupId": "group-1",
+        "kind": "single_choice",
+        "questionIds": [
+          "q1",
+          "q2",
+          "q3",
+          "q4"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q1-2-3-4-anchor\">\n                <h4>Questions 27–30</h4>\n                <p>Choose the correct letter, A, B, C or D.</p>\n                \n                <div class=\"question-item\">\n                    <p><strong>27</strong> In the first paragraph, the writer suggests that a talented musician is someone</p>\n                    <div class=\"radio-options\">\n                        <label><input name=\"q1\" type=\"radio\" value=\"A\"> A who is aware of being set apart from other people.</label>\n                        <label><input name=\"q1\" type=\"radio\" value=\"B\"> B whose brain structure is unlike that of other people.</label>\n                        <label><input name=\"q1\" type=\"radio\" value=\"C\"> C who can perform extremely well in early childhood.</label>\n                        <label><input name=\"q1\" type=\"radio\" value=\"D\"> D whose essential skills are more varied than those of ordinary people.</label>\n                    </div>\n                </div>\n                <div class=\"question-item\">\n                    <p><strong>28</strong> According to the writer, what is unclear about the findings of Gottfried Schlaug?</p>\n                    <div class=\"radio-options\">\n                        <label><input name=\"q2\" type=\"radio\" value=\"A\"> A which part of the brain is linked to a particular musical skill.</label>\n                        <label><input name=\"q2\" type=\"radio\" value=\"B\"> B which type of musical skill leads to the greatest change in the brain.</label>\n                        <label><input name=\"q2\" type=\"radio\" value=\"C\"> C whether a feature of the brain is a cause or an effect of a musical skill.</label>\n                        <label><input name=\"q2\" type=\"radio\" value=\"D\"> D whether the acquisition of a musical skill is easier for some people than others.</label>\n                    </div>\n                </div>\n                <div class=\"question-item\">\n                    <p><strong>29</strong> According to the writer, what has been established by studies of violin players?</p>\n                    <div class=\"radio-options\">\n                        <label><input name=\"q3\" type=\"radio\" value=\"A\"> A Changes may occur in the brain following violin practice.</label>\n                        <label><input name=\"q3\" type=\"radio\" value=\"B\"> B Left-handed violinists have a different brain structure from other people.</label>\n                        <label><input name=\"q3\" type=\"radio\" value=\"C\"> C A violinist's hand size is not due to practice but to genetic factors.</label>\n                        <label><input name=\"q3\" type=\"radio\" value=\"D\"> D Violinists are born with brains that have a particular structure.</label>\n                    </div>\n                </div>\n                <div class=\"question-item\">\n                    <p><strong>30</strong> According to the writer, findings on the amount of practice done by expert musicians suggest that</p>\n                    <div class=\"radio-options\">\n                        <label><input name=\"q4\" type=\"radio\" value=\"A\"> A talent may have little to do with expertise.</label>\n                        <label><input name=\"q4\" type=\"radio\" value=\"B\"> B practice may actually prevent the development of talent.</label>\n                        <label><input name=\"q4\" type=\"radio\" value=\"C\"> C talent may not be recognised by teachers.</label>\n                        <label><input name=\"q4\" type=\"radio\" value=\"D\"> D expertise may be related to quality of instruction.</label>\n                    </div>\n                </div>\n            </div>",
+        "leadHtml": "<h3>Questions</h3>"
+      },
+      {
+        "groupId": "group-2",
+        "kind": "yes_no_not_given",
+        "questionIds": [
+          "q5",
+          "q6",
+          "q7",
+          "q8",
+          "q9",
+          "q10"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q5-6-7-8-9-10-anchor\">\n                <h4>Questions 31–36</h4>\n                <p>Do the following statements agree with the claims of the writer in Reading Passage 3?</p>\n                <p>In boxes 31-36 on your answer sheet, write:</p>\n                <ul>\n                    <li><strong>YES</strong> if the statement agrees with the claims of the writer</li>\n                    <li><strong>NO</strong> if the statement contradicts the claims of the writer</li>\n                    <li><strong>NOT GIVEN</strong> if it is impossible to say what the writer thinks about this</li>\n                </ul>\n                <div class=\"question-item\">\n                    <p><strong>31</strong> Anders Ericsson's work with cognitive psychology has influenced other researchers.</p>\n                    <div class=\"radio-options\">\n                        <label><input name=\"q5\" type=\"radio\" value=\"YES\"> YES</label>\n                        <label><input name=\"q5\" type=\"radio\" value=\"NO\"> NO</label>\n                        <label><input name=\"q5\" type=\"radio\" value=\"NOT GIVEN\"> NOT GIVEN</label>\n                    </div>\n                </div>\n                <div class=\"question-item\">\n                    <p><strong>32</strong> Different areas of expertise seem to have one specific thing in common.</p>\n                    <div class=\"radio-options\">\n                        <label><input name=\"q6\" type=\"radio\" value=\"YES\"> YES</label>\n                        <label><input name=\"q6\" type=\"radio\" value=\"NO\"> NO</label>\n                        <label><input name=\"q6\" type=\"radio\" value=\"NOT GIVEN\"> NOT GIVEN</label>\n                    </div>\n                </div>\n                <div class=\"question-item\">\n                    <p><strong>33</strong> In order to be useful, practice must be carried out regularly every day.</p>\n                    <div class=\"radio-options\">\n                        <label><input name=\"q7\" type=\"radio\" value=\"YES\"> YES</label>\n                        <label><input name=\"q7\" type=\"radio\" value=\"NO\"> NO</label>\n                        <label><input name=\"q7\" type=\"radio\" value=\"NOT GIVEN\"> NOT GIVEN</label>\n                    </div>\n                </div>\n                <div class=\"question-item\">\n                    <p><strong>34</strong> Anyone who practises for long enough can reach the level of a world-class expert.</p>\n                    <div class=\"radio-options\">\n                        <label><input name=\"q8\" type=\"radio\" value=\"YES\"> YES</label>\n                        <label><input name=\"q8\" type=\"radio\" value=\"NO\"> NO</label>\n                        <label><input name=\"q8\" type=\"radio\" value=\"NOT GIVEN\"> NOT GIVEN</label>\n                    </div>\n                </div>\n                <div class=\"question-item\">\n                    <p><strong>35</strong> Occasionally, someone can become an expert at a global level with fewer than 10,000 hours' practice.</p>\n                    <div class=\"radio-options\">\n                        <label><input name=\"q9\" type=\"radio\" value=\"YES\"> YES</label>\n                        <label><input name=\"q9\" type=\"radio\" value=\"NO\"> NO</label>\n                        <label><input name=\"q9\" type=\"radio\" value=\"NOT GIVEN\"> NOT GIVEN</label>\n                    </div>\n                </div>\n                <div class=\"question-item\">\n                    <p><strong>36</strong> Existing knowledge of learning and cognitive skills supports the importance of practice.</p>\n                    <div class=\"radio-options\">\n                        <label><input name=\"q10\" type=\"radio\" value=\"YES\"> YES</label>\n                        <label><input name=\"q10\" type=\"radio\" value=\"NO\"> NO</label>\n                        <label><input name=\"q10\" type=\"radio\" value=\"NOT GIVEN\"> NOT GIVEN</label>\n                    </div>\n                </div>\n            </div>"
+      },
+      {
+        "groupId": "group-3",
+        "kind": "matching",
+        "questionIds": [
+          "q11",
+          "q12",
+          "q13",
+          "q14"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q11-12-13-14-anchor\">\n                <h4>Questions 37–40</h4>\n                <p>Complete the summary using the list of words, <strong>A-J</strong>, below.</p>\n                \n                <div class=\"summary-text\">\n                    <h5>Mozart</h5>\n                    <p>\n                    The case of Mozart could be quoted as evidence against the 10,000-hour practice theory. However, the writer points out that the young Mozart received a lot of <span id=\"q11-target\" class=\"drop-target-summary\" data-question=\"q11\"></span> from his father, and that the symphony he wrote at the age of <span id=\"q12-target\" class=\"drop-target-summary\" data-question=\"q12\"></span> was not <span id=\"q13-target\" class=\"drop-target-summary\" data-question=\"q13\"></span> and may be of only academic interest. The case therefore supports the view that expertise is not solely the result of <span id=\"q14-target\" class=\"drop-target-summary\" data-question=\"q14\"></span> characteristics.\n                    </p>\n                </div>\n\n                <div class=\"options-pool\" id=\"word-options-pool\">\n                    <div class=\"pool-items\">\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"A\">A popular</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"B\">B artistic</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"C\">C completed</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"D\">D eight</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"E\">E tuition</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"F\">F encouragement</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"G\">G inherited</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"H\">H four</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"I\">I practice</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"J\">J two</div>\n                    </div>\n                </div>\n            </div>",
+        "allowOptionReuse": false
+      }
+    ],
+    "answerKey": {
+      "q1": "B",
+      "q2": "C",
+      "q3": "A",
+      "q4": "A",
+      "q5": "NOT GIVEN",
+      "q6": "YES",
+      "q7": "NOT GIVEN",
+      "q8": "NO",
+      "q9": "NO",
+      "q10": "YES",
+      "q11": "E",
+      "q12": "D",
+      "q13": "A",
+      "q14": "G"
+    },
+    "questionDisplayMap": {
+      "q1": "27",
+      "q2": "28",
+      "q3": "29",
+      "q4": "30",
+      "q5": "31",
+      "q6": "32",
+      "q7": "33",
+      "q8": "34",
+      "q9": "35",
+      "q10": "36",
+      "q11": "37",
+      "q12": "38",
+      "q13": "39",
+      "q14": "40"
+    },
+    "questionOrder": [
+      "q1",
+      "q2",
+      "q3",
+      "q4",
+      "q5",
+      "q6",
+      "q7",
+      "q8",
+      "q9",
+      "q10",
+      "q11",
+      "q12",
+      "q13",
+      "q14"
+    ],
+    "explanations": [
+      {
+        "sectionTitle": "1. 单选题（Questions 27–30：Choose A–D）",
+        "mode": "per_question",
+        "items": [
+          {
+            "questionNumber": 27,
+            "text": "（1）题目 27：In the first paragraph, the writer suggests that a talented musician is someone（作者在第一段中暗示，有天赋的音乐家是？）\n答案：B（whose brain structure is unlike that of other people. 大脑结构与常人不同的人）\n解析：定位 Paragraph 1 中 “or are they based on innate brain structure - what we refer to as talent? Talent can be defined as something that originates in genetic structures”，“天赋即先天大脑结构 / 基因结构差异”，因此选 B。A（意识到自己与他人不同的人）、C（童年早期表现极佳的人）、D（基本技能比常人更多样的人）均与原文矛盾。",
+            "questionId": "q1"
+          },
+          {
+            "questionNumber": 28,
+            "text": "（2）题目 28：According to the writer, what is unclear about the findings of Gottfried Schlaug?（作者认为戈特弗里德・施劳格的发现中，不明确的是什么？）\n答案：C（whether a feature of the brain is a cause or an effect of a musical skill. 大脑特征是音乐技能的原因还是结果）\n解析：定位 Paragraph 3 中 “it’s not clear if it starts out larger in people who eventually acquire AP, or if the acquisition of AP makes the planum increase in size”，“无法确定颞平面大是绝对音高的原因还是结果”，因此选 C。A（大脑哪部分与特定音乐技能相关）、B（哪种音乐技能导致大脑最大变化）、D（部分人学习音乐技能是否更易）均与原文矛盾。",
+            "questionId": "q2"
+          },
+          {
+            "questionNumber": 29,
+            "text": "（3）题目 29：According to the writer, what has been established by studies of violin players?（作者认为，对小提琴手的研究确定了什么？）\n答案：A（Changes may occur in the brain following violin practice. 练习小提琴后大脑可能发生变化）\n解析：定位 Paragraph 4 中 “Studies of violin players have shown that the region of the brain responsible for controlling the movement of the left hand... increases in size as a result of practice”，“练习导致控制左手的脑区变大”，即 “大脑发生变化”，因此选 A。B（左撇子小提琴手大脑结构与常人不同）、C（小提琴手手型由基因决定）、D（小提琴手天生有特定大脑结构）均与原文矛盾。",
+            "questionId": "q3"
+          },
+          {
+            "questionNumber": 30,
+            "text": "（4）题目 30：According to the writer, findings on the amount of practice done by expert musicians suggest that（作者认为，关于音乐专家练习量的发现表明？）\n答案：A（talent may have little to do with expertise. 天赋可能与专长关系不大）\n解析：定位 Paragraph 5 中 “the students who achieved the highest performance ratings had practised the most, irrespective of which talent group they had been assigned to, suggesting that practice does not merely correlate with achievement, but causes it”，“表现最佳者练习量最大，与天赋分组无关”，即 “天赋与专长关系不大”，因此选 A。B（练习可能阻碍天赋发展）、C（教师无法识别天赋）、D（专长与教学质量相关）均与原文矛盾。",
+            "questionId": "q4"
+          }
+        ],
+        "questionRange": {
+          "start": 27,
+          "end": 30
+        },
+        "text": "答案：B（whose brain structure is unlike that of other people. 大脑结构与常人不同的人）\n解析：定位 Paragraph 1 中 “or are they based on innate brain structure - what we refer to as talent? Talent can be defined as something that originates in genetic structures”，“天赋即先天大脑结构 / 基因结构差异”，因此选 B。A（意识到自己与他人不同的人）、C（童年早期表现极佳的人）、D（基本技能比常人更多样的人）均与原文矛盾。\n答案：C（whether a feature of the brain is a cause or an effect of a musical skill. 大脑特征是音乐技能的原因还是结果）\n解析：定位 Paragraph 3 中 “it’s not clear if it starts out larger in people who eventually acquire AP, or if the acquisition of AP makes the planum increase in size”，“无法确定颞平面大是绝对音高的原因还是结果”，因此选 C。A（大脑哪部分与特定音乐技能相关）、B（哪种音乐技能导致大脑最大变化）、D（部分人学习音乐技能是否更易）均与原文矛盾。\n答案：A（Changes may occur in the brain following violin practice. 练习小提琴后大脑可能发生变化）\n解析：定位 Paragraph 4 中 “Studies of violin players have shown that the region of the brain responsible for controlling the movement of the left hand... increases in size as a result of practice”，“练习导致控制左手的脑区变大”，即 “大脑发生变化”，因此选 A。B（左撇子小提琴手大脑结构与常人不同）、C（小提琴手手型由基因决定）、D（小提琴手天生有特定大脑结构）均与原文矛盾。\n答案：A（talent may have little to do with expertise. 天赋可能与专长关系不大）\n解析：定位 Paragraph 5 中 “the students who achieved the highest performance ratings had practised the most, irrespective of which talent group they had been assigned to, suggesting that practice does not merely correlate with achievement, but causes it”，“表现最佳者练习量最大，与天赋分组无关”，即 “天赋与专长关系不大”，因此选 A。B（练习可能阻碍天赋发展）、C（教师无法识别天赋）、D（专长与教学质量相关）均与原文矛盾。"
+      },
+      {
+        "sectionTitle": "2. 判断题（Questions 31–36：YES/NO/NOT GIVEN）",
+        "mode": "per_question",
+        "items": [
+          {
+            "questionNumber": 31,
+            "text": "（1）题目 31：Anders Ericsson’s work with cognitive psychology has influenced other researchers.（安德斯・艾利克森的认知心理学研究影响了其他研究者）\n答案：NOT GIVEN（未提及）\n解析：全文仅描述 “艾利克森的研究内容与结论”，未提及 “影响其他研究者”，无相关信息，因此判定为 NOT GIVEN。",
+            "questionId": "q5"
+          },
+          {
+            "questionNumber": 32,
+            "text": "（2）题目 32：Different areas of expertise seem to have one specific thing in common.（不同领域的专长似乎有一个共同点）\n答案：YES（正确）\n解析：定位 Paragraph 6 中 “the emerging picture from such studies is that ten thousand hours of practice is required to achieve the level of mastery associated with being a world-class expert - in anything”，“任何领域成为世界级专家均需 1 万小时练习”，即 “有一个共同点”，与题干描述一致，因此判定为 YES。",
+            "questionId": "q6"
+          },
+          {
+            "questionNumber": 33,
+            "text": "（3）题目 33：In order to be useful, practice must be carried out regularly every day.（为保证效果，练习必须每天规律进行）\n答案：NOT GIVEN（未提及）\n解析：Paragraph 6 仅提到 “roughly 20 hours a week for ten years”，“每周 20 小时”，未提及 “每天规律练习”，无相关信息，因此判定为 NOT GIVEN。",
+            "questionId": "q7"
+          },
+          {
+            "questionNumber": 34,
+            "text": "（4）题目 34：Anyone who practises for long enough can reach the level of a world-class expert.（任何人只要练习足够久，都能达到世界级专家水平）\n答案：NO（错误）\n解析：定位 Paragraph 6 中 “this does not address why some people do not seem to get anywhere when they practise, and why some people get more out of their practice sessions than others”，“有人练习却无进展”，即 “并非练习久就能成为专家”，与题干描述矛盾，因此判定为 NO。",
+            "questionId": "q8"
+          },
+          {
+            "questionNumber": 35,
+            "text": "（5）题目 35：Occasionally, someone can become an expert at a global level with fewer than 10,000 hours’ practice.（偶尔有人可在少于 1 万小时练习内成为世界级专家）\n答案：NO（错误）\n解析：定位 Paragraph 6 中 “no-one has yet found a case in which true world-class expertise was accomplished in less time”，“未发现少于 1 万小时成为世界级专家的案例”，与题干描述矛盾，因此判定为 NO。",
+            "questionId": "q9"
+          },
+          {
+            "questionNumber": 36,
+            "text": "（6）题目 36：Existing knowledge of learning and cognitive skills supports the importance of practice.（现有关于学习和认知技能的知识支持练习的重要性）\n答案：YES（正确）\n解析：定位 Paragraph 7 中 “The ten-thousand-hour theory is consistent with what we know about how the brain learns. Learning requires the assimilation and consolidation of information in neural tissue... increased practice leads to a greater number of neural traces”，“1 万小时理论与大脑学习机制一致，练习越多神经痕迹越强”，即 “现有知识支持练习重要性”，与题干描述一致，因此判定为 YES。",
+            "questionId": "q10"
+          }
+        ],
+        "questionRange": {
+          "start": 31,
+          "end": 36
+        },
+        "text": "答案：NOT GIVEN（未提及）\n解析：全文仅描述 “艾利克森的研究内容与结论”，未提及 “影响其他研究者”，无相关信息，因此判定为 NOT GIVEN。\n答案：YES（正确）\n解析：定位 Paragraph 6 中 “the emerging picture from such studies is that ten thousand hours of practice is required to achieve the level of mastery associated with being a world-class expert - in anything”，“任何领域成为世界级专家均需 1 万小时练习”，即 “有一个共同点”，与题干描述一致，因此判定为 YES。\n答案：NOT GIVEN（未提及）\n解析：Paragraph 6 仅提到 “roughly 20 hours a week for ten years”，“每周 20 小时”，未提及 “每天规律练习”，无相关信息，因此判定为 NOT GIVEN。\n答案：NO（错误）\n解析：定位 Paragraph 6 中 “this does not address why some people do not seem to get anywhere when they practise, and why some people get more out of their practice sessions than others”，“有人练习却无进展”，即 “并非练习久就能成为专家”，与题干描述矛盾，因此判定为 NO。\n答案：NO（错误）\n解析：定位 Paragraph 6 中 “no-one has yet found a case in which true world-class expertise was accomplished in less time”，“未发现少于 1 万小时成为世界级专家的案例”，与题干描述矛盾，因此判定为 NO。\n答案：YES（正确）\n解析：定位 Paragraph 7 中 “The ten-thousand-hour theory is consistent with what we know about how the brain learns. Learning requires the assimilation and consolidation of information in neural tissue... increased practice leads to a greater number of neural traces”，“1 万小时理论与大脑学习机制一致，练习越多神经痕迹越强”，即 “现有知识支持练习重要性”，与题干描述一致，因此判定为 YES。"
+      },
+      {
+        "sectionTitle": "3. 摘要填空（Questions 37–40：Choose A��J）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 37,
+            "text": "（1）题目 37：However, the writer points out that the young Mozart received a lot of \\___\\____ from his father.（但作者指出，年轻的莫扎特从父亲那里获得了大量_\\___\\___。）\n答案：E（tuition，指导）\n解析：定位 Paragraph 8 中 “Mozart had an expert teacher in his father, who was renowned as a teacher of musicians all over Europe”，“父亲是专家教师，提供指导”，因此选 E。",
+            "questionId": "q11"
+          },
+          {
+            "questionNumber": 38,
+            "text": "（2）题目 38：and that the symphony he wrote at the age of \\___\\___\\_.（且他在_\\___\\___岁时创作的交响曲。）\n答案：D（eight，八）\n解析：定位 Paragraph 8 中 “Mozart did not write it until he was eight”，“八岁创作首部交响曲”，因此选 D。",
+            "questionId": "q12"
+          },
+          {
+            "questionNumber": 39,
+            "text": "（3）题目 39：was not \\___\\____ and may be of only academic interest.（并不_\\___\\___，可能仅具学术价值。）\n答案：A（popular，受欢迎）\n解析：定位 Paragraph 8 中 “this early work received little acclaim and was not performed very often”，“早期作品反响平平、演出少”，即 “不受欢迎”，因此选 A。",
+            "questionId": "q13"
+          },
+          {
+            "questionNumber": 40,
+            "text": "（4）题目 40：The case therefore supports the view that expertise is not solely the result of \\___\\____ characteristics.（因此该案例支持 “专长并非仅由_\\___\\___特质导致” 的观点。）\n答案：G（inherited，遗传的）\n解析：定位 Paragraph 8 中 “this does not mean that there are no genetic factors involved in Mozart’s greatness, but that inborn traits may not be the only cause”，“先天 / 遗传特质并非唯一原因”，因此选 G。",
+            "questionId": "q14"
+          }
+        ],
+        "questionRange": {
+          "start": 37,
+          "end": 40
+        },
+        "text": "答案：E（tuition，指导）\n解析：定位 Paragraph 8 中 “Mozart had an expert teacher in his father, who was renowned as a teacher of musicians all over Europe”，“父亲是专家教师，提供指导”，因此选 E。\n答案：D（eight，八）\n解析：定位 Paragraph 8 中 “Mozart did not write it until he was eight”，“八岁创作首部交响曲”，因此选 D。\n答案：A（popular，受欢迎）\n解析：定位 Paragraph 8 中 “this early work received little acclaim and was not performed very often”，“早期作品反响平平、演出少”，即 “不受欢迎”，因此选 A。\n答案：G（inherited，遗传的）\n解析：定位 Paragraph 8 中 “this does not mean that there are no genetic factors involved in Mozart’s greatness, but that inborn traits may not be the only cause”，“先天 / 遗传特质并非唯一原因”，因此选 G。"
+      }
+    ],
+    "passageNotes": [
+      {
+        "label": "Paragraph 1",
+        "text": "音乐专家是如何炼成的？真的存在音乐天赋吗？公认的音乐专家仅比常人拥有更多 “基本技能”，还是具备 “与常人完全不同的能力或神经结构”？高水平音乐成就仅是训练与练习的结果，还是基于 “天赋”（先天大脑结构）？天赋可定义为 “源于基因结构，且专业人士能在个体取得卓越成就前识别的特质”，对天赋的研究需聚焦儿童技能发展。"
+      },
+      {
+        "label": "Paragraph 2",
+        "text": "显然，部分儿童掌握技能的速度更快（如走路、说话的年龄差异大，即使同家庭儿童也如此）。这可能涉及基因因素，但基因与 “动机、家庭动态” 等环境因素紧密关联 —— 类似因素也会影响音乐发展，掩盖基因对音乐能力的作用。"
+      },
+      {
+        "label": "Paragraph 3",
+        "text": "目前大脑研究对解决这些问题帮助不大。哈佛的戈特弗里德・施劳格（Gottfried Schlaug）扫描 “绝对音高（AP）” 者的大脑，发现其 “颞平面（planum temporale）” 区域比常人更大。这表明颞平面与绝对音高相关，但无法确定 “是该区域先天更大导致绝对音高，还是学习绝对音高使该区域变大”。"
+      },
+      {
+        "label": "Paragraph 4",
+        "text": "关于 “熟练运动相关脑区” 的研究结论更明确。对小提琴手的研究显示，“控制左手（拉小提琴需更高精度）运动的脑区” 会因练习变大，但无法确定 “这种变大的倾向是否先天存在于部分人身上”。"
+      },
+      {
+        "label": "Paragraph 5",
+        "text": "反对 “天赋论” 的证据来自 “专家练习量” 的研究 —— 与数学、国际象棋、体育专家一样，音乐专家需长期指导与练习。多项研究发现，最优秀的音乐学生练习量是其他人的两倍多；另一项研究中，根据教师对 “天赋” 的判断将学生秘密分组，数年后发现 “表现最佳的学生练习量最大，与天赋分组无关”，这表明 “练习不仅与成就相关，还会导致成就”。"
+      },
+      {
+        "label": "Paragraph 6",
+        "text": "佛罗里达州立大学的安德斯・艾利克森（Anders Ericsson）从认知心理学角度研究音乐专长，认为 “任何领域的专长都涉及共性问题”，可通过研究国际象棋、体育、艺术、数学专家来了解音乐专长。研究发现，“成为世界级专家（任何领域）需 1 万小时练习”—— 作曲家、滑冰运动员、钢琴家、棋手等研究中均反复出现这一数字（如每周练习 20 小时，持续 10 年）。当然，这无法解释 “为何有人练习却无进展，有人从练习中获益更多”，但目前尚未发现 “世界级专长可在少于 1 万小时内达成” 的案例，大脑似乎需要这么长时间吸收 “精通所需的所有知识”。"
+      },
+      {
+        "label": "Paragraph 7",
+        "text": "“1 万小时理论” 与大脑学习机制一致 —— 学习需神经组织吸收和巩固信息，经历越多，记忆 / 学习痕迹越强。尽管人 “神经巩固信息的速度” 存在差异，但 “练习越多，神经痕迹越多，记忆表征越强” 仍是事实。"
+      },
+      {
+        "label": "Paragraph 8",
+        "text": "对该理论的经典反驳是 “莫扎特案例”—— 传言他四岁创作首部交响曲，但事实是 “八岁才创作”，且这部早期作品反响平平、演出稀少，如今为人所知仅因作者是莫扎特。此外，莫扎特的父亲是欧洲著名音乐教师，对他严格指导。虽无法确定莫扎特的练习量，但 “若他两岁开始，每周练习 32 小时，创作首部交响曲时已达 1 万小时”。这并非否定 “莫扎特的伟大涉及基因因素”，而是说明 “先天特质可能不是唯一原因”。"
+      }
+    ]
+  },
+  {
+    "id": "p1-high-05",
+    "title": "Katherine Mansfield 新西兰作家",
+    "category": "P1",
+    "frequency": "高频",
+    "difficultyScore": 2,
+    "passageHtml": "<h2>READING PASSAGE 1</h2>\n            <p>You should spend about 20 minutes on Questions 1–13, which are based on Reading Passage 1 below.</p>\n            \n            <h3>Katherine Mansfield</h3>\n            <h4><em>Katherine Mansfield was a modernist writer of short fiction who was born and brought up in New Zealand.</em></h4>\n            \n            <p>Katherine Mansfield Beauchamp Murry was born in 1888, into a prominent family in Wellington, New Zealand. She became one of New Zealand’s best-known writers, using the pen name of Katherine Mansfield. The daughter of a banker, and born into a middle-class family, she was also a first cousin of Countess Elizabeth von Arnim, a distinguished novelist in her time. Mansfield had two older sisters and a younger brother. Her father, Harold Beauchamp, went on to become the chairman of the Bank of New Zealand. In 1893 the Mansfield family moved to Karori, a suburb of Wellington, where Mansfield would spend the happiest years of her childhood; she later used her memories of this time as an inspiration for her Prelude story.</p>\n            \n            <p>Her first published stories appeared in the High School Reporter and the Wellington Girls’ High School magazine in 1898 and 1899. In 1902 she developed strong feelings for a musician who played the cello, Arnold Trowell, although her feelings were not, for the most part, returned. Mansfield herself was an accomplished cellist, having received lessons from Trowell’s father. Mansfield wrote in her journals of feeling isolated to some extent in New Zealand, and, in general terms, of her interest in the Maori people (New Zealand’s native people), who were often portrayed in a sympathetic light in her later stories, such as How Pearl Button Was Kidnapped.</p>\n\n            <p>She moved to London in 1903, where she attended Queen’s College, along with her two sisters. Mansfield recommenced playing the cello, an occupation that she believed, during her time at Queen’s, she would take up professionally. She also began contributing to the college newspaper, with such a dedication to it that she eventually became its editor. She was particularly interested in the works of the French writers of this period and in the 19th-century British writer, Oscar Wilde, and she was appreciated amongst fellow students at Queen’s for her lively and charismatic approach to life and work. She met fellow writer Ida Baker, a South African, at the college, and the pair became lifelong friends. Mansfield did not become involved in much political activity when she lived in London. For example, although at that time in London many women were demonstrating for votes for women, Mansfield did not actively support the suffragette movement in the UK. Women in New Zealand had gained the right to vote in 1893.</p>\n\n            <p>Mansfield first began journeying into other parts of Europe in the period 1903–1906, mainly to Belgium and Germany. After finishing her schooling in England, she returned to her New Zealand home in 1906, only then beginning to write short stories in a serious way. She had several works published in Australia in a magazine called Native Companion, which was her first paid writing work, and by this time she had her mind set on becoming a professional writer. It was also the first occasion on which she used the pseudonym ‘K. Mansfield’.</p>\n\n            <p>Mansfield rapidly grew discontented with the provincial New Zealand lifestyle, and with her family. Two years later she headed again for London. Her father sent her an annual subsidy of £100 for the rest of her life. In later years, she would express both admiration and disdain for New Zealand in her journals.</p>\n\n            <p>In 1911, Mansfield met John Middleton Murry, the Oxford scholar and editor of the literary magazine Rhythm. They were later to marry, in 1918. Mansfield became a co-editor of Rhythm, which was subsequently called The Blue Review, in which more of her works were published. She and Murry lived in various houses in England and briefly in Paris. The Blue Review failed to gain enough readers and was no longer published. Their attempt to set up as writers in Paris was cut short by Murry’s bankruptcy, which resulted from the failure of this and other journals. Life back in England meant frequently changed addresses and very limited funds.</p>\n\n            <p>Between 1915 and 1918, Mansfield moved between England and Bandol, France. She and Murry developed close contact with other well-known writers of the time such as D.H. Lawrence, Bertrand Russell and Aldous Huxley. By October 1918 Mansfield had become seriously ill; she had been diagnosed with tuberculosis, and was advised to enter a sanatorium. She could no longer spend winters in London. In the autumn of 1918 she was so ill that she decided to go to Ospedaletti in Italy. It was the publication of Bliss and Other Stories in 1920 that was to solidify Mansfield’s reputation as a writer.</p>\n\n            <p>Mansfield also spent time in Menton, France, as the tenant of her father’s cousin at ‘The Villa Isola Bella’. There she wrote eight stories including Miss Brill and The Daughters of the Late Colonel, the latter of which she pronounced to be ‘…the only story that satisfies me to any extent’.</p>\n\n            <p>Mansfield produced a great deal of work in the final years of her life, and much of her prose and poetry remained unpublished at her death in 1923. After her death her husband, Murry, took on the task of editing and publishing her works. His efforts resulted in two additional volumes of short stories, The Dove’s Nest and Something Childish, published in 1923 and 1924 respectively, the publication of her Poems, as well as a collection of critical writings (Novels and Novelists) and a number of editions of Mansfield’s previously unpublished letters and journals.</p>\n            \n            <div class=\"empty-space\"></div>\n        </section>\n        \n        <div id=\"divider\"></div>",
+    "questionGroups": [
+      {
+        "groupId": "group-1",
+        "kind": "true_false_not_given",
+        "questionIds": [
+          "q1",
+          "q2",
+          "q3",
+          "q4",
+          "q5",
+          "q6"
+        ],
+        "bodyHtml": "<div class=\"group\">\n                <h4>Questions 1–6</h4>\n                <p>Do the following statements agree with the information given in Reading Passage 1?</p>\n                <p>In boxes 1–6 on your answer sheet, write:</p>\n                <ul>\n                    <li><strong>TRUE</strong> if the statement agrees with the information</li>\n                    <li><strong>FALSE</strong> if the statement contradicts the information</li>\n                    <li><strong>NOT GIVEN</strong> if there is no information on this</li>\n                </ul>\n                \n                <div class=\"question-item\" id=\"q1-anchor\">\n                    <p>1. The name Katherine Mansfield, that appears on the writer’s books, was exactly the same as her original name.</p>\n                    <div class=\"radio-options\">\n                        <label><input name=\"q1\" type=\"radio\" value=\"TRUE\"> TRUE</label>\n                        <label><input name=\"q1\" type=\"radio\" value=\"FALSE\"> FALSE</label>\n                        <label><input name=\"q1\" type=\"radio\" value=\"NOT GIVEN\"> NOT GIVEN</label>\n                    </div>\n                </div>\n                \n                <div class=\"question-item\" id=\"q2-anchor\">\n                    <p>2. Mansfield won a prize for a story she wrote for the High School Reporter.</p>\n                    <div class=\"radio-options\">\n                        <label><input name=\"q2\" type=\"radio\" value=\"TRUE\"> TRUE</label>\n                        <label><input name=\"q2\" type=\"radio\" value=\"FALSE\"> FALSE</label>\n                        <label><input name=\"q2\" type=\"radio\" value=\"NOT GIVEN\"> NOT GIVEN</label>\n                    </div>\n                </div>\n                \n                <div class=\"question-item\" id=\"q3-anchor\">\n                    <p>3. How Pearl Button Was Kidnapped portrayed Maori people in a favourable way.</p>\n                    <div class=\"radio-options\">\n                        <label><input name=\"q3\" type=\"radio\" value=\"TRUE\"> TRUE</label>\n                        <label><input name=\"q3\" type=\"radio\" value=\"FALSE\"> FALSE</label>\n                        <label><input name=\"q3\" type=\"radio\" value=\"NOT GIVEN\"> NOT GIVEN</label>\n                    </div>\n                </div>\n                \n                <div class=\"question-item\" id=\"q4-anchor\">\n                    <p>4. When Mansfield was at Queen’s College, she planned to be a professional writer.</p>\n                    <div class=\"radio-options\">\n                        <label><input name=\"q4\" type=\"radio\" value=\"TRUE\"> TRUE</label>\n                        <label><input name=\"q4\" type=\"radio\" value=\"FALSE\"> FALSE</label>\n                        <label><input name=\"q4\" type=\"radio\" value=\"NOT GIVEN\"> NOT GIVEN</label>\n                    </div>\n                </div>\n                \n                <div class=\"question-item\" id=\"q5-anchor\">\n                    <p>5. Mansfield was unpopular with the other students at Queen’s College.</p>\n                    <div class=\"radio-options\">\n                        <label><input name=\"q5\" type=\"radio\" value=\"TRUE\"> TRUE</label>\n                        <label><input name=\"q5\" type=\"radio\" value=\"FALSE\"> FALSE</label>\n                        <label><input name=\"q5\" type=\"radio\" value=\"NOT GIVEN\"> NOT GIVEN</label>\n                    </div>\n                </div>\n                \n                <div class=\"question-item\" id=\"q6-anchor\">\n                    <p>6. In London, Mansfield showed little interest in politics.</p>\n                    <div class=\"radio-options\">\n                        <label><input name=\"q6\" type=\"radio\" value=\"TRUE\"> TRUE</label>\n                        <label><input name=\"q6\" type=\"radio\" value=\"FALSE\"> FALSE</label>\n                        <label><input name=\"q6\" type=\"radio\" value=\"NOT GIVEN\"> NOT GIVEN</label>\n                    </div>\n                </div>\n            </div>",
+        "leadHtml": "<h3>Questions</h3>"
+      },
+      {
+        "groupId": "group-2",
+        "kind": "short_answer",
+        "questionIds": [
+          "q7",
+          "q8",
+          "q9",
+          "q10",
+          "q11",
+          "q12",
+          "q13"
+        ],
+        "bodyHtml": "<div class=\"group\">\n                <h4>Questions 7–13</h4>\n                <p>Complete the notes below</p>\n                <p>Choose <strong>ONE WORD AND/OR A NUMBER</strong> from the passage for each answer</p>\n                <p>Write your answers in boxes 7–13 on your answer sheet</p>\n                \n                <div class=\"notes-section\">\n                    <h4 style=\"text-align: center; margin-bottom: 20px;\">Katherine Mansfield’s adult years</h4>\n                    <p class=\"bullet-point\">• <input name=\"q7\" class=\"blank\" data-answer=\"1906\" style=\"width: 80px; text-align: center;\"> <br> – moved from England back to New Zealand</p>\n                    <p class=\"bullet-point\" style=\"margin-left: 20px;\">– first paid writing work was in a publication based in 8 <input name=\"q8\" class=\"blank\" data-answer=\"Australia\"></p>\n                    <p class=\"bullet-point\" style=\"margin-left: 20px;\">– her 9 <input name=\"q9\" class=\"blank\" data-answer=\"family\"> and the New Zealand way of life made her feel dissatisfied</p>\n                    \n                    <p class=\"bullet-point\">• 1908<br> – returned to London</p>\n                    \n                    <p class=\"bullet-point\">• 1911–1919<br> – met John Middleton Murry in 1911</p>\n                    <p class=\"bullet-point\" style=\"margin-left: 20px;\">– 10 <input name=\"q10\" class=\"blank\" data-answer=\"bankruptcy\"> prevented Mansfield and Murry from staying longer in Paris</p>\n                    <p class=\"bullet-point\" style=\"margin-left: 20px;\">– spent time with distinguished 11 <input name=\"q11\" class=\"blank\" data-answer=\"writers\"></p>\n                    <p class=\"bullet-point\" style=\"margin-left: 20px;\">– from 1918, tuberculosis restricted the time she spent in London</p>\n\n                    <p class=\"bullet-point\">• 1920<br> – her 12 <input name=\"q12\" class=\"blank\" data-answer=\"reputation\"> was consolidated when <em>Bliss and Other Stories</em> was published</p>\n                    <p class=\"bullet-point\" style=\"margin-left: 20px;\">– wrote several stories at ‘The Villa Isola Bella’</p>\n\n                    <p class=\"bullet-point\">• 1923–1924<br> – Mansfield’s 13 <input name=\"q13\" class=\"blank\" data-answer=\"husband\"> published more of her works after her death</p>\n                </div>\n            </div>"
+      }
+    ],
+    "answerKey": {
+      "q1": "FALSE",
+      "q2": "NOT GIVEN",
+      "q3": "TRUE",
+      "q4": "FALSE",
+      "q5": "FALSE",
+      "q6": "TRUE",
+      "q7": "1906",
+      "q8": "Australia",
+      "q9": "family",
+      "q10": "bankruptcy",
+      "q11": "writers",
+      "q12": "reputation",
+      "q13": "husband"
+    },
+    "questionDisplayMap": {
+      "q1": "1",
+      "q2": "2",
+      "q3": "3",
+      "q4": "4",
+      "q5": "5",
+      "q6": "6",
+      "q7": "7",
+      "q8": "8",
+      "q9": "9",
+      "q10": "10",
+      "q11": "11",
+      "q12": "12",
+      "q13": "13"
+    },
+    "questionOrder": [
+      "q1",
+      "q2",
+      "q3",
+      "q4",
+      "q5",
+      "q6",
+      "q7",
+      "q8",
+      "q9",
+      "q10",
+      "q11",
+      "q12",
+      "q13"
+    ],
+    "explanations": [
+      {
+        "sectionTitle": "1. 判断题（Questions 1–6）",
+        "mode": "per_question",
+        "items": [
+          {
+            "questionNumber": 1,
+            "text": "(1) 题目 1：The name Katherine Mansfield, which appears on the writer’s books, was exactly the same as her original name. （出现在作者书上的名字凯瑟琳·曼斯菲尔德，与她的原名完全相同。）\n答案：FALSE\n解析：第一段明确指出“Katherine Mansfield”是她的笔名（pen name），而她的原名是“Katherine Mansfield Beauchamp Murry”，两者并不完全相同。",
+            "questionId": "q1"
+          },
+          {
+            "questionNumber": 2,
+            "text": "(2) 题目 2：Mansfield won a prize for a story she wrote for the High School Reporter. （曼斯菲尔德因其为《高中记者》写的故事而获奖。）\n答案：NOT GIVEN\n解析：第二段只提到她的故事“appeared in”（发表在）该杂志上，并未提及是否获奖。",
+            "questionId": "q2"
+          },
+          {
+            "questionNumber": 3,
+            "text": "(3) 题目 3：How Pearl Button Was Kidnapped portrayed Maori people in a favourable way. （《珍珠巴顿是如何被绑架的》以一种有利的方式描绘了毛利人。）\n答案：TRUE\n解析：第二段提到毛利人“were often portrayed in a sympathetic light in her later stories”，即以同情的眼光描绘，这与“favourable way”（有利的方式）意思相符。",
+            "questionId": "q3"
+          },
+          {
+            "questionNumber": 4,
+            "text": "(4) 题目 4：When Mansfield was at Queen’s College, she planned to be a professional writer. （当曼斯菲尔德在女王学院时，她计划成为一名职业作家。）\n答案：FALSE\n解析：第三段说她在女王学院时，相信自己会专业从事大提琴演奏（take up professionally）；而第四段指出，她是在回到新西兰后才下定决心成为职业作家的。",
+            "questionId": "q4"
+          },
+          {
+            "questionNumber": 5,
+            "text": "(5) 题目 5：Mansfield was unpopular with the other students at Queen’s College. （曼斯菲尔德在女王学院不受其他学生欢迎。）\n答案：FALSE\n解析：第三段说她因其“lively and charismatic approach”而受到同学们的“appreciated”（欣赏），与“unpopular”（不受欢迎）相反。",
+            "questionId": "q5"
+          },
+          {
+            "questionNumber": 6,
+            "text": "(6) 题目 6：In London, Mansfield showed little interest in politics. （在伦敦，曼斯菲尔德对政治表现出很少的兴趣。）\n答案：TRUE\n解析：第三段明确提到“Mansfield did not become involved in much political activity when she lived in London”，即她在伦敦生活时没有参与太多政治活动，与题目意思一致。",
+            "questionId": "q6"
+          }
+        ],
+        "questionRange": {
+          "start": 1,
+          "end": 6
+        },
+        "text": "答案：FALSE\n解析：第一段明确指出“Katherine Mansfield”是她的笔名（pen name），而她的原名是“Katherine Mansfield Beauchamp Murry”，两者并不完全相同。\n答案：NOT GIVEN\n解析：第二段只提到她的故事“appeared in”（发表在）该杂志上，并未提及是否获奖。\n答案：TRUE\n解析：第二段提到毛利人“were often portrayed in a sympathetic light in her later stories”，即以同情的眼光描绘，这与“favourable way”（有利的方式）意思相符。\n答案：FALSE\n解析：第三段说她在女王学院时，相信自己会专业从事大提琴演奏（take up professionally）；而第四段指出，她是在回到新西兰后才下定决心成为职业作家的。\n答案：FALSE\n解析：第三段说她因其“lively and charismatic approach”而受到同学们的“appreciated”（欣赏），与“unpopular”（不受欢迎）相反。\n答案：TRUE\n解析：第三段明确提到“Mansfield did not become involved in much political activity when she lived in London”，即她在伦敦生活时没有参与太多政治活动，与题目意思一致。"
+      },
+      {
+        "sectionTitle": "2. 笔记填空（Questions 7–13）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 7,
+            "text": "(1) 题目 7：\\___\\___ - moved from England back to New Zealand （\\___\\___年 - 从英国搬回新西兰）\n答案：1906\n解析：第四段提到“she returned to her New Zealand home in 1906”。",
+            "questionId": "q7"
+          },
+          {
+            "questionNumber": 8,
+            "text": "(2) 题目 8：first paid writing work was in a publication based in \\___\\___ （第一次有报酬的写作工作是在一份总部位于_\\___\\__的出版物上）\n答案：Australia\n解析：第四段提到她“published in Australia in a magazine called Native Companion, which was her first paid writing work”。",
+            "questionId": "q8"
+          },
+          {
+            "questionNumber": 9,
+            "text": "(3) 题目 9：her \\___\\___ and the New Zealand way of life made her feel dissatisfied （她的_\\___\\__和新西兰的生活方式让她感到不满）\n答案：family\n解析：第五段说她对“the provincial New Zealand lifestyle, and with her family”感到不满。",
+            "questionId": "q9"
+          },
+          {
+            "questionNumber": 10,
+            "text": "(4) 题目 10：\\___\\___ prevented Mansfield and Murry from staying longer in Paris （\\___\\___阻止了曼斯菲尔德和穆里在巴黎待更久）\n答案：bankruptcy\n解析：第六段提到他们留在巴黎的尝试因穆里的“bankruptcy”（破产）而中断。",
+            "questionId": "q10"
+          },
+          {
+            "questionNumber": 11,
+            "text": "(5) 题目 11：spent time with distinguished \\___\\___ （与杰出的_\\___\\__共度时光）\n答案：writers\n解析：第七段列举了她和穆里接触的D. H. Lawrence等，并总结为“other well-known writers of the time”。",
+            "questionId": "q11"
+          },
+          {
+            "questionNumber": 12,
+            "text": "(6) 题目 12：her \\___\\___ was consolidated when Bliss and Other Stories was published （当《极乐及其他故事》出版时，她的_\\___\\__得以巩固）\n答案：reputation\n解析：第七段说这本书的出版“was to solidify Mansfield's reputation as a writer.”。",
+            "questionId": "q12"
+          },
+          {
+            "questionNumber": 13,
+            "text": "(7) 题目 13：Mansfield’s \\___\\___ published more of her works after her death （曼斯菲尔德的_\\___\\__在她去世后出版了她更多的作品）\n答案：husband\n解析：第九段明确指出“her husband, Murry, took on the task of editing and publishing her works.”。",
+            "questionId": "q13"
+          }
+        ],
+        "questionRange": {
+          "start": 7,
+          "end": 13
+        },
+        "text": "答案：1906\n解析：第四段提到“she returned to her New Zealand home in 1906”。\n答案：Australia\n解析：第四段提到她“published in Australia in a magazine called The Native Companion, which was her first paid writing work”。\n答案：family\n解析：第五段说她对“the provincial New Zealand lifestyle, and with her family”感到不满。\n答案：bankruptcy\n解析：第六段提到他们留在巴黎的尝试因穆里的“bankruptcy”（破产）而中断。\n答案：writers\n解析：第七段列举了她和穆里接触的D. H. Lawrence等，并总结为“other well-known writers of the time”。\n答案：reputation\n解析：第七段说这本书的出版“was to solidify Mansfield's reputation as a writer.”。\n答案：husband\n解析：第九段明确指出“her husband, Murry, took on the task of editing and publishing her works.”。"
+      }
+    ],
+    "passageNotes": [
+      {
+        "label": "第一段",
+        "text": "凯瑟琳·曼斯菲尔德·波尚·穆里于1888年出生在新西兰惠灵顿的一个显赫家庭。她以凯瑟琳·曼斯菲尔德的笔名，成为新西兰最知名的作家之一。她是一位银行家的女儿，出生于一个中产阶级家庭，同时也是当时一位杰出的小说家伊丽莎白·冯·阿尼姆伯爵夫人的表妹。曼斯菲尔德有两个姐姐和一个弟弟。她的父亲哈罗德·波尚后来成为新西兰银行的主席。1893年，曼斯菲尔德一家搬到了惠灵顿的郊区卡罗里，曼斯菲尔德在那里度过了她童年最快乐的时光；她后来将这段时间的记忆作为她《序曲》故事的灵感来源。"
+      },
+      {
+        "label": "第二段",
+        "text": "她首次发表的故事于1898年和1899年刊登在《高中记者》和《惠灵顿女子高中杂志》上。1902年，她对一位拉大提琴的音乐家阿诺德·特罗威尔产生了强烈的感情，尽管她的感情大部分没有得到回应。曼斯菲尔德本人也是一位有成就的大提琴手，曾师从特罗威尔的父亲。曼斯菲尔德在日记中写道，她在新西兰感到某种程度的孤立，并总体上表达了她对毛利人（新西兰原住民）的兴趣，这些人在她后来的故事中，如《珍珠巴顿是如何被绑架的》，常常被以同情的笔调描绘。"
+      },
+      {
+        "label": "第三段",
+        "text": "1903年，她和两个姐姐一起搬到伦敦，就读于女王学院。曼斯菲尔德重新开始拉大提琴，这是她在女王学院期间相信自己会专业从事的职业。她也开始为学院报纸撰稿，并对此投入了极大的热情，最终成为了报纸的编辑。她对这个时期的法国作家和19世纪英国作家奥斯卡·王尔德的作品特别感兴趣，并且因其活泼、有魅力的人生态度和工作方式而受到女王学院同学们的赞赏。她在学院结识了来自南非的作家艾达·贝克，两人成为了一生的朋友。曼斯菲尔德在伦敦生活时并没有参与太多政治活动。例如，当时伦敦有许多女性为女性投票权示威，但曼斯菲尔德并未积极支持英国的妇女参政运动。新西兰的妇女在1893年就获得了投票权。"
+      },
+      {
+        "label": "第四段",
+        "text": "曼斯菲尔德在1903-1906年期间首次开始游历欧洲其他地区，主要去了比利时和德国。在英国完成学业后，她于1906年回到新西兰的家中，那时才开始认真地写短篇故事。她在澳大利亚一本名为《本土伴侣》的杂志上发表了几部作品，这是她第一次获得稿酬的写作工作，此时她已下定决心要成为一名职业作家。这也是她第一次使用笔名“K. 曼斯菲尔德”。"
+      },
+      {
+        "label": "第五段",
+        "text": "曼斯菲尔德很快对新西兰的地方生活方式和她的家庭感到不满。两年后，她再次前往伦敦。她的父亲余生每年都会寄给她100英镑的津贴。在晚年的日记中，她对新西兰既表达了钦佩也流露了鄙夷。"
+      },
+      {
+        "label": "第六段",
+        "text": "1911年，曼斯菲尔德遇到了约翰·米德尔顿·穆里，他是牛津学者，也是文学杂志《节奏》的编辑。他们后来于1918年结婚。曼斯菲尔德成为《节奏》的联合编辑，该杂志后来改名为《蓝色评论》，并发表了她更多的作品。她和穆里在英国的各个房子里居住，并短暂地在巴黎生活过。《蓝色评论》未能吸引足够多的读者，最终停刊。他们想在巴黎以作家的身份立足的尝试，因穆里因该杂志及其他杂志的失败而破产而中断。回到英国的生活意味着频繁更换住址和资金非常有限。"
+      },
+      {
+        "label": "第七段",
+        "text": "1915年至1918年间，曼斯菲尔德在英国和法国的邦多勒之间辗转。她和穆里与当时其他著名作家如D.H.劳伦斯、伯特兰·罗素和奥尔德斯·赫胥黎建立了密切联系。到1918年10月，曼斯菲尔德病重；她被诊断出患有肺结核，并被建议进入疗养院。她再也不能在伦敦过冬了。1918年秋天，她病得非常严重，以至于决定去意大利的奥斯佩达莱蒂。1920年《极乐及其他故事》的出版巩固了曼斯菲尔德作为作家的声誉。"
+      },
+      {
+        "label": "第八段",
+        "text": "曼斯菲尔德还在法国的芒通度过了一段时间，作为她父亲表亲在“美丽孤岛别墅”的租客。在那里她写了八个故事，包括《布里尔小姐》和《已故上校的女儿们》，后者她宣称是“……在任何程度上唯一让我满意的故事”。"
+      },
+      {
+        "label": "第九段",
+        "text": "曼斯菲尔德在她生命的最后几年里创作了大量的作品，她大部分的散文和诗歌在她1923年去世时仍未发表。她去世后，她的丈夫穆里承担了编辑和出版她作品的任务。他的努力促成了另外两卷短篇故事集《鸽巢》和《幼稚的东西》，分别于1923年和1924年出版；她的《诗集》的出版；以及一本评论文集（《小说与小说家》）和数版曼斯菲尔德先前未发表的信件和日记。"
+      }
+    ]
+  },
+  {
+    "id": "p2-high-09",
+    "title": "Early Approaches to Organisational Design 组织设计",
+    "category": "P2",
+    "frequency": "高频",
+    "difficultyScore": 4,
+    "passageHtml": "<h2>READING PASSAGE 2</h2>\n            <p>You should spend about 20 minutes on Questions 14–26, which are based on Reading Passage 2 below.</p>\n            \n            <h3>Early Approaches to Organisational Design</h3>\n            <h5>A review of the classical and neoclassical theories of organisational structures</h5>\n            \n            <p>Determining the 'best' type of organisational structure for a particular situation has long been an important task for managers in all types of organisations. All structures have advantages and disadvantages and managers face the challenge of developing the most appropriate design for changing circumstances.</p>\n            \n            <h4>The Classical Approach</h4>\n            <p>Early management writers attempted to approach organisational design using a set of principles that would make an organisational structure perform efficiently in most situations, independent of external conditions and internal objectives. The sociologist Max Weber and management writers Frederick Taylor and Henri Fayol were major contributors to this so-called classical approach. They believed that the most efficient organisations had a legalised, formal and hierarchical structure called a ‘bureaucracy'. Members of the organisation were guided by a sense of duty to the organisation and by a set of rational rules and regulations. According to Weber, such organisations were characterised by the specialisation of tasks, appointment by merit, and an impersonal climate.</p>\n            <p>Today the word 'bureaucracy' sometimes has negative connotations. Early management writers, however, commended bureaucracy as an organisational design for its rationality, rules for decision-making, clear chain of command, and promotion of people based on ability and experience, rather than favouritism or whim. Weber also believed that clearly specified authority and responsibility made performance easier to evaluate and reward.</p>\n            \n            <h4>Criticism of the Classical Approach</h4>\n            <p>Weber, Taylor and Fayol developed their theories when organisations that resembled this bureaucratic model were modern and efficient. It became evident, however, that some of the major advantages of the bureaucratic structure could become disadvantages if the theory were applied dogmatically. For example, the safeguards against favouritism could be rigidly imposed by adhering excessively to rules, resulting in both managers and subordinates becoming depersonalised.</p>\n            <p>The classical approach has been criticised from two major perspectives. First, the theory may not have a basis in reality. Have organisations like those described by Weber and the others ever existed? Second, it claims that organisations designed and managed according to bureaucratic principles will enjoy the predicted benefits. But critics argue that the world no longer fits the assumptions in Weber's model (if it ever did), and so a bureaucracy might not yield beneficial results.</p>\n            <p>Early human relations researchers and behavioural scientists attempted to deal with the major inadequacy of the classical bureaucratic model: neglect of the human element. They argued that an industrial organisation has two objectives: economic effectiveness and employee satisfaction. They also wrote that the bureaucratic structure could be improved by permitting more subordinate participation in decision-making. Because these researchers tried to improve, and not reject, the classical model, they are sometimes called neoclassical theorists and include Douglas McGregor, Chris Argyris and Rensis Likert.</p>\n            \n            <h4>The Neoclassical Approach</h4>\n            <p>McGregor believed that the vertical division of labour that characterised bureaucratic organisations was derived from negative and false assumptions about workers which he called Theory X. Managers assume lower-level employees lack ambition and need orders to work effectively. The rigid formal hierarchy is designed to maintain managers' power over subordinates. Decision-making takes place at upper levels of management while the decisions are carried out by people at lower levels. McGregor argued that organisations based instead on Theory Y assumptions use their members' potential. Theory Y assumes that most people find work satisfying, commit themselves willingly to organisational goals and seek responsibility. Members have more independence than in bureaucratic organisations and lower-level participation in decision-making is encouraged.</p>\n            <p>Argyris was concerned that managers in bureaucratic organisations had near-total responsibility for controlling their subordinates' work. He argued that managerial domination makes subordinates passive and dependent, and decreases their sense of responsibility and self-control. Argyris argued for an alternative organisational design that acknowledged human needs and feelings, and increased workers' satisfaction. Like McGregor, he favoured giving subordinates more independence and decision-making power to create a more informal organisational culture.</p>\n            <p>Likert shared the perspectives of McGregor and Argyris. In his research, he found that managers who encouraged their subordinates could motivate them more than traditional authoritarian managers. Likert based his model of four possible systems on these findings. In System 1, power and authority are distributed strictly according to the classical management subordinate relationship: a manager gives orders to lower-level members. In System 4 organisations, by contrast, there is extensive participation in decision-making and problem-solving groups. Some individuals in each group also belong to other work groups to ensure communication between them. System 4 represents Likert's view of an ideal organisation.</p>\n\n            <h4>Criticisms of the Neoclassical Approach</h4>\n            <p>The neoclassical approach to organisational design compensates for limitations in the traditional classical model, but it has also been criticised. First, the neoclassicists share the classical assumption that there is one best way to design an organisation. They overlook environmental, technological, and other variables that might affect an organisation's design, and overemphasise psychological and behavioural variables. Second, Theories X and Y oversimplify human motivation and neglect individual differences. Not everyone is motivated by the non-monetary aspects of work, nor is all work satisfying. Finally, the coordination of work groups to achieve organisational goals may be more difficult than the neoclassicists suggest, particularly when the objectives of lower-level employees are not consistent with those of upper-level managers.</p>\n            \n            <div class=\"empty-space\"></div>\n        </section>\n        \n        <div id=\"divider\"></div>",
+    "questionGroups": [
+      {
+        "groupId": "group-1",
+        "kind": "multi_choice",
+        "questionIds": [
+          "q1",
+          "q2"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q1-2-anchor\">\n                <h4>Questions 14 and 15</h4>\n                <p>Choose <strong>TWO</strong> letters, <strong>A–E</strong>.</p>\n                <p>According to the writer, which <strong>TWO</strong> of the following are characteristics of the classical approach to organisational design?</p>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q1_2\" value=\"A\"> A. a marked ranking order for employees</label>\n                </div>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q1_2\" value=\"B\"> B. giving importance to everyone's work</label>\n                </div>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q1_2\" value=\"C\"> C. the advancement of older workers</label>\n                </div>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q1_2\" value=\"D\"> D. a neutral working environment</label>\n                </div>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q1_2\" value=\"E\"> E. increased benefits for workers</label>\n                </div>\n            </div>",
+        "leadHtml": "<h3>Questions</h3>"
+      },
+      {
+        "groupId": "group-2",
+        "kind": "multi_choice",
+        "questionIds": [
+          "q3",
+          "q4"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q3-4-anchor\">\n                <h4>Questions 16 and 17</h4>\n                <p>Choose <strong>TWO</strong> letters, <strong>A–E</strong>.</p>\n                <p>According to the writer, which <strong>TWO</strong> of the following are criticisms of the classical approach to organisational design?</p>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q3_4\" value=\"A\"> A. Too many guidelines are proposed</label>\n                </div>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q3_4\" value=\"B\"> B. Certain practices become negative if they are implemented too strictly</label>\n                </div>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q3_4\" value=\"C\"> C. Managers and workers are unable to co-operate with each other</label>\n                </div>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q3_4\" value=\"D\"> D. The administrative standards are unsuited to some work environments</label>\n                </div>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q3_4\" value=\"E\"> E. Positive outcomes which were expected in the past would be unlikely today</label>\n                </div>\n            </div>"
+      },
+      {
+        "groupId": "group-3",
+        "kind": "multi_choice",
+        "questionIds": [
+          "q5",
+          "q6"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q5-6-anchor\">\n                <h4>Questions 18 and 19</h4>\n                <p>Choose <strong>TWO</strong> letters, <strong>A–E</strong>.</p>\n                <p>According to the writer, which <strong>TWO</strong> of the following are aims of the neoclassical approach to organisational design?</p>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q5_6\" value=\"A\"> A. to ensure workers are treated as individual people</label>\n                </div>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q5_6\" value=\"B\"> B. to create a formal atmosphere in the workplace</label>\n                </div>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q5_6\" value=\"C\"> C. to change the methods of production</label>\n                </div>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q5_6\" value=\"D\"> D. to allow workers a greater say in what happens at the workplace</label>\n                </div>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q5_6\" value=\"E\"> E. to standardise the procedures for promotion of workers</label>\n                </div>\n            </div>"
+      },
+      {
+        "groupId": "group-4",
+        "kind": "multi_choice",
+        "questionIds": [
+          "q7",
+          "q8"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q7-8-anchor\">\n                <h4>Questions 20 and 21</h4>\n                <p>Choose <strong>TWO</strong> letters, <strong>A–E</strong>.</p>\n                <p>According to the writer, which <strong>TWO</strong> of the following are criticisms of the neoclassical approach to organisational design?</p>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q7_8\" value=\"A\"> A. It suggests that workers are involved in too many decisions</label>\n                </div>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q7_8\" value=\"B\"> B. The effects of some psychological factors are given low importance</label>\n                </div>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q7_8\" value=\"C\"> C. The effects of the workplace surroundings are ignored</label>\n                </div>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q7_8\" value=\"D\"> D. It exaggerates the success of the organisations that use this approach</label>\n                </div>\n                <div class=\"choice-item\">\n                    <label><input type=\"checkbox\" name=\"q7_8\" value=\"E\"> E. It assumes that all people work for enjoyment rather than financial gain</label>\n                </div>\n            </div>"
+      },
+      {
+        "groupId": "group-5",
+        "kind": "matching",
+        "questionIds": [
+          "q9",
+          "q10",
+          "q11",
+          "q12",
+          "q13"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q9-10-11-12-13-anchor\">\n                <h4>Questions 22–26</h4>\n                <p>Look at the following beliefs (Questions 22–26) and the list of people below. Match each belief with the correct person, <strong>A–D</strong>.</p>\n                <p><em>NB You may use any letter more than once.</em></p>\n                \n                <div class=\"match-question-item\">\n                    <p><strong>22</strong> The classical approach relied upon managers having incorrect views about workers.</p>\n                    <div class=\"match-dropzone\" data-question=\"q9\"></div>\n                </div>\n                <div class=\"match-question-item\">\n                    <p><strong>23</strong> In the best organisational model, there is shared decision-making and interaction between teams at work.</p>\n                    <div class=\"match-dropzone\" data-question=\"q10\"></div>\n                </div>\n                 <div class=\"match-question-item\">\n                    <p><strong>24</strong> In an efficient organisation, workers develop expertise in particular areas.</p>\n                    <div class=\"match-dropzone\" data-question=\"q11\"></div>\n                </div>\n                 <div class=\"match-question-item\">\n                    <p><strong>25</strong> An organisation must take into account the emotional demands of people.</p>\n                    <div class=\"match-dropzone\" data-question=\"q12\"></div>\n                </div>\n                <div class=\"match-question-item\">\n                    <p><strong>26</strong> The classical approach allowed workers' skills to be assessed in a straightforward way.</p>\n                    <div class=\"match-dropzone\" data-question=\"q13\"></div>\n                </div>\n\n                <div class=\"options-pool\" id=\"people-options-pool\">\n                    <strong>List of people</strong>\n                    <div class=\"pool-items\">\n                        <div class=\"drag-item\" id=\"person-A\" draggable=\"true\" data-option=\"A\">A. Max Weber</div>\n                        <div class=\"drag-item\" id=\"person-B\" draggable=\"true\" data-option=\"B\">B. Douglas McGregor</div>\n                        <div class=\"drag-item\" id=\"person-C\" draggable=\"true\" data-option=\"C\">C. Chris Argyris</div>\n                        <div class=\"drag-item\" id=\"person-D\" draggable=\"true\" data-option=\"D\">D. Rensis Likert</div>\n                    </div>\n                </div>\n            </div>",
+        "allowOptionReuse": true
+      }
+    ],
+    "answerKey": {
+      "q1": "A",
+      "q2": "D",
+      "q3": "B",
+      "q4": "E",
+      "q5": "A",
+      "q6": "D",
+      "q7": "C",
+      "q8": "E",
+      "q9": "B",
+      "q10": "D",
+      "q11": "A",
+      "q12": "C",
+      "q13": "A"
+    },
+    "questionDisplayMap": {
+      "q1": "14",
+      "q2": "15",
+      "q3": "16",
+      "q4": "17",
+      "q5": "18",
+      "q6": "19",
+      "q7": "20",
+      "q8": "21",
+      "q9": "22",
+      "q10": "23",
+      "q11": "24",
+      "q12": "25",
+      "q13": "26"
+    },
+    "questionOrder": [
+      "q1",
+      "q2",
+      "q3",
+      "q4",
+      "q5",
+      "q6",
+      "q7",
+      "q8",
+      "q9",
+      "q10",
+      "q11",
+      "q12",
+      "q13"
+    ],
+    "explanations": [
+      {
+        "sectionTitle": "1. 多选题（Questions 14 and 15）",
+        "mode": "per_question",
+        "items": [],
+        "text": "题目：According to the writer, which TWO of the following are characteristics of the classical approach to organisational design? （根据作者，以下哪两项是古典组织设计方法的特征？）\n答案 14：A （员工有明确的等级顺序）\n解析：第二段描述古典方法为“a legalised, formal and hierarchical structure”（一个合法化、正式化和等级化的结构），以及“clear chain of command”（清晰的指挥链），这都指向了“a marked ranking order for employees”。\n答案 15：D （一个中立的工作环境）\n解析：第二段末句提到，根据韦伯，这类组织的特点是“an impersonal climate”（非个人化的氛围），这与“a neutral working environment”相对应。"
+      },
+      {
+        "sectionTitle": "2. 多选题（Questions 16 and 17）",
+        "mode": "per_question",
+        "items": [],
+        "text": "题目：According to the writer, which TWO of the following are criticisms of the classical approach to organisational design? （根据作者，以下哪两项是对古典组织设计方法的批评？）\n答案 16：B （某些做法如果执行得过于严格，会变得负面）\n解析：第四段指出，如果理论被“applied dogmatically”（教条地应用）或“adhering excessively to rules”（过度遵守规则），优点就可能变成缺点。\n答案 17：E （过去预期的积极成果在今天不太可能出现）\n解析：第五段批评道，“the world no longer fits the assumptions in Weber's model... so a bureaucracy might not yield beneficial results.”，即世界已变，过去模型基于的假设不再适用，因此无法产生预期的好处。"
+      },
+      {
+        "sectionTitle": "3. 多选题（Questions 18 and 19）",
+        "mode": "per_question",
+        "items": [],
+        "text": "题目：According to the writer, which TWO of the following are aims of the neoclassical approach to organisational design? （根据作者，以下哪两项是新古典组织设计方法的目标？）\n答案 18：A （确保工人被作为个体对待）\n解析：新古典方法旨在弥补古典方法“neglect of the human element”（忽视人的因素）的缺陷，并关注“employee satisfaction”（员工满意度）和“acknowledged human needs and feelings”（承认人的需求和感受），这些都体现了将员工作为个体对待的目标。\n答案 19：D （允许工人在工作场所发生的事情上有更大的发言权）\n解析：第六段和第七段都反复强调新古典方法鼓励“more subordinate participation in decision-making”（下属更多参与决策），即让员工有更大的发言权。"
+      },
+      {
+        "sectionTitle": "4. 多选题（Questions 20 and 21）",
+        "mode": "per_question",
+        "items": [],
+        "text": "题目：According to the writer, which TWO of the following are criticisms of the neoclassical approach to organisational design? （根据作者，以下哪两项是对新古典组织设计方法的批评？）\n答案 20：C （工作场所环境的影响被忽略了）\n解析：第十一段批评新古典主义者“overlook environmental, technological, and other variables...”（忽略环境、技术等变量），即忽略了工作场所的周边环境因素。\n答案 21：E （它假设所有人都为乐趣而非经济收益而工作）\n解析：第十一段批评X和Y理论过度简化人类动机，并指出“Not everyone is motivated by the non-monetary aspects of work...”（并非每个人都受非金钱方面激励），这正是对“假设人人都为乐趣工作”的批评。"
+      },
+      {
+        "sectionTitle": "5. 人物观点配对（Questions 22–26）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 22,
+            "text": "(1) 题目 22：The classical approach relied upon managers having incorrect views about workers. （古典方法依赖于管理者对工人持有不正确的看法。）\n答案：B (Douglas McGregor)\n解析：第七段，McGregor的X理论指出，古典方法的垂直分工源于对工人的“negative and false assumptions”（消极和错误的假设）。",
+            "questionId": "q9"
+          },
+          {
+            "questionNumber": 23,
+            "text": "(2) 题目 23：In the best organisational model, there is shared decision-making and interaction between teams at work. （在最佳组织模型中，工作团队之间存在共享决策和互动。）\n答案：D (Rensis Likert)\n解析：第十段，Likert的理想模型System 4的特点是“extensive participation in decision-making and problem-solving groups”以及团队间的沟通机制。",
+            "questionId": "q10"
+          },
+          {
+            "questionNumber": 24,
+            "text": "(3) 题目 24：In an efficient organisation, workers develop expertise in particular areas. （在一个高效的组织中，工人在特定领域发展专长。）\n答案：A (Max Weber)\n解析：第二段，根据Weber，高效组织的特点是“the specialisation of tasks”（任务专业化）。",
+            "questionId": "q11"
+          },
+          {
+            "questionNumber": 25,
+            "text": "(4) 题目 25：An organisation must take into account the emotional demands of people. （一个组织必须考虑到人的情感需求。）\n答案：C (Chris Argyris)\n解析：第八段，Argyris主张一种“acknowledged human needs and feelings”（承认人的需求和感受）的组织设计。",
+            "questionId": "q12"
+          },
+          {
+            "questionNumber": 26,
+            "text": "(5) 题目 26：The classical approach allowed workers' skills to be assessed in a straightforward way. （古典方法使得工人的技能能够以一种直接的方式被评估。）\n答案：A (Max Weber)\n解析：第三段，Weber认为“clearly specified authority and responsibility made performance easier to evaluate and reward.”（明确的权责使绩效评估和奖励更容易）。",
+            "questionId": "q13"
+          }
+        ],
+        "questionRange": {
+          "start": 22,
+          "end": 26
+        },
+        "text": "答案：B (Douglas McGregor)\n解析：第七段，McGregor的X理论指出，古典方法的垂直分工源于对工人的“negative and false assumptions”（消极和错误的假设）。\n答案：D (Rensis Likert)\n解析：第十段，Likert的理想模型System 4的特点是“extensive participation in decision-making and problem-solving groups”以及团队间的沟通机制。\n答案：A (Max Weber)\n解析：第二段，根据Weber，高效组织的特点是“the specialisation of tasks”（任务专业化）。\n答案：C (Chris Argyris)\n解析：第八段，Argyris主张一种“acknowledged human needs and feelings”（承认人的需求和感受）的组织设计。\n答案：A (Max Weber)\n解析：第三段，Weber认为“clearly specified authority and responsibility made performance easier to evaluate and reward.”（明确的权责使绩效评估和奖励更容易）。"
+      }
+    ],
+    "passageNotes": [
+      {
+        "label": "段落 1",
+        "text": "古典与新古典组织结构理论的回顾\n为特定情况确定“最佳”类型的组织结构，长期以来一直是各类组织管理者的重要任务。所有结构都有其优缺点，管理者面临着为不断变化的环境设计最合适结构的挑战。\n古典方法\n早期的管理学者试图用一套原则来处理组织设计，这些原则将使组织结构在大多数情况下高效运作，而不受外部条件和内部目标的影响。社会学家马克斯·韦伯以及管理学者弗雷德里克·泰勒和亨利·法约尔是这种所谓古典方法的主要贡献者。他们认为，最有效的组织拥有一个合法化、正式化和等级化的结构，称为“官僚制”。组织的成员受对组织的责任感以及一套理性的规章制度的指导。根据韦伯的说法，这类组织的特点是任务专业化、择优任命和非个人化的氛围。\n今天，“官僚制”这个词有时带有负面含义。然而，早期的管理学者称赞官僚制作为一种组织设计的合理性、决策规则、清晰的指挥链，以及基于能力和经验而非偏袒或心血来潮的人员晋升。韦伯还认为，明确规定的权力和责任使绩效更容易评估和奖励。\n对古典方法的批评\n韦伯、泰勒和法约尔是在类似于这种官僚模型的组织既现代又高效的时代发展他们的理论的。然而，后来变得明显的是，如果该理论被教条地应用，官僚结构的一些主要优点可能会变成缺点。例如，反对偏袒的保障措施可能会因为过度遵守规则而变得僵化，导致管理者和下属都变得非人性化。\n古典方法受到了两个主要角度的批评。首先，该理论可能没有现实基础。像韦伯和其他人描述的那样的组织是否真的存在过？其次，它声称根据官僚原则设计和管理的组织将享有预期的好处。但批评者认为，世界不再符合韦伯模型中的假设（如果曾经符合过的话），因此官僚制可能不会产生有益的结果。\n早期的人际关系研究者和行为科学家试图处理古典官僚模型的主要不足之处：对人的因素的忽视。他们认为，一个工业组织有两个目标：经济效益和员工满意度。他们还写道，通过允许下属更多地参与决策，可以改进官僚结构。因为这些研究者试图改进而非拒绝古典模型，他们有时被称为新古典理论家，其中包括道格拉斯·麦格雷戈、克里斯·阿吉里斯和伦西斯·利克特。\n新古典方法\n麦格雷戈认为，官僚组织特有的垂直劳动分工源于对工人的消极和错误假设，他称之为X理论。管理者假设下层员工缺乏抱负，需要命令才能有效工作。僵化的正式等级制度旨在维持管理者对下属的权力。决策在管理高层进行，而决策则由下层人员执行。麦格雷戈认为，基于Y理论假设的组织则利用其成员的潜力。Y理论假设大多数人认为工作是令人满意的，愿意为组织目标做出承诺，并寻求责任。成员比在官僚组织中拥有更多的独立性，并鼓励下层参与决策。\n阿吉里斯关心的是，在官僚组织中，管理者几乎拥有控制下属工作的全部责任。他认为，管理上的支配使下属变得被动和依赖，并降低了他们的责任感和自我控制感。阿吉里斯主张采用一种替代性的组织设计，该设计承认人的需求和感受，并增加工人的满意度。像麦格雷戈一样，他赞成给予下属更多的独立性和决策权，以创造一个更非正式的组织文化。\n对新古典方法的批评\n利克特分享了麦格雷戈和阿吉里斯的观点。在他的研究中，他发现鼓励下属的管理者比传统的权威型管理者更能激励他们。利克特基于这些发现建立了他可能的四种系统模型。在系统1中，权力和权威严格按照古典的管理下属关系进行分配：管理者向下层成员下达命令。相比之下，在系统4组织中，决策和解决问题的小组中有广泛的参与。每个小组中的一些个体也属于其他工作小组，以确保它们之间的沟通。系统4代表了利克特对理想组织的看法。\n新古典的组织设计方法弥补了传统古典模型的局限，但也受到了批评。首先，新古典主义者与古典主义者一样，都认为存在一种设计组织的最佳方式。他们忽略了可能影响组织设计的环境、技术和其他变量，并过分强调心理和行为变量。其次，X理论和Y理论过分简化了人类动机，并忽略了个体差异。并非每个人都受到工作的非金钱方面的激励，也并非所有工作都是令人满意的。最后，协调工作小组以实现组织目标可能比新古典主义者建议的要困难得多，特别是当下层员工的目标与上层管理者的目标不一致时。"
+      }
+    ]
+  },
+  {
+    "id": "p2-medium-10",
+    "title": "A study of western celebrity 西方名人",
+    "category": "P2",
+    "frequency": "高频",
+    "difficultyScore": 3.5,
+    "passageHtml": "<h2>A study of western celebrity</h2>\n            <p><em>In our celebrity-obsessed culture, TV shows, internet blogs, and even newspapers are often full of the latest news, gossip and scandals about current celebrities</em></p>\n            \n            <div class=\"paragraph-wrapper\" id=\"para-A-anchor\">\n                <div class=\"paragraph-dropzone dropzone match-dropzone\" data-paragraph=\"A\" data-question=\"q1\">\n                    <span class=\"paragraph-label\">Paragraph A (Q14):</span>\n                    <div class=\"dropped-items\"></div>\n                </div>\n                <p><strong>A</strong> It seems that our current society cannot get enough information about the daily lives of celebrities. But how did celebrities become such an important force in our culture? While people have always shared a certain obsession with the fantastic and the famous, the notion of celebrity, as well as the types of people termed ‘celebrities', has evolved greatly throughout the ages. The word 'celebrity' has its roots in the language of the ancient Roman civilization. The word we now know to mean 'a condition of being famous' or 'a famous person' is derived from the Latin word ‘celeber', meaning ‘frequented or populous'.</p>\n            </div>\n            <div class=\"paragraph-wrapper\" id=\"para-B-anchor\">\n                 <div class=\"paragraph-dropzone dropzone match-dropzone\" data-paragraph=\"B\" data-question=\"q2\">\n                    <span class=\"paragraph-label\">Paragraph B (Q15):</span>\n                    <div class=\"dropped-items\"></div>\n                </div>\n                <p><strong>B</strong> The celebrities of the ancient world were the powerful and awesome deities of Greece and Rome, and the citizens of these civilizations believed in a vast number of immortals who had a direct impact on their lives. It was, therefore, important to know about these figures' personal lives. This need to know led to the creation of myths, which personalized the gods and involved them in ancient celebrity scandals that thrilled and excited the common people.</p>\n            </div>\n            <div class=\"paragraph-wrapper\" id=\"para-C-anchor\">\n                <div class=\"paragraph-dropzone dropzone match-dropzone\" data-paragraph=\"C\" data-question=\"q3\">\n                    <span class=\"paragraph-label\">Paragraph C (Q16):</span>\n                    <div class=\"dropped-items\"></div>\n                </div>\n                <p><strong>C</strong> During ancient times, amateur and professional athletes also began to make an impact on the celebrity culture. Victors in the ancient Olympic Games were treated as heroes and were often elevated to god-like status. In the ancient Roman civilization, gladiators – the equivalent of today's professional athletes – were also revered by the common people for their heroics and seemingly superhuman strength.</p>\n            </div>\n            <div class=\"paragraph-wrapper\" id=\"para-D-anchor\">\n                <div class=\"paragraph-dropzone dropzone match-dropzone\" data-paragraph=\"D\" data-question=\"q4\">\n                    <span class=\"paragraph-label\">Paragraph D (Q17):</span>\n                    <div class=\"dropped-items\"></div>\n                </div>\n                <p><strong>D</strong> As Europe moved into the Dark Ages (the years spanning approximately 400–1300 AD) and a time when athletics and the arts were largely forgotten, monarchs and rulers continued to maintain celebrity status, while religious figures took on newfound fame. The miraculous lives and fascinating deaths of spiritual figures lent excitement to the lives of common people when there was often little else to be excited about, as they faced war, disease and food shortages.</p>\n            </div>\n             <div class=\"paragraph-wrapper\" id=\"para-E-anchor\">\n                <div class=\"paragraph-dropzone dropzone match-dropzone\" data-paragraph=\"E\" data-question=\"q5\">\n                    <span class=\"paragraph-label\">Paragraph E (Q18):</span>\n                    <div class=\"dropped-items\"></div>\n                </div>\n                <p><strong>E</strong> During the period 1300–1600 AD, or the Renaissance period as it is known, interest in ruling figures faded. As Europe emerged from its long neglect of the arts, there was greater appreciation for portraits, statues and stone carvings. This period of appreciation for the arts lent a sense of celebrity to artists who were noted for their works and their personal achievements. It was a time when artists began to surpass political and religious individuals for supreme celebrity – a trend that would continue into later centuries.</p>\n            </div>\n            <div class=\"paragraph-wrapper\" id=\"para-F-anchor\">\n                <div class=\"paragraph-dropzone dropzone match-dropzone\" data-paragraph=\"F\" data-question=\"q6\">\n                    <span class=\"paragraph-label\">Paragraph F (Q19):</span>\n                    <div class=\"dropped-items\"></div>\n                </div>\n                <p><strong>F</strong> While the figures of the ancient and early modern civilizations were able to achieve moderate and sometimes lasting celebrity within particular cultures, the global reach of their fame was limited. It was not until the 1700s, when technological advances made publishing commercially viable, that the extent of a person's fame could spread further. The increase in the availability of the written word was accompanied by a huge rise in the number of common people who could read, allowing a mass audience to find out about celebrities for the first time. Suddenly, the lives of authors, politicians, war heroes, and other celebrities could now be read about in newspapers around the world. These gave ordinary people the opportunity to become intimately knowledgeable about the figures they most admired.</p>\n            </div>\n            <div class=\"paragraph-wrapper\" id=\"para-G-anchor\">\n                <div class=\"paragraph-dropzone dropzone match-dropzone\" data-paragraph=\"G\" data-question=\"q7\">\n                    <span class=\"paragraph-label\">Paragraph G (Q20):</span>\n                    <div class=\"dropped-items\"></div>\n                </div>\n                <p><strong>G</strong> In the modern era, particularly as radio and film took off in the 1900s, things really began to change. First, radio began to make its way into the average home in the 1920s and 1930s. Professional athletes also began to be regarded as stars, as their games and exploits could be broadcast over the air for an entirely new audience. Then, the rise of television in the 1950s only cemented the premier level of celebrity that film stars, athletes and television actors were beginning to share. This also meant a huge increase in the individual salaries of these celebrities. Even a few animals gained fame through children's TV shows. The emergence of reality television shows in the late 1990s allowed all kinds of people with little ability to enjoy a short burst of fame on the television screen. All you needed, it seemed, was an attractive appearance. Today, reality television programmers make it possible to be famous not for doing anything in particular, but simply for being, with the audience deciding whether someone deserves to become a celebrity or not. As the meaning of celebrity continues to evolve and redefine itself in a quickly changing world, there is no telling who will become of interest next.</p>\n            </div>\n\n            <div class=\"empty-space\"></div>\n        </section>\n        \n        <div id=\"divider\"></div>",
+    "questionGroups": [
+      {
+        "groupId": "group-1",
+        "kind": "matching",
+        "questionIds": [
+          "q1",
+          "q2",
+          "q3",
+          "q4",
+          "q5",
+          "q6",
+          "q7"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q1-2-3-4-5-6-7-anchor\">\n                <h4>Questions 14–20</h4>\n                <p>Reading Passage 2 has seven paragraphs, <strong>A–G</strong>.</p>\n                <p>Choose the correct heading for each paragraph from the list of headings below.</p>\n                <p><em>Write the correct number, <strong>i–x</strong>, in boxes 14–20 on your answer sheet.</em></p>\n                \n                <div class=\"options-pool\" id=\"headings-pool-container\">\n                    <strong>List of Headings</strong>\n                    <div class=\"pool-items\">\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"i\"><strong>i</strong> Why it is necessary to explain the meaning of the word celebrity</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"ii\"><strong>ii</strong> The influence of non-human celebrities on societies</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"iii\"><strong>iii</strong> The impact of broadcasting on concepts of celebrity</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"iv\"><strong>iv</strong> Creativity having greater value</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"v\"><strong>v</strong> Admiration for physical achievement</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"vi\"><strong>vi</strong> The advantages of celebrity status in the ancient world</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"vii\"><strong>vii</strong> A result of hardship</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"viii\"><strong>viii</strong> Literacy and widespread celebrity</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"ix\"><strong>ix</strong> Attitudes of celebrities towards the media</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-heading=\"x\"><strong>x</strong> The original definition of celebrity</div>\n                    </div>\n                </div>\n            </div>",
+        "allowOptionReuse": false,
+        "leadHtml": "<h3>Questions</h3>"
+      },
+      {
+        "groupId": "group-2",
+        "kind": "matching",
+        "questionIds": [
+          "q8",
+          "q9",
+          "q10"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q8-9-10-anchor\">\n                <h4>Questions 21–23</h4>\n                <p>Look at the following statements (Questions 21–23) and the list of historical periods in Europe below.</p>\n                <p>Match each statement with the correct historical period, <strong>A, B, C</strong>, or <strong>D</strong>.</p>\n                \n                <div class=\"question-item\">\n                    <div class=\"match-question-item\">\n                        <p><strong>21</strong> A wide variety of people achieve a brief period of fame.</p>\n                        <div class=\"match-dropzone\" data-question=\"q8\"></div>\n                    </div>\n                </div>\n                <div class=\"question-item\">\n                    <div class=\"match-question-item\">\n                        <p><strong>22</strong> Stories are invented about celebrities' lives.</p>\n                        <div class=\"match-dropzone\" data-question=\"q9\"></div>\n                    </div>\n                </div>\n                <div class=\"question-item\">\n                    <div class=\"match-question-item\">\n                        <p><strong>23</strong> The fame of rulers is starting to diminish.</p>\n                        <div class=\"match-dropzone\" data-question=\"q10\"></div>\n                    </div>\n                </div>\n                <div class=\"options-pool\" id=\"periods-options-pool\">\n                    <strong>List of historical periods in Europe</strong>\n                    <div class=\"pool-items\">\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"A\"><strong>A</strong> Ancient times</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"B\"><strong>B</strong> Dark Ages</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"C\"><strong>C</strong> Renaissance</div>\n                        <div class=\"drag-item\" draggable=\"true\" data-option=\"D\"><strong>D</strong> Modern era</div>\n                    </div>\n                </div>\n            </div>",
+        "allowOptionReuse": false
+      },
+      {
+        "groupId": "group-3",
+        "kind": "summary_completion",
+        "questionIds": [
+          "q11",
+          "q12",
+          "q13"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q11-12-13-anchor\">\n                <h4>Questions 24–26</h4>\n                <p>Complete the summary below.</p>\n                <p>Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</p>\n                \n                <div class=\"summary-completion\">\n                    <h4>Celebrities achieve a global status</h4>\n                    <p>The development of the publishing industry in the 1700s signalled the beginning of international fame. A growing number of people could read, which meant they had the chance to become informed about their favourite figures by reading <strong>24</strong> <input name=\"q11\" type=\"text\" id=\"q24_input\">. This exposure to celebrities expanded further when radio and television became popular, and it was mass media attention that resulted in higher status and fame for some celebrities. The recent rise of reality television has also meant that a person's <strong>25</strong> <input name=\"q12\" type=\"text\" id=\"q25_input\"> rather than their talent can bring fame. With this type of television programme, fame may be entirely dependent on the response of the <strong>26</strong> <input name=\"q13\" type=\"text\" id=\"q26_input\">.</p>\n                </div>\n            </div>"
+      }
+    ],
+    "answerKey": {
+      "q1": "x",
+      "q2": "ii",
+      "q3": "v",
+      "q4": "vii",
+      "q5": "iv",
+      "q6": "viii",
+      "q7": "iii",
+      "q8": "D",
+      "q9": "A",
+      "q10": "C",
+      "q11": "newspapers",
+      "q12": "appearance",
+      "q13": "audience"
+    },
+    "questionDisplayMap": {
+      "q1": "14",
+      "q2": "15",
+      "q3": "16",
+      "q4": "17",
+      "q5": "18",
+      "q6": "19",
+      "q7": "20",
+      "q8": "21",
+      "q9": "22",
+      "q10": "23",
+      "q11": "24",
+      "q12": "25",
+      "q13": "26"
+    },
+    "questionOrder": [
+      "q1",
+      "q2",
+      "q3",
+      "q4",
+      "q5",
+      "q6",
+      "q7",
+      "q8",
+      "q9",
+      "q10",
+      "q11",
+      "q12",
+      "q13"
+    ],
+    "explanations": [
+      {
+        "sectionTitle": "1. 段落标题配对（Questions 14–20）",
+        "mode": "group",
+        "items": [],
+        "questionRange": {
+          "start": 14,
+          "end": 20
+        },
+        "text": "(1) 14 Paragraph A （A段）\n答案：x The original definition of celebrity （名人的原始定义）\n解析：A段末尾直接给出了“celebrity”一词的拉丁语词源“celeber”及其本义，段落核心是定义来源。\n(2) 15 Paragraph B （B段）\n答案：ii The influence of non-human celebrities on societies （非人类名人对社会的影响）\n解析：B段的主体是希腊罗马的神祇（非人类），并说明了这些“immortals”（神仙）如何对人们的生活产生直接影响。\n(3) 16 Paragraph C （C段）\n答案：v Admiration for physical achievement （对身体成就的崇拜）\n解析：C段聚焦于古代奥运会冠军和角斗士，赞扬他们的“heroics and seemingly superhuman strength”（英雄事迹和超人力量），这是对体能成就的崇拜。\n(4) 17 Paragraph D （D段）\n答案：vii A result of hardship （困苦的结果）\n解析：D段描述了黑暗时代人们面临战争、疾病和食物短缺的困苦，在这种背景下，宗教人物的事迹成为精神慰藉，名人崇拜是困境的产物。\n(5) 18 Paragraph E （E段）\n答案：iv Creativity having greater value （创造力具有更高价值）\n解析：E段讲述文艺复兴时期，艺术家因其“works and personal achievements”（作品和个人成就）而声名鹊起，甚至超越了统治者，说明了创造力的价值提升。\n(6) 19 Paragraph F （F段）\n答案：viii Literacy and widespread celebrity （识字率与广泛的名人效应）\n解析：F段的核心是18世纪出版技术的发展，导致能阅读的人数（literacy）大幅增加，从而使得名声（celebrity）可以更广泛地传播。\n(7) 20 Paragraph G （G段）\n答案：iii The impact of broadcasting on concepts of celebrity （广播对名人概念的影响）\n解析：G段主要讨论广播、电视和真人秀等大众传播媒介（broadcasting）如何改变了名人的概念，例如动物也能成名、外貌比才华更重要等。"
+      },
+      {
+        "sectionTitle": "2. 历史时期配对（Questions 21–23）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 21,
+            "text": "(1) 题目 21：A wide variety of people achieve a brief period of fame. （各种各样的人获得短暂的名声。）\n答案：D Modern era （现代）\n解析：G段提到真人秀“allowed all kinds of people with little ability to enjoy a short burst of fame”。",
+            "questionId": "q8"
+          },
+          {
+            "questionNumber": 22,
+            "text": "(2) 题目 22：Stories are invented about celebrities' lives. （关于名人生平的故事是被创造出来的。）\n答案：A Ancient times （古代）\n解析：B段提到这种了解的需求导致了“the creation of myths, which personalised the gods”。",
+            "questionId": "q9"
+          },
+          {
+            "questionNumber": 23,
+            "text": "(3) 题目 23：The fame of rulers is starting to diminish. （统治者的声望开始减弱。）\n答案：C Renaissance （文艺复兴时期）\n解析：E段开头说“interest in ruling figures faded...”，艺术家开始超越政治人物。",
+            "questionId": "q10"
+          }
+        ],
+        "questionRange": {
+          "start": 21,
+          "end": 23
+        },
+        "text": "答案：D Modern era （现代）\n解析：G段提到真人秀“allowed all kinds of people with little ability to enjoy a short burst of fame”。\n答案：A Ancient times （古代）\n解析：B段提到这种了解的需求导致了“the creation of myths, which personalised the gods”。\n答案：C Renaissance （文艺复兴时期）\n解析：E段开头说“interest in ruling figures faded...”，艺术家开始超越政治人物。"
+      },
+      {
+        "sectionTitle": "3. 摘要填空（Questions 24–26）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 24,
+            "text": "(1) 题目 24：A growing number of people could read, which meant they had the chance to become informed about their favourite figures by reading 24 \\___\\___. （越来越多的人能够阅读，这意味着他们有机会通过阅读报纸来了解他们最喜欢的人物。）\n答案：newspapers\n解析：F段提到，人们“could now be read about in newspapers around the world”。",
+            "questionId": "q11"
+          },
+          {
+            "questionNumber": 25,
+            "text": "(2) 题目 25：The recent rise of reality television has also meant that a person's 25 \\___\\___ rather than their talent can bring fame. （真人秀的兴起也意味着一个人的外貌而非其才华可以带来名声。）\n答案：appearance\n解析：G段提到，在真人秀时代，“All you needed, it seemed, was an attractive appearance”。",
+            "questionId": "q12"
+          },
+          {
+            "questionNumber": 26,
+            "text": "(3) 题目 26：With this type of television programme, fame may be entirely dependent on the response of the 26 \\___\\___. （通过这类电视节目，名声可能完全取决于观众的反应。）\n答案：audience\n解析：G段结尾说，“with the audience deciding whether someone deserves to become a celebrity or not”。",
+            "questionId": "q13"
+          }
+        ],
+        "questionRange": {
+          "start": 24,
+          "end": 26
+        },
+        "text": "答案：newspapers\n解析：F段提到，人们“could now be read about in newspapers around the world”。\n答案：appearance\n解析：G段提到，在真人秀时代，“All you needed, it seemed, was an attractive appearance”。\n答案：audience\n解析：G段结尾说，“with the audience deciding whether someone deserves to become a celebrity or not”。"
+      }
+    ],
+    "passageNotes": [
+      {
+        "label": "Paragraph B",
+        "text": "古代世界的名人是希腊和罗马强大而令人敬畏的神祇，这些文明的公民相信有大量的神仙对他们的生活有直接影响。因此，了解这些人物的个人生活是很重要的。这种了解的需求导致了神话的创造，这些神话将神祇人格化，并让他们卷入古代的名人丑闻中，让普通民众感到兴奋和激动。"
+      },
+      {
+        "label": "Paragraph C",
+        "text": "在古代，业余和专业运动员也开始对名人文化产生影响。古代奥林匹克运动会的胜利者被当作英雄对待，并常常被提升到神一般的地位。在古罗马文明中，角斗士——相当于今天的职业运动员——也因其英雄事迹和看似超人的力量而受到普通民众的崇敬。"
+      },
+      {
+        "label": "Paragraph D",
+        "text": "随着欧洲进入黑暗时代（大约跨越公元400-1300年），一个体育和艺术在很大程度上被遗忘的时期，君主和统治者继续保持着名人地位，而宗教人物则获得了新的声望。精神人物奇迹般的生活和引人入胜的死亡故事，在普通民众面临战争、疾病和食物短缺，几乎没有其他事情可以激动的时候，为他们的生活增添了刺激。"
+      },
+      {
+        "label": "Paragraph E",
+        "text": "在1300-1600年期间，或称文艺复兴时期，人们对统治人物的兴趣减退了。随着欧洲从其对艺术的长期忽视中复苏，人们对肖像、雕像和石雕的欣赏程度更高了。这个对艺术的欣赏时期，为那些因其作品和个人成就而闻名的艺术家们带来了一种名人感。这是一个艺术家开始在最高名人地位上超越政治和宗教人物的时代——这一趋势在后来的几个世纪里将继续下去。"
+      },
+      {
+        "label": "Paragraph F",
+        "text": "虽然古代和早期现代文明的人物能够在特定文化中获得中等甚至有时持久的名声，但他们名声的全球影响力是有限的。直到18世纪，当技术进步使出版商业上可行时，一个人的名声范围才能进一步传播。书面文字可用性的增加，伴随着能够阅读的普通民众数量的巨大增长，使得大众第一次能够了解到名人。突然之间，作家、政治家、战争英雄和其他名人的生活可以在世界各地的报纸上读到。这些给了普通人一个机会，去深入了解他们最崇拜的人物。"
+      },
+      {
+        "label": "Paragraph G",
+        "text": "在现代，尤其是当广播和电影在20世纪初兴起时，情况真正开始改变。首先，收音机在20世纪20年代和30年代开始进入普通家庭。职业运动员也开始被视为明星，因为他们的比赛和事迹可以通过广播为全新的观众播出。然后，20世纪50年代电视的兴起，只是巩固了电影明星、运动员和电视演员开始分享的顶级名人地位。这也意味着这些名人的个人薪酬大幅增加。甚至有几只动物通过儿童电视节目获得了名声。20世纪90年代末真人秀节目的出现，让各种能力有限的人都能在电视屏幕上享受短暂的名声。似乎你所需要的只是一个吸引人的外表。今天，真人秀节目的制作人使得出名成为可能，不是因为做了任何特别的事情，而仅仅是因为存在，由观众来决定某人是否值得成为名人。随着名人意义在快速变化的世界中不断演变和重新定义，谁将成为下一个兴趣点，无人知晓。"
+      }
+    ]
+  },
+  {
+    "id": "p2-high-17",
+    "title": "Herbal Medicines 新西兰草药",
+    "category": "P2",
+    "frequency": "高频",
+    "difficultyScore": 3.5,
+    "passageHtml": "<h2>READING PASSAGE 2</h2>\n            <p>You should spend about 20 minutes on Questions 14–26, which are based on Reading Passage 2 below.</p>\n            \n            <h3>Herbal Medicines</h3>\n            <h5>The popularity of herbs and plants as medicines could be good for New Zealand</h5>\n            \n            <p><strong>A</strong> There is an age-old practice of harvesting plants and herbs in their natural environment for use as medicines. And today there is huge potential for New Zealand to develop a herb industry based on the excellent growing conditions and expertise there, according to Phil Rasmussen, a pharmacist and medical herbalist. Take arnica, for example, a popular pharmaceutical herb used to treat bruises and joint problems. Traditionally collected by Romany communities in Europe, it is now in high demand worldwide as interest develops in the capabilities of the small alpine plant. A 2008 report for the Plant and Food Research organisation concluded that New Zealand has a good opportunity to cultivate arnica flowers and roots for the international markets. However, the initiative was stopped in its tracks when the government abruptly halted funding for the research programme. It was an unjustified move, according to agronomist Malcolm Douglas, based on a number of inaccurate views about weed invasion.</p>\n            <p><strong>B</strong> The history of herbal medicines in New Zealand has long featured disagreements of this sort. For the early Maori people – the original inhabitants of New Zealand – the forest was well stocked with edible plants that were an obvious source of nutrition, but that were taken for the relief of pain as well. While the earliest European doctors in New Zealand relied on imported dried herbs, many were keen to include native plants in their practices: in his book published in 1891, herbalist James Neil described manuka and koromiko as among New Zealand's most valuable herbs. Despite its popularity among some, however, herbalism continued to have its detractors. In 1907 Neil, president of the then very young New Zealand Association of Medical Herbalists (NZAMH), petitioned parliament for legal status for herbalists, but he was unsuccessful. The Evening Post newspaper perhaps summed up the opposing position by claiming that herbalism ‘is obsolete'.</p>\n            <p><strong>C</strong> In fact, traditional Maori medicine faced a more determined challenge. In 1908 the government passed a controversial law that had the effect of restricting traditional herbal practice, or pushing it underground. Then for a brief period in the mid-20th century, herbal medicine was largely ignored, shunned by the majority of the medical profession, and absent from medical school curricula. But a centuries-old tradition was not going to disappear so easily, and in the 1980s the NZAMH was revived, and it became possible to complete a course in herbal medicine at several polytechnics around the country. However, the problem remained of how to connect the culture of plant-based medicine with conventional scientific thinking in order to promote herbal use within the general population. For many years, the limited evidence there was that herbal medicines worked was undermined by lack of interest among general practitioners and within the scientific community.</p>\n            <p><strong>D</strong> Today, the ideas of herbalists in the 1980s – eat a varied diet, include lots of fresh fruit and vegetables, recognise stress – are completely accepted by the medical establishment and widely practised in society as a whole. Natural health products are big sellers in pharmacies, and global pharmaceutical companies are buying up natural supplement brands or developing their own. What's more, according to Rasmussen, robust clinical trials show that herbal medicine is generally safe – safer than most drugs. 'It doesn't do everything,' he says, ‘but there's a lot it does do, particularly in terms of preventative health care.' One significant issue for today's export-oriented herbal medicine producers is the question of how to guarantee standards for consumers in different countries. In other words, there is the need for some form of globally recognised system of documentation. Rasmussen's range of extracts are produced under the Good Manufacturing Practice (GMP) scheme, which is respected around the world. So too is the range produced by Sandra Clair, who says that such assurance is expensive but necessary if you want to export herbal remedies to the rest of the world. Moves to launch a joint Australia–New Zealand agency to regulate herbal remedies under a single, streamlined licensing process have recently been revived, after being abandoned in 2007 through lack of support in parliament.</p>\n            <p><strong>E</strong> There are those in the industry who support further regulation still. According to Rasmussen, some herbs should require a prescription from a suitably qualified medical herbalist or doctor. For example, consumers shouldn't be able to go to their local supermarket and buy St John's Wort, according to Rasmussen, because it can interact in harmful ways with at least ten pharmaceutical drugs. Isla Burgess, who is part of the International Research Group for the Conservation of Medicinal Plants, agrees that tighter regulation is necessary, but for a different reason. ‘More than 400,000 tonnes of medicinal and aromatic plants are traded in the world each year,' says Burgess. ‘The great majority of these are harvested from the wild, so they each have an impact on their local ecosystem.' She gives the example of elm trees in the USA, ringbarked and stripped for the growing market for a product called 'slippery elm': this endangered tree should be protected. But others argue that more regulation would be prohibitively expensive for all but the largest manufacturers – a change, cautions Clair, that would probably put some local companies out of business. So, for the time being at least, it seems that the topic of herbal medicines will continue to provoke debate.</p>\n\n            <div class=\"empty-space\"></div>\n        </section>\n        \n        <div id=\"divider\"></div>",
+    "questionGroups": [
+      {
+        "groupId": "group-1",
+        "kind": "table_completion",
+        "questionIds": [
+          "q1",
+          "q2",
+          "q3",
+          "q4"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q1-2-3-4-anchor\">\n                 <h4>Questions 14–17</h4>\n                <p>Reading Passage 2 has five paragraphs, <strong>A–E</strong>.</p>\n                <p>Which paragraph contains the following information?</p>\n                <p><em>NB You may use any letter more than once.</em></p>\n                <div style=\"overflow-x: auto;\">\n                    <table class=\"matching-table\">\n                        <thead>\n                            <tr>\n                                <th style=\"min-width: 200px;\"></th>\n                                <th>A</th><th>B</th><th>C</th><th>D</th><th>E</th>\n                            </tr>\n                        </thead>\n                        <tbody>\n                            <tr>\n                                <td><strong>14</strong> a reference to the interest shown by large corporations in herbal remedies</td>\n                                <td><input type=\"radio\" name=\"q1\" value=\"A\"></td><td><input type=\"radio\" name=\"q1\" value=\"B\"></td><td><input type=\"radio\" name=\"q1\" value=\"C\"></td><td><input type=\"radio\" name=\"q1\" value=\"D\"></td><td><input type=\"radio\" name=\"q1\" value=\"E\"></td>\n                            </tr>\n                            <tr>\n                                <td><strong>15</strong> examples of the uses of one particular herbal medicine</td>\n                                <td><input type=\"radio\" name=\"q2\" value=\"A\"></td><td><input type=\"radio\" name=\"q2\" value=\"B\"></td><td><input type=\"radio\" name=\"q2\" value=\"C\"></td><td><input type=\"radio\" name=\"q2\" value=\"D\"></td><td><input type=\"radio\" name=\"q2\" value=\"E\"></td>\n                            </tr>\n                            <tr>\n                                <td><strong>16</strong> a warning that small companies cannot afford stricter controls of the herbal medicine industry</td>\n                                <td><input type=\"radio\" name=\"q3\" value=\"A\"></td><td><input type=\"radio\" name=\"q3\" value=\"B\"></td><td><input type=\"radio\" name=\"q3\" value=\"C\"></td><td><input type=\"radio\" name=\"q3\" value=\"D\"></td><td><input type=\"radio\" name=\"q3\" value=\"E\"></td>\n                            </tr>\n                            <tr>\n                                <td><strong>17</strong> a statement by one expert about the effectiveness and limitations of herbal medicines</td>\n                                <td><input type=\"radio\" name=\"q4\" value=\"A\"></td><td><input type=\"radio\" name=\"q4\" value=\"B\"></td><td><input type=\"radio\" name=\"q4\" value=\"C\"></td><td><input type=\"radio\" name=\"q4\" value=\"D\"></td><td><input type=\"radio\" name=\"q4\" value=\"E\"></td>\n                            </tr>\n                        </tbody>\n                    </table>\n                </div>\n            </div>",
+        "leadHtml": "<h3>Questions</h3>"
+      },
+      {
+        "groupId": "group-2",
+        "kind": "summary_completion",
+        "questionIds": [
+          "q5",
+          "q6",
+          "q7",
+          "q8"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q5-6-7-8-anchor\">\n                <h4>Questions 18–21</h4>\n                <p>Complete the summary below.</p>\n                <p>Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</p>\n                <div class=\"notes-completion\">\n                    <h4>The history of herbal medicines in New Zealand</h4>\n                    <p>Originally, the Maori people consumed plants to help deal with <strong>18</strong> <input name=\"q5\" type=\"text\" id=\"q18_input\">, and also as food. When Europeans settled in the country, a <strong>19</strong> <input name=\"q6\" type=\"text\" id=\"q19_input\"> by James Neil showed that some of them also recognised the medicinal value of native plants. However, criticism of herbal medicine appeared in one newspaper in 1907. The following year, the use of herbal medicines was made more difficult because of a new <strong>20</strong> <input name=\"q7\" type=\"text\" id=\"q20_input\">, and for a time in the mid-20th century, they were largely ignored. Then in the 1980s a number of institutions started offering a <strong>21</strong> <input name=\"q8\" type=\"text\" id=\"q21_input\"> in the subject, although for many years there was still little evidence to support their use, because doctors and academics were not interested.</p>\n                </div>\n            </div>"
+      },
+      {
+        "groupId": "group-3",
+        "kind": "matching",
+        "questionIds": [
+          "q9",
+          "q10",
+          "q11",
+          "q12",
+          "q13"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q9-10-11-12-13-anchor\">\n                <h4>Questions 22–26</h4>\n                <p>Look at the following statements (Questions 22–26) and the list of people below.</p>\n                <p>Match each statement with the correct person, <strong>A, B, C or D</strong>.</p>\n                <p><em>NB You may use any letter more than once.</em></p>\n                \n                <div class=\"match-question-item\">\n                    <p><strong>22</strong> There ought to be restrictions on where you can buy some herbal medicines.</p>\n                    <div class=\"match-dropzone\" data-question=\"q9\"></div>\n                </div>\n                <div class=\"match-question-item\">\n                    <p><strong>23</strong> The authorities stopped supporting one project without a good reason.</p>\n                    <div class=\"match-dropzone\" data-question=\"q10\"></div>\n                </div>\n                <div class=\"match-question-item\">\n                     <p><strong>24</strong> The herbal medicine industry has an effect on the environment where some plant-based medicines are found.</p>\n                    <div class=\"match-dropzone\" data-question=\"q11\"></div>\n                </div>\n                 <div class=\"match-question-item\">\n                    <p><strong>25</strong> New Zealand has the human resources and natural environment to grow herbs commercially.</p>\n                    <div class=\"match-dropzone\" data-question=\"q12\"></div>\n                </div>\n                <div class=\"match-question-item\">\n                    <p><strong>26</strong> It is essential for herbal medicines to have international certification, despite the cost.</p>\n                   <div class=\"match-dropzone\" data-question=\"q13\"></div>\n               </div>\n\n                <div class=\"options-pool\" id=\"people-options-pool\">\n                    <strong>List of People</strong>\n                    <div class=\"pool-items\">\n                        <div class=\"drag-item\" id=\"person-A\" draggable=\"true\" data-option=\"A\">A Phil Rasmussen</div>\n                        <div class=\"drag-item\" id=\"person-B\" draggable=\"true\" data-option=\"B\">B Malcolm Douglas</div>\n                        <div class=\"drag-item\" id=\"person-C\" draggable=\"true\" data-option=\"C\">C Sandra Clair</div>\n                        <div class=\"drag-item\" id=\"person-D\" draggable=\"true\" data-option=\"D\">D Isla Burgess</div>\n                    </div>\n                </div>\n            </div>",
+        "allowOptionReuse": true
+      }
+    ],
+    "answerKey": {
+      "q1": "D",
+      "q2": "A",
+      "q3": "E",
+      "q4": "D",
+      "q5": "pain",
+      "q6": "book",
+      "q7": "law",
+      "q8": "course",
+      "q9": "A",
+      "q10": "B",
+      "q11": "D",
+      "q12": "A",
+      "q13": "C"
+    },
+    "questionDisplayMap": {
+      "q1": "14",
+      "q2": "15",
+      "q3": "16",
+      "q4": "17",
+      "q5": "18",
+      "q6": "19",
+      "q7": "20",
+      "q8": "21",
+      "q9": "22",
+      "q10": "23",
+      "q11": "24",
+      "q12": "25",
+      "q13": "26"
+    },
+    "questionOrder": [
+      "q1",
+      "q2",
+      "q3",
+      "q4",
+      "q5",
+      "q6",
+      "q7",
+      "q8",
+      "q9",
+      "q10",
+      "q11",
+      "q12",
+      "q13"
+    ],
+    "explanations": [
+      {
+        "sectionTitle": "1. 段落信息匹配（Questions 14–17）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 14,
+            "text": "（1）题目 14：a reference to the interest shown by large corporations in herbal remedies\n题目翻译：提及大公司对草药制剂的兴趣\n答案：D\n解析：定位 Paragraph D 中 'global pharmaceutical companies are buying up natural supplement brands or developing their own'，即全球制药公司正在收购天然补充剂品牌或开发自己的品牌，体现了大公司对草药的兴趣，因此答案为 D。",
+            "questionId": "q1"
+          },
+          {
+            "questionNumber": 15,
+            "text": "（2）题目 15：examples of the uses of one particular herbal medicine\n题目翻译：一种特定草药的用途示例\n答案：A\n解析：定位 Paragraph A 中 'Take arnica, for example, a popular pharmaceutical herb used to treat bruises and joint problems'，以山金车为例，说明其用于治疗瘀伤和关节问题，这是一种特定草药的用途示例，因此答案为 A。",
+            "questionId": "q2"
+          },
+          {
+            "questionNumber": 16,
+            "text": "（3）题目 16：a warning that small companies cannot afford stricter controls of the herbal medicine industry\n题目翻译：警告小公司无法承担草药行业更严格的管控\n答案：E\n解析：定位 Paragraph E 中 'others argue that more regulation would be prohibitively expensive for all but the largest manufacturers... a change that would probably put some local companies out of business'，即更多监管对除最大制造商外的所有人都将昂贵得令人望而却步，可能使一些本地公司倒闭，因此答案为 E。",
+            "questionId": "q3"
+          },
+          {
+            "questionNumber": 17,
+            "text": "（4）题目 17：a statement by one expert about the effectiveness and limitations of herbal medicines\n题目翻译：一位专家关于草药有效性和局限性的声明\n答案：D\n解析：定位 Paragraph D 中拉斯穆森的话 ''It doesn't do everything,' he says, 'but there's a lot it does do, particularly in terms of preventative health care.''，即草药不能包治百病（局限性），但在预防保健方面有很多作用（有效性），因此答案为 D。",
+            "questionId": "q4"
+          }
+        ],
+        "questionRange": {
+          "start": 14,
+          "end": 17
+        },
+        "text": "题目 14：a reference to the interest shown by large corporations in herbal remedies（提及大公司对草药制剂的兴趣）\n答案：D\n解析：定位 Paragraph D 中 'global pharmaceutical companies are buying up natural supplement brands or developing their own'，即全球制药公司正在收购天然补充剂品牌或开发自己的品牌，体现了大公司对草药的兴趣，因此答案为 D。\n题目 15：examples of the uses of one particular herbal medicine（一种特定草药的用途示例）\n答案：A\n解析：定位 Paragraph A 中 'Take arnica, for example, a popular pharmaceutical herb used to treat bruises and joint problems'，以山金车为例，说明其用于治疗瘀伤和关节问题，这是一种特定草药的用途示例，因此答案为 A。\n题目 16：a warning that small companies cannot afford stricter controls of the herbal medicine industry（警告小公司无法承担草药行业更严格的管控）\n答案：E\n解析：定位 Paragraph E 中 'others argue that more regulation would be prohibitively expensive for all but the largest manufacturers... a change that would probably put some local companies out of business'，即更多监管对除最大制造商外的所有人都将昂贵得令人望而却步，可能使一些本地公司倒闭，因此答案为 E。\n题目 17：a statement by one expert about the effectiveness and limitations of herbal medicines（一位专家关于草药有效性和局限性的声明）\n答案：D\n解析：定位 Paragraph D 中拉斯穆森的话 ''It doesn't do everything,' he says, 'but there's a lot it does do, particularly in terms of preventative health care.''，即草药不能包治百病（局限性），但在预防保健方面有很多作用（有效性），因此答案为 D。"
+      },
+      {
+        "sectionTitle": "2. 摘要填空（Questions 18–21）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 18,
+            "text": "（1）题目 18：Originally, the Maori people consumed plants to help deal with ______, and also as food.\n题目翻译：最初，毛利人食用植物来帮助应对 ______，也作为食物。\n答案：pain\n解析：定位 Paragraph B 中 'the forest was well stocked with edible plants that were an obvious source of nutrition, but that were taken for the relief of pain as well'，即森林中的可食用植物也被用于缓解疼痛（pain），因此答案为 pain。",
+            "questionId": "q5"
+          },
+          {
+            "questionNumber": 19,
+            "text": "（2）题目 19：When Europeans settled in the country, a ______ by James Neil showed that some of them also recognised the medicinal value of native plants.\n题目翻译：当欧洲人定居该国时，詹姆斯·尼尔的一本 ______ 表明他们中的一些人也认识到本土植物的药用价值。\n答案：book\n解析：定位 Paragraph B 中 'in his book published in 1891, herbalist James Neil described manuka and koromiko as among New Zealand's most valuable herbs'，尼尔在其 1891 年出版的书籍（book）中描述了新西兰最有价值的草药，因此答案为 book。",
+            "questionId": "q6"
+          },
+          {
+            "questionNumber": 20,
+            "text": "（3）题目 20：The following year, the use of herbal medicines was made more difficult because of a new ______, and for a time in the mid-20th century, they were largely ignored.\n题目翻译：第二年，由于一项新的 ______，草药的使用变得更加困难，在 20 世纪中叶的一段时间内，它们在很大程度上被忽视。\n答案：law\n解析：定位 Paragraph C 中 'In 1908 the government passed a controversial law that had the effect of restricting traditional herbal practice'，即 1908 年政府通过了一项有争议的法律（law），限制了传统草药实践，因此答案为 law。",
+            "questionId": "q7"
+          },
+          {
+            "questionNumber": 21,
+            "text": "（4）题目 21：Then in the 1980s a number of institutions started offering a ______ in the subject, although for many years there was still little evidence to support their use, because doctors and academics were not interested.\n题目翻译：然后在 20 世纪 80 年代，一些机构开始提供该学科的 ______，尽管多年来仍几乎没有证据支持其使用，因为医生和学者不感兴趣。\n答案：course\n解析：定位 Paragraph C 中 'in the 1980s the NZAMH was revived, and it became possible to complete a course in herbal medicine at several polytechnics around the country'，即在 20 世纪 80 年代，可以在全国几所理工学院完成草药医学课程（course），因此答案为 course。",
+            "questionId": "q8"
+          }
+        ],
+        "questionRange": {
+          "start": 18,
+          "end": 21
+        },
+        "text": "题目 18：Originally, the Maori people consumed plants to help deal with ______, and also as food.\n题目翻译：最初，毛利人食用植物来帮助应对 ______，也作为食物。\n答案：pain\n解析：定位 Paragraph B 中 'the forest was well stocked with edible plants that were an obvious source of nutrition, but that were taken for the relief of pain as well'，即森林中的可食用植物也被用于缓解疼痛（pain），因此答案为 pain。\n题目 19：When Europeans settled in the country, a ______ by James Neil showed that some of them also recognised the medicinal value of native plants.\n题目翻译：当欧洲人定居该国时，詹姆斯·尼尔的一本 ______ 表明他们中的一些人也认识到本土植物的药用价值。\n答案：book\n解析：定位 Paragraph B 中 'in his book published in 1891, herbalist James Neil described manuka and koromiko as among New Zealand's most valuable herbs'，尼尔在其 1891 年出版的书籍（book）中描述了新西兰最有价值的草药，因此答案为 book。\n题目 20：The following year, the use of herbal medicines was made more difficult because of a new ______, and for a time in the mid-20th century, they were largely ignored.\n题目翻译：第二年，由于一项新的 ______，草药的使用变得更加困难，在 20 世纪中叶的一段时间内，它们在很大程度上被忽视。\n答案：law\n解析：定位 Paragraph C 中 'In 1908 the government passed a controversial law that had the effect of restricting traditional herbal practice'，即 1908 年政府通过了一项有争议的法律（law），限制了传统草药实践，因此答案为 law。\n题目 21：Then in the 1980s a number of institutions started offering a ______ in the subject, although for many years there was still little evidence to support their use, because doctors and academics were not interested.\n题目翻译：然后在 20 世纪 80 年代，一些机构开始提供该学科的 ______，尽管多年来仍几乎没有证据支持其使用，因为医生和学者不感兴趣。\n答案：course\n解析：定位 Paragraph C 中 'in the 1980s the NZAMH was revived, and it became possible to complete a course in herbal medicine at several polytechnics around the country'，即在 20 世纪 80 年代，可以在全国几所理工学院完成草药医学课程（course），因此答案为 course。"
+      },
+      {
+        "sectionTitle": "3. 人物观点匹配（Questions 22–26）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 22,
+            "text": "（1）题目 22：There ought to be restrictions on where you can buy some herbal medicines.\n题目翻译：应该限制购买某些草药的地点。\n答案：A\n解析：定位 Paragraph E 中拉斯穆森（Rasmussen）的观点 'consumers shouldn't be able to go to their local supermarket and buy St John's Wort'，即消费者不应该能够在当地超市购买圣约翰草，说明应该限制购买地点，因此答案为 A（Phil Rasmussen）。",
+            "questionId": "q9"
+          },
+          {
+            "questionNumber": 23,
+            "text": "（2）题目 23：The authorities stopped supporting one project without a good reason.\n题目翻译：当局没有充分理由就停止支持一个项目。\n答案：B\n解析：定位 Paragraph A 中道格拉斯（Douglas）的观点 'the initiative was stopped in its tracks when the government abruptly halted funding for the research programme. It was an unjustified move, according to agronomist Malcolm Douglas'，即政府突然停止资助研究项目是一个不合理的举动，因此答案为 B（Malcolm Douglas）。",
+            "questionId": "q10"
+          },
+          {
+            "questionNumber": 24,
+            "text": "（3）题目 24：The herbal medicine industry has an effect on the environment where some plant-based medicines are found.\n题目翻译：草药行业对一些植物药的产地环境产生影响。\n答案：D\n解析：定位 Paragraph E 中伯吉斯（Burgess）的观点 ''More than 400,000 tonnes of medicinal and aromatic plants are traded in the world each year,' says Burgess. 'The great majority of these are harvested from the wild, so they each have an impact on their local ecosystem.''，即大量野生采集的草药对当地生态系统产生影响，因此答案为 D（Isla Burgess）。",
+            "questionId": "q11"
+          },
+          {
+            "questionNumber": 25,
+            "text": "（4）题目 25：New Zealand has the human resources and natural environment to grow herbs commercially.\n题目翻译：新西兰拥有人力资源和自然环境来商业化种植草药。\n答案：A\n解析：定位 Paragraph A 中拉斯穆森（Rasmussen）的观点 'there is huge potential for New Zealand to develop a herb industry based on the excellent growing conditions and expertise there'，即新西兰有巨大潜力基于优良的生长条件和专业知识发展草药产业，因此答案为 A（Phil Rasmussen）。",
+            "questionId": "q12"
+          },
+          {
+            "questionNumber": 26,
+            "text": "（5）题目 26：It is essential for herbal medicines to have international certification, despite the cost.\n题目翻译：尽管有成本，草药获得国际认证是必要的。\n答案：C\n解析：定位 Paragraph D 中克莱尔（Clair）的观点 'such assurance is expensive but necessary if you want to export herbal remedies to the rest of the world'，即这种保证虽然昂贵，但如果你想将草药出口到世界其他地方，这是必要的，因此答案为 C（Sandra Clair）。",
+            "questionId": "q13"
+          }
+        ],
+        "questionRange": {
+          "start": 22,
+          "end": 26
+        },
+        "text": "题目 22：There ought to be restrictions on where you can buy some herbal medicines.\n题目翻译：应该限制购买某些草药的地点。\n答案：A\n解析：定位 Paragraph E 中拉斯穆森（Rasmussen）的观点 'consumers shouldn't be able to go to their local supermarket and buy St John's Wort'，即消费者不应该能够在当地超市购买圣约翰草，说明应该限制购买地点，因此答案为 A（Phil Rasmussen）。\n题目 23：The authorities stopped supporting one project without a good reason.\n题目翻译：当局没有充分理由就停止支持一个项目。\n答案：B\n解析：定位 Paragraph A 中道格拉斯（Douglas）的观点 'the initiative was stopped in its tracks when the government abruptly halted funding for the research programme. It was an unjustified move, according to agronomist Malcolm Douglas'，即政府突然停止资助研究项目是一个不合理的举动，因此答案为 B（Malcolm Douglas）。\n题目 24：The herbal medicine industry has an effect on the environment where some plant-based medicines are found.\n题目翻译：草药行业对一些植物药的产地环境产生影响。\n答案：D\n解析：定位 Paragraph E 中伯吉斯（Burgess）的观点 ''More than 400,000 tonnes of medicinal and aromatic plants are traded in the world each year,' says Burgess. 'The great majority of these are harvested from the wild, so they each have an impact on their local ecosystem.''，即大量野生采集的草药对当地生态系统产生影响，因此答案为 D（Isla Burgess）。\n题目 25：New Zealand has the human resources and natural environment to grow herbs commercially.\n题目翻译：新西兰拥有人力资源和自然环境来商业化种植草药。\n答案：A\n解析：定位 Paragraph A 中拉斯穆森（Rasmussen）的观点 'there is huge potential for New Zealand to develop a herb industry based on the excellent growing conditions and expertise there'，即新西兰有巨大潜力基于优良的生长条件和专业知识发展草药产业，因此答案为 A（Phil Rasmussen）。\n题目 26：It is essential for herbal medicines to have international certification, despite the cost.\n题目翻译：尽管有成本，草药获得国际认证是必要的。\n答案：C\n解析：定位 Paragraph D 中克莱尔（Clair）的观点 'such assurance is expensive but necessary if you want to export herbal remedies to the rest of the world'，即这种保证虽然昂贵，但如果你想将草药出口到世界其他地方，这是必要的，因此答案为 C（Sandra Clair）。"
+      }
+    ],
+    "passageNotes": [
+      {
+        "label": "Paragraph A",
+        "text": "在自然环境中采集植物和草药用作药物是一种古老的做法。据药剂师兼医学草药师菲尔·拉斯穆森（Phil Rasmussen）称，如今新西兰有巨大潜力基于其优良的生长条件和专业知识发展草药产业。以山金车（arnica）为例，这是一种用于治疗瘀伤和关节问题的热门药用植物。传统上由欧洲的罗姆人社区采集，如今随着人们对这种小型高山植物能力的兴趣日益增长，其全球需求量大增。2008 年为植物与食品研究组织撰写的一份报告得出结论，新西兰有很好的机会为国际市场种植山金车花和根。然而，当政府突然停止对该研究项目的资助时，这一倡议被迫中止。据农学家马尔科姆·道格拉斯（Malcolm Douglas）称，这是一个不合理的举动，基于对杂草入侵的一些不准确观点。"
+      },
+      {
+        "label": "Paragraph B",
+        "text": "新西兰草药的历史长期以来一直充满此类分歧。对于早期的毛利人——新西兰的原住民——来说，森林中储备着丰富的可食用植物，这些植物显然是营养来源，但也被用于缓解疼痛。虽然新西兰最早的欧洲医生依赖进口的干草药，但许多人热衷于将本土植物纳入他们的实践中：草药师詹姆斯·尼尔（James Neil）在 1891 年出版的书中，将麦卢卡（manuka）和科罗米科（koromiko）描述为新西兰最有价值的草药之一。尽管在一些人中很受欢迎，但草药学仍然有其批评者。1907 年，当时还很年轻的新西兰医学草药师协会（NZAMH）主席尼尔向议会请愿，要求赋予草药师法律地位，但未获成功。《晚邮报》（Evening Post）也许总结了对立的立场，声称草药学'已经过时了'。"
+      },
+      {
+        "label": "Paragraph C",
+        "text": "事实上，传统毛利医学面临着更为严峻的挑战。1908 年，政府通过了一项有争议的法律，其效果是限制传统草药实践，或将其推向地下。然后在 20 世纪中叶的一段短暂时期内，草药医学在很大程度上被忽视，被大多数医学界人士摒弃，并从医学院课程中消失。但一个延续数百年的传统不会如此轻易地消失，在 20 世纪 80 年代，NZAMH 得以复兴，在全国几所理工学院都可以完成草药医学课程。然而，问题仍然是如何将植物医学文化与常规科学思维联系起来，以便在普通民众中推广草药的使用。多年来，关于草药有效的有限证据因全科医生和科学界缺乏兴趣而被削弱。"
+      },
+      {
+        "label": "Paragraph D",
+        "text": "如今，20 世纪 80 年代草药师的理念——饮食多样化、多吃新鲜水果和蔬菜、认识压力——已被医学界完全接受，并在整个社会广泛实践。天然健康产品在药店是畅销品，全球制药公司正在收购天然补充剂品牌或开发自己的品牌。更重要的是，据拉斯穆森称，可靠的临床试验表明草药通常是安全的——比大多数药物更安全。'它不能包治百病，'他说，'但它确实有很多作用，特别是在预防保健方面。'当今面向出口的草药生产商面临的一个重要问题是如何为不同国家的消费者保证标准。换句话说，需要某种形式的全球认可的文档系统。拉斯穆森的提取物系列是在全球公认的优良制造规范（GMP）方案下生产的。桑德拉·克莱尔（Sandra Clair）生产的系列也是如此，她说这种保证虽然昂贵，但如果你想将草药出口到世界其他地方，这是必要的。在 2007 年因议会缺乏支持而被放弃后，最近又恢复了推出联合澳新机构以单一精简的许可流程监管草药的举措。"
+      },
+      {
+        "label": "Paragraph E",
+        "text": "行业内有些人支持进一步的监管。据拉斯穆森称，一些草药应该需要合格的医学草药师或医生的处方。例如，据拉斯穆森称，消费者不应该能够去当地超市购买圣约翰草（St John's Wort），因为它可能与至少十种药物产生有害的相互作用。国际药用植物保护研究小组成员伊斯拉·伯吉斯（Isla Burgess）同意需要更严格的监管，但出于不同的原因。'世界上每年交易的药用和芳香植物超过 40 万吨，'伯吉斯说。'其中绝大多数是从野外采集的，因此它们都对当地生态系统产生影响。'她以美国的榆树为例，这些榆树因'滑榆'产品市场的增长而被环剥和剥皮：这种濒危树木应该受到保护。但其他人认为，更多的监管对除最大的制造商之外的所有人来说都将昂贵得令人望而却步——克莱尔警告说，这种变化可能会使一些本地公司倒闭。因此，至少目前看来，草药的话题将继续引发辩论。"
+      }
+    ]
+  },
+  {
+    "id": "p2-high-19",
+    "title": "Mind Music 脑海中的音乐(心灵音乐)",
+    "category": "P2",
+    "frequency": "高频",
+    "difficultyScore": 4,
+    "passageHtml": "<h2>Mind Music</h2>\n            <h4>Scientists investigate 'earworms', the music we can't get out of our heads</h4>\n            \n            <p><strong>A</strong> Ever had a song stuck in your head, playing on an endless loop? Scientists call them 'involuntary musical images', or 'earworms', and a wave of new research is shining light on why they occur and what can be learned from them. Some neuroscientists and cognitive psychologists are studying earworms to explore the mysteries of memory and the part of the brain that is beyond our conscious control. ‘The idea that we have full control over our thought processes is an illusion,' says psychologist Lauren Stewart, who founded the master's program in music, mind and brain at Goldsmiths, University of London, UK, where recent research has taken place. Researchers haven't been able to watch what happens in the brain when earworms occur, because they happen unpredictably. Much of what is known about them comes from surveys, questionnaires, diaries and lab experiments.</p>\n            <p><strong>B</strong> A Goldsmiths study published in the journal Memory and Cognition this year showed that the singing we hear in our heads tends to be true to actual recordings. Researchers had 17 volunteers tap to the beat of any earworm they heard during a four-day period while a device attached to their wrist recorded their movements. The tapping tempos were within 10% of the tempos of the original recordings. Another Goldsmiths study, published this year in Consciousness and Cognition, found that people who report hearing earworms often, and find them most intrusive, have slightly different brain structures, with more gray matter in areas associated with processing emotions.</p>\n            <p><strong>C</strong> Studies also show that the music in our heads often starts playing during times of 'low cognitive load', such as while showering, getting dressed, walking, or doing chores. Dr Stewart likens earworms to 'sonic screen savers' that keep the mind entertained while it is otherwise unoccupied. She and her colleagues tested that theory by having volunteers listen to songs and giving them various tasks afterwards. The volunteers who sat idly for the next five minutes were the most likely to report hearing the music in their heads. Dr Stewart observed that the more challenging the activity, the less likely the volunteers were to hear the music. Diary studies also show songs tend to match people's moods and therefore they are not random. If you are energized and upbeat, an earworm that occurs is likely to be uptempo too.</p>\n            <p><strong>D</strong> Songs the brain fixates on are usually those it has been exposed to recently, surveys show, which is why tunes getting heavy radio play frequently top the earworm charts. Even tunes you may have heard but didn't pay attention to can worm their way into your subconscious, says Ira Hyman, a psychologist at Western Washington University in Bellingham, USA. In an unpublished study there, participants who listened to music while doing other tasks were more likely to report that the songs returned as earworms later on, compared with participants who simply listened.</p>\n            <p><strong>E</strong> Some earworms are just fragments of a song that repeat like a broken record. So, when the mind hits a part of a song it can't remember, it loops back rather than moving on. That could make an earworm even more entrenched, Dr Hyman says. According to a theory known as the Zeigarnik effect, named for a Soviet psychologist, Bluma Zeigarnik, unfinished thoughts and activities weigh on the mind more heavily than those that are completed, although experiments exposing students to interrupted songs have yielded mixed results.</p>\n            <p><strong>F</strong> Researchers say they can't pinpoint a spot in the brain where earworms live. Imaging studies by Andrea Halpern at Bucknell University, in Lewisburg, USA, have shown that deliberately imagining music and actually listening to music activate many of the same neurological networks. Dr Halpern's earlier studies showed that when subjects listened to the first few notes of familiar music, areas in the right frontal and superior temporal portions of the brain became activated, along with the supplementary motor area at the top, which is typically involved in remembering sequences. When the same subjects listened to unfamiliar music and were asked to recall it, there was activity in the left frontal portions of the brain instead.</p>\n            <p><strong>G</strong> One factor that makes some songs stick might be repetition. 'Repetition leads to familiarity which leads to anticipation, which is satisfied by hearing the song,' says John Seabrook, author of The Song Machine: Inside the Hit Factory, about how producers pump pop songs full of aural ‘hooks', the punchy melodic phrases designed to target the brain and leave it wanting more. The researchers are comparing the melodic structure of 100 often mentioned songs with 100 similarly popular songs that weren't cited as earworms, to assess the difference. Songs with earworm potential appear to share certain features: a repeating pattern of ups and downs in pitch, and irregular musical intervals.</p>\n            <p><strong>H</strong> The researchers plan next to test their results in reverse, and play ringtones from songs of both the earworm and non-earworm variety for volunteers several times a day to see which ones get stuck. Drs Stewart and Halpern are now working together to recruit survey participants for a study looking at whether people at different stages of life experience earworms differently. ‘You can argue that older people might get them more often because they know more songs,' Dr Halpern says. ‘But the few responses we have so far indicate that they have earworms less often. It could be that they don't play music as often as younger people do.</p>\n            <div class=\"empty-space\"></div>\n        </section>\n        \n        <div id=\"divider\"></div>",
+    "questionGroups": [
+      {
+        "groupId": "group-1",
+        "kind": "table_completion",
+        "questionIds": [
+          "q1",
+          "q2",
+          "q3",
+          "q4"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q1-2-3-4-anchor\">\n                 <h4>Questions 14–17</h4>\n                <p>Reading Passage 2 has eight paragraphs, <strong>A–H</strong>.</p>\n                <p>Which paragraph contains the following information?</p>\n                <div style=\"overflow-x: auto;\">\n                    <table class=\"matching-table\">\n                        <thead>\n                            <tr>\n                                <th style=\"min-width: 200px;\"></th>\n                                <th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th>\n                            </tr>\n                        </thead>\n                        <tbody>\n                            <tr>\n                                <td><strong>14</strong> a description of the characteristics common to songs with earworms</td>\n                                <td><input type=\"radio\" name=\"q1\" value=\"A\"></td><td><input type=\"radio\" name=\"q1\" value=\"B\"></td><td><input type=\"radio\" name=\"q1\" value=\"C\"></td><td><input type=\"radio\" name=\"q1\" value=\"D\"></td><td><input type=\"radio\" name=\"q1\" value=\"E\"></td><td><input type=\"radio\" name=\"q1\" value=\"F\"></td><td><input type=\"radio\" name=\"q1\" value=\"G\"></td><td><input type=\"radio\" name=\"q1\" value=\"H\"></td>\n                            </tr>\n                            <tr>\n                                <td><strong>15</strong> a justification for research into earworms</td>\n                                <td><input type=\"radio\" name=\"q2\" value=\"A\"></td><td><input type=\"radio\" name=\"q2\" value=\"B\"></td><td><input type=\"radio\" name=\"q2\" value=\"C\"></td><td><input type=\"radio\" name=\"q2\" value=\"D\"></td><td><input type=\"radio\" name=\"q2\" value=\"E\"></td><td><input type=\"radio\" name=\"q2\" value=\"F\"></td><td><input type=\"radio\" name=\"q2\" value=\"G\"></td><td><input type=\"radio\" name=\"q2\" value=\"H\"></td>\n                            </tr>\n                            <tr>\n                                <td><strong>16</strong> a description of the brain's reaction to known and unknown songs</td>\n                                <td><input type=\"radio\" name=\"q3\" value=\"A\"></td><td><input type=\"radio\" name=\"q3\" value=\"B\"></td><td><input type=\"radio\" name=\"q3\" value=\"C\"></td><td><input type=\"radio\" name=\"q3\" value=\"D\"></td><td><input type=\"radio\" name=\"q3\" value=\"E\"></td><td><input type=\"radio\" name=\"q3\" value=\"F\"></td><td><input type=\"radio\" name=\"q3\" value=\"G\"></td><td><input type=\"radio\" name=\"q3\" value=\"H\"></td>\n                            </tr>\n                            <tr>\n                                <td><strong>17</strong> details of proposed research into the frequency with which earworms occur in different age groups</td>\n                                <td><input type=\"radio\" name=\"q4\" value=\"A\"></td><td><input type=\"radio\" name=\"q4\" value=\"B\"></td><td><input type=\"radio\" name=\"q4\" value=\"C\"></td><td><input type=\"radio\" name=\"q4\" value=\"D\"></td><td><input type=\"radio\" name=\"q4\" value=\"E\"></td><td><input type=\"radio\" name=\"q4\" value=\"F\"></td><td><input type=\"radio\" name=\"q4\" value=\"G\"></td><td><input type=\"radio\" name=\"q4\" value=\"H\"></td>\n                            </tr>\n                        </tbody>\n                    </table>\n                </div>\n            </div>",
+        "leadHtml": "<h3>Questions</h3>"
+      },
+      {
+        "groupId": "group-2",
+        "kind": "summary_completion",
+        "questionIds": [
+          "q5",
+          "q6",
+          "q7",
+          "q8"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q5-6-7-8-anchor\">\n                <h4>Questions 18–21</h4>\n                <p>Complete the summary below.</p>\n                <p>Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</p>\n                \n                <div class=\"summary-completion\">\n                    <h4>Goldsmiths study</h4>\n                    <p>Researchers from Goldsmiths concluded that the music we imagine in our minds is quite similar to recordings. They proved this by asking volunteers to record the rhythm of music using a monitor on their <strong>18</strong> <input name=\"q5\" type=\"text\" id=\"q18_input\">. Further research has demonstrated that those who hear earworms more frequently have brains that may deal with <strong>19</strong> <input name=\"q6\" type=\"text\" id=\"q19_input\"> differently from other people. Dr Stewart also believes that the brain is <strong>20</strong> <input name=\"q7\" type=\"text\" id=\"q20_input\"> by earworms when it is not focused on a task. In fact, a reduction in the occurrence of earworms was found to be directly related to how <strong>21</strong> <input name=\"q8\" type=\"text\" id=\"q21_input\"> the task was. Interestingly, volunteers' diaries revealed that the songs they heard inside their head reflected their moods, so the choice of music is not accidental.</p>\n                </div>\n            </div>"
+      },
+      {
+        "groupId": "group-3",
+        "kind": "matching",
+        "questionIds": [
+          "q9",
+          "q10",
+          "q11",
+          "q12",
+          "q13"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q9-10-11-12-13-anchor\">\n                <h4>Questions 22–26</h4>\n                <p>Look at the following statements and the list of researchers below.</p>\n                <p>Match each statement with the correct person, <strong>A, B, C</strong> or <strong>D</strong>.</p>\n                <p><em>NB You may use any letter more than once.</em></p>\n                \n                <div class=\"match-question-item\">\n                    <p><strong>22</strong> Some musicians create music that is intentionally memorable.</p>\n                    <div class=\"match-dropzone\" data-question=\"q9\"></div>\n                </div>\n                <div class=\"match-question-item\">\n                    <p><strong>23</strong> People are unable to completely regulate how they think.</p>\n                    <div class=\"match-dropzone\" data-question=\"q10\"></div>\n                </div>\n                 <div class=\"match-question-item\">\n                     <p><strong>24</strong> We can remember songs without knowing that we have heard them.</p>\n                    <div class=\"match-dropzone\" data-question=\"q11\"></div>\n                </div>\n                 <div class=\"match-question-item\">\n                    <p><strong>25</strong> Thinking about music has a similar effect on the brain to hearing music.</p>\n                    <div class=\"match-dropzone\" data-question=\"q12\"></div>\n                </div>\n                <div class=\"match-question-item\">\n                    <p><strong>26</strong> Earworms are more persistent when only a short section of the song is constantly replayed.</p>\n                    <div class=\"match-dropzone\" data-question=\"q13\"></div>\n                </div>\n\n                <div class=\"options-pool\" id=\"researcher-options-pool\">\n                    <strong>List of Researchers</strong>\n                    <div class=\"pool-items\">\n                        <div class=\"drag-item\" id=\"researcher-A\" draggable=\"true\" data-option=\"A\">A Lauren Stewart</div>\n                        <div class=\"drag-item\" id=\"researcher-B\" draggable=\"true\" data-option=\"B\">B Ira Hyman</div>\n                        <div class=\"drag-item\" id=\"researcher-C\" draggable=\"true\" data-option=\"C\">C Andrea Halpern</div>\n                        <div class=\"drag-item\" id=\"researcher-D\" draggable=\"true\" data-option=\"D\">D John Seabrook</div>\n                    </div>\n                </div>\n            </div>",
+        "allowOptionReuse": true
+      }
+    ],
+    "answerKey": {
+      "q1": "G",
+      "q2": "A",
+      "q3": "F",
+      "q4": "H",
+      "q5": "wrist",
+      "q6": "emotions",
+      "q7": "entertained",
+      "q8": "challenging",
+      "q9": "D",
+      "q10": "A",
+      "q11": "B",
+      "q12": "C",
+      "q13": "B"
+    },
+    "questionDisplayMap": {
+      "q1": "14",
+      "q2": "15",
+      "q3": "16",
+      "q4": "17",
+      "q5": "18",
+      "q6": "19",
+      "q7": "20",
+      "q8": "21",
+      "q9": "22",
+      "q10": "23",
+      "q11": "24",
+      "q12": "25",
+      "q13": "26"
+    },
+    "questionOrder": [
+      "q1",
+      "q2",
+      "q3",
+      "q4",
+      "q5",
+      "q6",
+      "q7",
+      "q8",
+      "q9",
+      "q10",
+      "q11",
+      "q12",
+      "q13"
+    ],
+    "explanations": [
+      {
+        "sectionTitle": "1. 段落信息匹配（Questions 14–17）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 14,
+            "text": "（1）题目 14：a description of the characteristics common to songs with earworms\n题目翻译：对具有耳虫特征的歌曲的共同特征的描述\n答案：G\n解析：定位 Paragraph G 中 'Songs with earworm potential appear to share certain features: a repeating pattern of ups and downs in pitch, and irregular musical intervals'，即具有耳虫潜力的歌曲似乎具有某些共同特征：音高的重复上升和下降模式，以及不规则的音乐间隔，因此答案为 G。",
+            "questionId": "q1"
+          },
+          {
+            "questionNumber": 15,
+            "text": "（2）题目 15：a justification for research into earworms\n题目翻译：研究耳虫的理由\n答案：A\n解析：定位 Paragraph A 中 'Some neuroscientists and cognitive psychologists are studying earworms to explore the mysteries of memory and the part of the brain that is beyond our conscious control'，即研究耳虫是为了探索记忆的奥秘和大脑中超出意识控制的部分，这是研究的理由，因此答案为 A。",
+            "questionId": "q2"
+          },
+          {
+            "questionNumber": 16,
+            "text": "（3）题目 16：a description of the brain's reaction to known and unknown songs\n题目翻译：大脑对已知和未知歌曲的反应的描述\n答案：F\n解析：定位 Paragraph F 中 'when subjects listened to the first few notes of familiar music, areas in the right frontal and superior temporal portions of the brain became activated... When the same subjects listened to unfamiliar music and were asked to recall it, there was activity in the left frontal portions of the brain instead'，即熟悉音乐激活右脑区域，不熟悉音乐激活左脑区域，因此答案为 F。",
+            "questionId": "q3"
+          },
+          {
+            "questionNumber": 17,
+            "text": "（4）题目 17：details of proposed research into the frequency with which earworms occur in different age groups\n题目翻译：关于不同年龄段耳虫发生频率的拟议研究的详细信息\n答案：H\n解析：定位 Paragraph H 中 'Drs Stewart and Halpern are now working together to recruit survey participants for a study looking at whether people at different stages of life experience earworms differently'，即正在招募参与者研究不同人生阶段的人是否有不同的耳虫体验，因此答案为 H。",
+            "questionId": "q4"
+          }
+        ],
+        "questionRange": {
+          "start": 14,
+          "end": 17
+        },
+        "text": "题目 14：a description of the characteristics common to songs with earworms（对具有耳虫特征的歌曲的共同特征的描述）\n答案：G\n解析：定位 Paragraph G 中 'Songs with earworm potential appear to share certain features: a repeating pattern of ups and downs in pitch, and irregular musical intervals'，即具有耳虫潜力的歌曲似乎具有某些共同特征：音高的重复上升和下降模式，以及不规则的音乐间隔，因此答案为 G。\n题目 15：a justification for research into earworms（研究耳虫的理由）\n答案：A\n解析：定位 Paragraph A 中 'Some neuroscientists and cognitive psychologists are studying earworms to explore the mysteries of memory and the part of the brain that is beyond our conscious control'，即研究耳虫是为了探索记忆的奥秘和大脑中超出意识控制的部分，这是研究的理由，因此答案为 A。\n题目 16：a description of the brain's reaction to known and unknown songs（大脑对已知和未知歌曲的反应的描述）\n答案：F\n解析：定位 Paragraph F 中 'when subjects listened to the first few notes of familiar music, areas in the right frontal and superior temporal portions of the brain became activated... When the same subjects listened to unfamiliar music and were asked to recall it, there was activity in the left frontal portions of the brain instead'，即熟悉音乐激活右脑区域，不熟悉音乐激活左脑区域，因此答案为 F。\n题目 17：details of proposed research into the frequency with which earworms occur in different age groups（关于不同年龄段耳虫发生频率的拟议研究的详细信息）\n答案：H\n解析：定位 Paragraph H 中 'Drs Stewart and Halpern are now working together to recruit survey participants for a study looking at whether people at different stages of life experience earworms differently'，即正在招募参与者研究不同人生阶段的人是否有不同的耳虫体验，因此答案为 H。"
+      },
+      {
+        "sectionTitle": "2. 摘要填空（Questions 18–21）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 18,
+            "text": "（1）题目 18：They proved this by asking volunteers to record the rhythm of music using a monitor on their ______.\n题目翻译：他们通过让志愿者使用 ______ 上的监测器记录音乐节奏来证明这一点。\n答案：wrist\n解析：定位 Paragraph B 中 'while a device attached to their wrist recorded their movements'，即附着在志愿者手腕（wrist）上的设备记录他们的动作，因此答案为 wrist。",
+            "questionId": "q5"
+          },
+          {
+            "questionNumber": 19,
+            "text": "（2）题目 19：Further research has demonstrated that those who hear earworms more frequently have brains that may deal with ______ differently from other people.\n题目翻译：进一步研究表明，更频繁听到耳虫的人的大脑处理 ______ 的方式可能与常人不同。\n答案：emotions\n解析：定位 Paragraph B 中 'people who report hearing earworms often, and find them most intrusive, have slightly different brain structures, with more gray matter in areas associated with processing emotions'，即经常听到耳虫的人在与处理情绪（emotions）相关的区域有更多灰质，因此答案为 emotions。",
+            "questionId": "q6"
+          },
+          {
+            "questionNumber": 20,
+            "text": "（3）题目 20：Dr Stewart also believes that the brain is ______ by earworms when it is not focused on a task.\n题目翻译：斯图尔特博士还认为，当大脑不专注于任务时，会被耳虫 ______。\n答案：entertained\n解析：定位 Paragraph C 中 'Dr Stewart likens earworms to sonic screen savers that keep the mind entertained while it is otherwise unoccupied'，即耳虫像'声音屏保'一样让心灵在未被占用时保持娱乐状态（entertained），因此答案为 entertained。",
+            "questionId": "q7"
+          },
+          {
+            "questionNumber": 21,
+            "text": "（4）题目 21：In fact, a reduction in the occurrence of earworms was found to be directly related to how ______ the task was.\n题目翻译：事实上，耳虫发生的减少被发现与任务的 ______ 程度直接相关。\n答案：challenging\n解析：定位 Paragraph C 中 'Dr Stewart observed that the more challenging the activity, the less likely the volunteers were to hear the music'，即活动越具有挑战性（challenging），志愿者听到音乐的可能性就越小，因此答案为 challenging。",
+            "questionId": "q8"
+          }
+        ],
+        "questionRange": {
+          "start": 18,
+          "end": 21
+        },
+        "text": "题目 18：They proved this by asking volunteers to record the rhythm of music using a monitor on their ______.\n题目翻译：他们通过让志愿者使用 ______ 上的监测器记录音乐节奏来证明这一点。\n答案：wrist\n解析：定位 Paragraph B 中 'while a device attached to their wrist recorded their movements'，即附着在志愿者手腕（wrist）上的设备记录他们的动作，因此答案为 wrist。\n题目 19：Further research has demonstrated that those who hear earworms more frequently have brains that may deal with ______ differently from other people.\n题目翻译：进一步研究表明，更频繁听到耳虫的人的大脑处理 ______ 的方式可能与常人不同。\n答案：emotions\n解析：定位 Paragraph B 中 'people who report hearing earworms often, and find them most intrusive, have slightly different brain structures, with more gray matter in areas associated with processing emotions'，即经常听到耳虫的人在与处理情绪（emotions）相关的区域有更多灰质，因此答案为 emotions。\n题目 20：Dr Stewart also believes that the brain is ______ by earworms when it is not focused on a task.\n题目翻译：斯图尔特博士还认为，当大脑不专注于任务时，会被耳虫 ______。\n答案：entertained\n解析：定位 Paragraph C 中 'Dr Stewart likens earworms to sonic screen savers that keep the mind entertained while it is otherwise unoccupied'，即耳虫像'声音屏保'一样让心灵在未被占用时保持娱乐状态（entertained），因此答案为 entertained。\n题目 21：In fact, a reduction in the occurrence of earworms was found to be directly related to how ______ the task was.\n题目翻译：事实上，耳虫发生的减少被发现与任务的 ______ 程度直接相关。\n答案：challenging\n解析：定位 Paragraph C 中 'Dr Stewart observed that the more challenging the activity, the less likely the volunteers were to hear the music'，即活动越具有挑战性（challenging），志愿者听到音乐的可能性就越小，因此答案为 challenging。"
+      },
+      {
+        "sectionTitle": "3. 人物观点匹配（Questions 22–26）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 22,
+            "text": "（1）题目 22：Some musicians create music that is intentionally memorable.\n题目翻译：一些音乐家创作故意让人记住的音乐。\n答案：D\n解析：定位 Paragraph G 中西布鲁克（Seabrook）的观点 'how producers pump pop songs full of aural hooks, the punchy melodic phrases designed to target the brain and leave it wanting more'，即制作人如何在流行歌曲中注入旨在瞄准大脑的听觉'钩子'，说明音乐是故意让人记住的，因此答案为 D（John Seabrook）。",
+            "questionId": "q9"
+          },
+          {
+            "questionNumber": 23,
+            "text": "（2）题目 23：People are unable to completely regulate how they think.\n题目翻译：人们无法完全控制自己的思维方式。\n答案：A\n解析：定位 Paragraph A 中斯图尔特（Stewart）的观点 'The idea that we have full control over our thought processes is an illusion'，即我们完全控制自己思维过程的想法是一种幻觉，因此答案为 A（Lauren Stewart）。",
+            "questionId": "q10"
+          },
+          {
+            "questionNumber": 24,
+            "text": "（3）题目 24：We can remember songs without knowing that we have heard them.\n题目翻译：我们可以在不知道自己听过的情况下记住歌曲。\n答案：B\n解析：定位 Paragraph D 中海曼（Hyman）的观点 'Even tunes you may have heard but didn't pay attention to can worm their way into your subconscious'，即即使你可能听过但没有注意到的曲调也会潜入你的潜意识，因此答案为 B（Ira Hyman）。",
+            "questionId": "q11"
+          },
+          {
+            "questionNumber": 25,
+            "text": "（4）题目 25：Thinking about music has a similar effect on the brain to hearing music.\n题目翻译：思考音乐对大脑的影响与听音乐相似。\n答案：C\n解析：定位 Paragraph F 中哈尔彭（Halpern）的研究 'deliberately imagining music and actually listening to music activate many of the same neurological networks'，即刻意想象音乐和实际听音乐会激活许多相同的神经网络，因此答案为 C（Andrea Halpern）。",
+            "questionId": "q12"
+          },
+          {
+            "questionNumber": 26,
+            "text": "（5）题目 26：Earworms are more persistent when only a short section of the song is constantly replayed.\n题目翻译：当只有歌曲的一小段不断重复播放时，耳虫会更加持久。\n答案：B\n解析：定位 Paragraph E 中海曼（Hyman）的观点 'Some earworms are just fragments of a song that repeat like a broken record... when the mind hits a part of a song it can't remember, it loops back rather than moving on. That could make an earworm even more entrenched'，即当大脑遇到记不住的部分时会循环回去，这会使耳虫更加根深蒂固，因此答案为 B（Ira Hyman）。",
+            "questionId": "q13"
+          }
+        ],
+        "questionRange": {
+          "start": 22,
+          "end": 26
+        },
+        "text": "题目 22：Some musicians create music that is intentionally memorable.\n题目翻译：一些音乐家创作故意让人记住的音乐。\n答案：D\n解析：定位 Paragraph G 中西布鲁克（Seabrook）的观点 'how producers pump pop songs full of aural hooks, the punchy melodic phrases designed to target the brain and leave it wanting more'，即制作人如何在流行歌曲中注入旨在瞄准大脑的听觉'钩子'，说明音乐是故意让人记住的，因此答案为 D（John Seabrook）。\n题目 23：People are unable to completely regulate how they think.\n题目翻译：人们无法完全控制自己的思维方式。\n答案：A\n解析：定位 Paragraph A 中斯图尔特（Stewart）的观点 'The idea that we have full control over our thought processes is an illusion'，即我们完全控制自己思维过程的想法是一种幻觉，因此答案为 A（Lauren Stewart）。\n题目 24：We can remember songs without knowing that we have heard them.\n题目翻译：我们可以在不知道自己听过的情况下记住歌曲。\n答案：B\n解析：定位 Paragraph D 中海曼（Hyman）的观点 'Even tunes you may have heard but didn't pay attention to can worm their way into your subconscious'，即即使你可能听过但没有注意到的曲调也会潜入你的潜意识，因此答案为 B（Ira Hyman）。\n题目 25：Thinking about music has a similar effect on the brain to hearing music.\n题目翻译：思考音乐对大脑的影响与听音乐相似。\n答案：C\n解析：定位 Paragraph F 中哈尔彭（Halpern）的研究 'deliberately imagining music and actually listening to music activate many of the same neurological networks'，即刻意想象音乐和实际听音乐会激活许多相同的神经网络，因此答案为 C（Andrea Halpern）。\n题目 26：Earworms are more persistent when only a short section of the song is constantly replayed.\n题目翻译：当只有歌曲的一小段不断重复播放时，耳虫会更加持久。\n答案：B\n解析：定位 Paragraph E 中海曼（Hyman）的观点 'Some earworms are just fragments of a song that repeat like a broken record... when the mind hits a part of a song it can't remember, it loops back rather than moving on. That could make an earworm even more entrenched'，即当大脑遇到记不住的部分时会循环回去，这会使耳虫更加根深蒂固，因此答案为 B（Ira Hyman）。"
+      }
+    ],
+    "passageNotes": [
+      {
+        "label": "Paragraph A",
+        "text": "有没有一首歌在你脑海中挥之不去，无休止地循环播放？科学家称之为'非自主音乐意象'（involuntary musical images）或'耳虫'（earworms），新一波的研究正在揭示它们出现的原因以及可以从中学习到什么。一些神经科学家和认知心理学家正在研究耳虫，以探索记忆的奥秘以及大脑中超出我们有意识控制的部分。伦敦大学金史密斯学院音乐、心智与大脑硕士项目的创始人、心理学家劳伦·斯图尔特（Lauren Stewart）说：'我们完全控制自己思维过程的想法是一种幻觉。'研究人员一直无法观察耳虫出现时大脑中发生了什么，因为它们的发生不可预测。目前所知的很多信息来自调查、问卷、日记和实验室实验。"
+      },
+      {
+        "label": "Paragraph B",
+        "text": "金史密斯学院今年发表在《记忆与认知》杂志上的一项研究表明，我们脑海中听到的歌声往往与实际录音一致。研究人员让 17 名志愿者在四天时间内听到任何耳虫时跟着节拍敲击，同时附着在手腕上的设备记录他们的动作。敲击的节奏与原始录音的节奏相差在 10% 以内。金史密斯学院今年发表在《意识与认知》上的另一项研究发现，经常报告听到耳虫且认为它们最具侵入性的人大脑结构略有不同，在与处理情绪相关的区域有更多的灰质。"
+      },
+      {
+        "label": "Paragraph C",
+        "text": "研究还表明，我们脑海中的音乐经常在'低认知负荷'时开始播放，比如洗澡、穿衣、散步或做家务时。斯图尔特博士将耳虫比作'声音屏保'，在心灵未被占用时让其保持娱乐状态。她和她的同事通过让志愿者听歌曲然后给他们各种任务来测试这一理论。接下来五分钟无所事事的志愿者最有可能报告在脑海中听到音乐。斯图尔特博士观察到，活动越具有挑战性，志愿者听到音乐的可能性就越小。日记研究还表明，歌曲往往与人们的情绪相匹配，因此它们不是随机的。如果你精力充沛、情绪高涨，出现的耳虫很可能也是快节奏的。"
+      },
+      {
+        "label": "Paragraph D",
+        "text": "调查显示，大脑痴迷的歌曲通常是最近接触过的歌曲，这就是为什么在电台大量播放的曲调经常位居耳虫排行榜榜首。美国华盛顿西部大学心理学家艾拉·海曼（Ira Hyman）说，即使你可能听过但没有注意到的曲调也会潜入你的潜意识。在那里一项未发表的研究中，在做其他任务时听音乐的参与者比仅仅听音乐的参与者更有可能报告这些歌曲后来以耳虫形式回归。"
+      },
+      {
+        "label": "Paragraph E",
+        "text": "一些耳虫只是歌曲的片段，像坏掉的唱片一样重复。因此，当大脑遇到记不住的歌曲部分时，它会循环回去而不是继续前进。海曼博士说，这可能会使耳虫更加根深蒂固。根据以苏联心理学家布鲁玛·蔡加尼克（Bluma Zeigarnik）命名的蔡加尼克效应理论，未完成的思想和活动比已完成的思想和活动对大脑的负担更重，尽管让学生接触被中断歌曲的实验结果喜忧参半。"
+      },
+      {
+        "label": "Paragraph F",
+        "text": "研究人员说他们无法定位大脑中耳虫存在的位置。美国宾夕法尼亚州刘易斯堡巴克内尔大学安德烈亚·哈尔彭（Andrea Halpern）的成像研究表明，刻意想象音乐和实际听音乐会激活许多相同的神经网络。哈尔彭博士早期的研究表明，当受试者听到熟悉音乐的前几个音符时，大脑的右额叶和上颞叶区域以及通常涉及记忆序列的辅助运动区会被激活。当同样的受试者听不熟悉的音乐并被要求回忆时，大脑的左额叶区域则会出现活动。"
+      },
+      {
+        "label": "Paragraph G",
+        "text": "使一些歌曲具有粘性的一个因素可能是重复。《歌曲机器：热门工厂内幕》的作者约翰·西布鲁克（John Seabrook）说：'重复带来熟悉，熟悉带来期待，听到歌曲就满足了期待。'他讲述了制作人如何在流行歌曲中注入听觉'钩子'——旨在瞄准大脑并让它想要更多的有力旋律短语。研究人员正在比较 100 首常被提及的歌曲与 100 首同样流行但未被引用为耳虫的歌曲的旋律结构，以评估差异。具有耳虫潜力的歌曲似乎具有某些共同特征：音高的重复上升和下降模式，以及不规则的音乐间隔。"
+      },
+      {
+        "label": "Paragraph H",
+        "text": "研究人员计划接下来反向测试他们的结果，每天多次为志愿者播放耳虫和非耳虫类型歌曲的铃声，看看哪些会卡住。斯图尔特博士和哈尔彭博士现在正在合作招募调查参与者，研究不同人生阶段的人是否会有不同的耳虫体验。'你可能会说老年人可能更经常有耳虫，因为他们知道更多的歌曲，'哈尔滕博士说。'但我们到目前为止收到的少数回复表明他们出现耳虫的频率较低。这可能是因为他们不像年轻人那样经常播放音乐。"
+      }
+    ]
+  },
+  {
+    "id": "p1-medium-20",
+    "title": "The Development of Plastics 塑料的发展史",
+    "category": "P1",
+    "frequency": "高频",
+    "difficultyScore": 2.5,
+    "passageHtml": "<h2>READING PASSAGE 1</h2>\n<p>You should spend about 20 minutes on Questions 1-13, which are based on Reading Passage 1 below.</p>\n<h3>The Development of Plastics</h3>\n<p>The first plastics were developed as a substitute for natural rubber. Chemically, rubber is a polymer—a compound containing large molecules that are formed by the bonding of many smaller, simpler units, repeated over and over again. The same bonding principle—polymerization—is the basis of the creation of a huge range of plastics by the chemical industry.</p>\n<p>The first plastic was developed as a result of a competition in the USA. In the 1860s, \\$10,000 was offered to anybody who could replace ivory—supplies of which were declining—with something equally good as a material for making billiard balls. The prize was won by John Wesley Hyatt, with a material called celluloid. Celluloid was made by dissolving cellulose, a carbohydrate obtained from plants, in a solution of camphor dissolved in ethanol. This new material rapidly found other applications in the manufacture of everyday products such as knife handles and detachable collars and cuffs. But perhaps the best-known celluloid product was photographic film, without which the film industry could never have taken off at the end of the 19th century.</p>\n<p>Celluloid can be repeatedly softened and reshaped by heat, and is known as a thermoplastic. In 1907, Leo Baekeland (1863–1944), a Belgian chemist working in the USA, invented a different kind of plastic by causing phenol and formaldehyde to react together. Baekeland called it Bakelite, and it was the first of the thermosets—plastics that can be cast and moulded while hot, but cannot be softened by heat and reshaped once they have set. Bakelite was a good insulator, and was resistant to water and acid. With these properties it was soon being used in the manufacture of electrical switches as well as a variety of domestic items.</p>\n<p>As the century went on, the range of newly developed plastics increased. Chemists began looking for other small molecules that could be strung together to make polymers. In the 1930s, chemists in Britain discovered that the gas ethylene would polymerize under heat and pressure to form a thermoplastic they called polythene. Polypropylene followed in the 1950s. Both are used to make bottles, pipes and plastic bags. A small change in the starting material—replacing a hydrogen atom in ethylene with a chlorine atom—produced rigid PVC (polyvinyl chloride), a fireproof plastic suitable for drains and gutters. By adding certain chemicals, a soft form of PVC can be produced, suitable as a substitute for rubber in items such as waterproof clothing. A closely related plastic is Teflon or PTFE (polytetrafluoroethylene). It produces very little friction, making it ideal for products such as non-stick frying pans.</p>\n<p>Polystyrene, a hard, clear material like glass, was developed during the 1930s in Germany, and its applications included food containers and toys. Expanded polystyrene is rigid and is widely used in packaging and insulation. Polyurethane, developed in the same country, was commonly produced as a foam, which was very useful in the production of insulating materials.</p>\n<p>In the 1930s, the first of the man-made fibres was created—nylon. Its inventor was a chemist called Wallace Carothers (1896–1937), who worked for the Du Pont company in the USA. He found that under the right conditions two particular chemicals would form a polymer that could be pumped out through holes and then stretched to form long glossy threads that could be woven like silk. Its first use was to make parachutes for the US armed forces in World War II. In the postwar years, it completely replaced silk in the manufacture of stockings.</p>\n<p>Many other synthetic fibres joined nylon, including Orlon, Acrilan, and Terylene. Today most garments are made of a blend of natural fibres, such as cotton and wool, and man-made fibres that make fabrics easier to look after.</p>\n<p>Despite its enormous usefulness, plastic has its drawbacks. In fact, one of its great strengths—its indestructibility—is its greatest disadvantage. Beaches all over the world, even on the remotest island, are littered with plastic bottles that nothing can destroy. Nor is it very easy to recycle plastics, as different types of plastic are often found in the same items and call for different treatments.</p>\n<p>Plastics can be made biodegradable by incorporating into their structure a material such as starch, which is attacked by bacteria and causes the plastic to fall apart. Other materials can be incorporated that gradually decay in sunlight—although bottles made of such materials have to be stored in the dark, to ensure they do not disintegrate before they have been used.</p>",
+    "questionGroups": [
+      {
+        "groupId": "group-1",
+        "kind": "table_completion",
+        "questionIds": [
+          "q1",
+          "q2",
+          "q3",
+          "q4",
+          "q5",
+          "q6",
+          "q7"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q1-2-3-4-5-6-7-anchor\">\n<h4>Questions 1-7</h4>\n<p>Complete the table below.</p>\n<p>Choose <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</p>\n<p>Write your answers in boxes 1-7 on your answer sheet.</p>\n<table class=\"table-completion\">\n<thead><tr><th colspan=\"5\">Early types of plastic</th></tr><tr><th>Name</th><th>Date</th><th>Country of origin</th><th>Properties</th><th>Common uses</th></tr></thead>\n<tbody>\n<tr><td><em>Celluloid</em></td><td>1860s</td><td>USA</td><td>can be soften and reshaped by heat</td><td>billiard balls (original use)<br>cutlery<br>clothing<br><strong>1</strong> <input type=\"text\" name=\"q1\"></td></tr>\n<tr><td><strong>2</strong> <input type=\"text\" name=\"q2\"></td><td>1907</td><td>USA</td><td>can't be softened after setting; good insulator; resistant to water and acid</td><td><strong>3</strong> <input type=\"text\" name=\"q3\"><br>household object</td></tr>\n<tr><td><em>Polythene</em></td><td>1930s</td><td><strong>4</strong> <input type=\"text\" name=\"q4\"></td><td>can be softened and reshaped by heat</td><td>bottles<br>pipes<br>plastic bags</td></tr>\n<tr><td><em>Polypropylene</em></td><td>1950s</td><td></td><td></td><td>bottles<br>pipes<br>plastic bags</td></tr>\n<tr><td><em><strong>Rigid</strong> PVC</em></td><td></td><td></td><td>is <strong>5</strong> <input type=\"text\" name=\"q5\"></td><td>external piping</td></tr>\n<tr><td><em>Soft PVC</em></td><td></td><td></td><td></td><td>outdoor clothing</td></tr>\n<tr><td><em>Polystyrene</em></td><td>1930s</td><td>Germany</td><td>resembles <strong>6</strong> <input type=\"text\" name=\"q6\"></td><td>food containers<br>toy</td></tr>\n<tr><td><em>Polyurethane</em></td><td></td><td>Germany</td><td>usually manufactured as a <strong>7</strong> <input type=\"text\" name=\"q7\"></td><td>insulation</td></tr>\n</tbody>\n</table>\n</div>",
+        "leadHtml": "<h3>Questions</h3>"
+      },
+      {
+        "groupId": "group-2",
+        "kind": "true_false_not_given",
+        "questionIds": [
+          "q8",
+          "q9",
+          "q10",
+          "q11",
+          "q12",
+          "q13"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q8-9-10-11-12-13-anchor\">\n<h4>Questions 8-13</h4>\n<p>Do the following statements agree with the information in Reading Passage 1?</p>\n<p>In boxes 8-13 on your answer sheet, write:</p>\n<ul>\n<li><strong>TRUE</strong> if the statement agrees with the information</li>\n<li><strong>FALSE</strong> if the statement contradicts the information</li>\n<li><strong>NOT GIVEN</strong> if there is no information about this</li>\n</ul>\n<div class=\"question-item\"><p><strong>8</strong> The chemical structure of rubber is very different from that of plastics.</p><div class=\"radio-options\"><label><input name=\"q8\" type=\"radio\" value=\"TRUE\"> TRUE</label><label><input name=\"q8\" type=\"radio\" value=\"FALSE\"> FALSE</label><label><input name=\"q8\" type=\"radio\" value=\"NOT GIVEN\"> NOT GIVEN</label></div></div>\n<div class=\"question-item\"><p><strong>9</strong> John Wesley Hyatt was an industrial chemist.</p><div class=\"radio-options\"><label><input name=\"q9\" type=\"radio\" value=\"TRUE\"> TRUE</label><label><input name=\"q9\" type=\"radio\" value=\"FALSE\"> FALSE</label><label><input name=\"q9\" type=\"radio\" value=\"NOT GIVEN\"> NOT GIVEN</label></div></div>\n<div class=\"question-item\"><p><strong>10</strong> Celluloid and Bakelite react in the same way to heat.</p><div class=\"radio-options\"><label><input name=\"q10\" type=\"radio\" value=\"TRUE\"> TRUE</label><label><input name=\"q10\" type=\"radio\" value=\"FALSE\"> FALSE</label><label><input name=\"q10\" type=\"radio\" value=\"NOT GIVEN\"> NOT GIVEN</label></div></div>\n<div class=\"question-item\"><p><strong>11</strong> If an object is made of several plastics, these prove hard to break down and reuse.</p><div class=\"radio-options\"><label><input name=\"q11\" type=\"radio\" value=\"TRUE\"> TRUE</label><label><input name=\"q11\" type=\"radio\" value=\"FALSE\"> FALSE</label><label><input name=\"q11\" type=\"radio\" value=\"NOT GIVEN\"> NOT GIVEN</label></div></div>\n<div class=\"question-item\"><p><strong>12</strong> Adding starch to plastic makes it more durable.</p><div class=\"radio-options\"><label><input name=\"q12\" type=\"radio\" value=\"TRUE\"> TRUE</label><label><input name=\"q12\" type=\"radio\" value=\"FALSE\"> FALSE</label><label><input name=\"q12\" type=\"radio\" value=\"NOT GIVEN\"> NOT GIVEN</label></div></div>\n<div class=\"question-item\"><p><strong>13</strong> Containers which are designed to decompose need particular storage conditions.</p><div class=\"radio-options\"><label><input name=\"q13\" type=\"radio\" value=\"TRUE\"> TRUE</label><label><input name=\"q13\" type=\"radio\" value=\"FALSE\"> FALSE</label><label><input name=\"q13\" type=\"radio\" value=\"NOT GIVEN\"> NOT GIVEN</label></div></div>\n</div>"
+      }
+    ],
+    "answerKey": {
+      "q1": "photographic film",
+      "q2": "Bakelite",
+      "q3": "electrical switches",
+      "q4": "Britain",
+      "q5": "fireproof",
+      "q6": "glass",
+      "q7": "foam",
+      "q8": "FALSE",
+      "q9": "NOT GIVEN",
+      "q10": "FALSE",
+      "q11": "TRUE",
+      "q12": "FALSE",
+      "q13": "TRUE"
+    },
+    "questionDisplayMap": {
+      "q1": "1",
+      "q2": "2",
+      "q3": "3",
+      "q4": "4",
+      "q5": "5",
+      "q6": "6",
+      "q7": "7",
+      "q8": "8",
+      "q9": "9",
+      "q10": "10",
+      "q11": "11",
+      "q12": "12",
+      "q13": "13"
+    },
+    "questionOrder": [
+      "q1",
+      "q2",
+      "q3",
+      "q4",
+      "q5",
+      "q6",
+      "q7",
+      "q8",
+      "q9",
+      "q10",
+      "q11",
+      "q12",
+      "q13"
+    ],
+    "explanations": [
+      {
+        "sectionTitle": "1. 表格填空（Questions 1–7）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 1,
+            "text": "题目：Celluloid — Common uses: billiard balls, cutlery, clothing, ______\n题目翻译：Celluloid——常见用途：台球、餐具、服饰、______\n答案：photographic film\n解析：PDF 第二段写明最著名的 celluloid product 是 photographic film，且说明没有它电影业无法在 19 世纪末起飞。",
+            "questionId": "q1"
+          },
+          {
+            "questionNumber": 2,
+            "text": "题目：Name of plastic, 1907, USA: ______\n题目翻译：1907 年、美国的塑料名称：______\n答案：Bakelite\n解析：PDF 第三段明确写 Leo Baekeland 在 1907 年发明这种塑料，并命名为 Bakelite。",
+            "questionId": "q2"
+          },
+          {
+            "questionNumber": 3,
+            "text": "题目：Bakelite — Common uses: ______, household object\n题目翻译：Bakelite——常见用途：______、家居物品\n答案：electrical switches\n解析：PDF 第三段说 Bakelite was soon being used in the manufacture of electrical switches as well as a variety of domestic items。表格的 household object 对应 domestic items，空格对应 electrical switches。",
+            "questionId": "q3"
+          },
+          {
+            "questionNumber": 4,
+            "text": "题目：Polythene — Country of origin: ______\n题目翻译：Polythene——原产国/地区：______\n答案：Britain\n解析：PDF 第四段写 chemists in Britain discovered ... polythene。表格列名是 Country of origin，所以答案应为 Britain，不是旧数据里的 British。",
+            "questionId": "q4"
+          },
+          {
+            "questionNumber": 5,
+            "text": "题目：Rigid PVC — Properties: is ______\n题目翻译：硬质 PVC——性质：是 ______ 的\n答案：fireproof\n解析：PDF 第四段直接说 rigid PVC 是 a fireproof plastic suitable for drains and gutters。",
+            "questionId": "q5"
+          },
+          {
+            "questionNumber": 6,
+            "text": "题目：Polystyrene — Properties: resembles ______\n题目翻译：Polystyrene——性质：像 ______\n答案：glass\n解析：PDF 第五段说 Polystyrene 是 a hard, clear material like glass。表格提示 resembles，空格只需填 glass。",
+            "questionId": "q6"
+          },
+          {
+            "questionNumber": 7,
+            "text": "题目：Polyurethane — Properties: usually manufactured as a ______\n题目翻译：Polyurethane——性质：通常制成一种 ______\n答案：foam\n解析：PDF 第五段说 Polyurethane was commonly produced as a foam，并用于 insulating materials。",
+            "questionId": "q7"
+          }
+        ],
+        "questionRange": {
+          "start": 1,
+          "end": 7
+        },
+        "text": "题目1答案photographic film：新版 PDF 的 celluloid 表格空格对应最著名产品。\n题目2答案Bakelite：1907 年由 Baekeland 命名。\n题目3答案electrical switches：新版题表对应 electrical switches，而不是旧版 switches。\n题目4答案Britain：题表问 Country of origin，PDF 原文是 chemists in Britain。\n题目5答案fireproof：rigid PVC 的性质。\n题目6答案glass：题表问 resembles，PDF 是 like glass。\n题目7答案foam：Polyurethane usually manufactured as a foam。"
+      },
+      {
+        "sectionTitle": "2. 判断正误（Questions 8–13）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 8,
+            "text": "题目：The chemical structure of rubber is very different from that of plastics.\n题目翻译：橡胶的化学结构与塑料非常不同。\n答案：FALSE\n解析：PDF 第一段说 rubber is a polymer，并说同一种 polymerization 原理是制造大量塑料的基础。因此“very different”与原文相反。",
+            "questionId": "q8"
+          },
+          {
+            "questionNumber": 9,
+            "text": "题目：John Wesley Hyatt was an industrial chemist.\n题目翻译：John Wesley Hyatt 是一名工业化学家。\n答案：NOT GIVEN\n解析：PDF 只说明 John Wesley Hyatt 赢得竞赛并使用 celluloid，没有说明他是否是 industrial chemist。",
+            "questionId": "q9"
+          },
+          {
+            "questionNumber": 10,
+            "text": "题目：Celluloid and Bakelite react in the same way to heat.\n题目翻译：Celluloid 和 Bakelite 对热的反应方式相同。\n答案：FALSE\n解析：PDF 第三段说 Celluloid 可反复受热软化和重塑；Bakelite 定型后不能被热软化。两者对热反应不同。",
+            "questionId": "q10"
+          },
+          {
+            "questionNumber": 11,
+            "text": "题目：If an object is made of several plastics, these prove hard to break down and reuse.\n题目翻译：如果一个物品由多种塑料制成，它们会很难分解和再利用。\n答案：TRUE\n解析：PDF 最后一段说塑料不容易回收，因为同一物品里常有不同类型塑料，且需要不同处理方式。这与题干含义一致。",
+            "questionId": "q11"
+          },
+          {
+            "questionNumber": 12,
+            "text": "题目：Adding starch to plastic makes it more durable.\n题目翻译：向塑料中加入淀粉会让它更耐用。\n答案：FALSE\n解析：PDF 说加入 starch 会让塑料被细菌攻击并 fall apart，目的是更易降解，不是更耐用。",
+            "questionId": "q12"
+          },
+          {
+            "questionNumber": 13,
+            "text": "题目：Containers which are designed to decompose need particular storage conditions.\n题目翻译：设计为可分解的容器需要特殊储存条件。\n答案：TRUE\n解析：PDF 最后一句说这类瓶子必须 stored in the dark，避免使用前 disintegrate。",
+            "questionId": "q13"
+          }
+        ],
+        "questionRange": {
+          "start": 8,
+          "end": 13
+        },
+        "text": "题目8答案FALSE：橡胶和塑料共享 polymerization 原理。\n题目9答案NOT GIVEN：PDF 未说明 Hyatt 是 industrial chemist。\n题目10答案FALSE：Celluloid 可热重塑，Bakelite 固化后不可。\n题目11答案TRUE：多塑料混合导致回收处理困难。\n题目12答案FALSE：starch 让塑料更易分解。\n题目13答案TRUE：可分解容器需要避光储存。"
+      }
+    ],
+    "passageNotes": [
+      {
+        "label": "Paragraph 1",
+        "text": "新版 PDF 直接说第一批塑料是作为天然橡胶替代品开发的。橡胶本身是聚合物，许多小单元反复连接成大分子；同一种聚合原则也是化学工业制造大量塑料的基础。"
+      },
+      {
+        "label": "Paragraph 2",
+        "text": "第一种塑料源自美国一场替代象牙台球材料的竞赛。John Wesley Hyatt 用 celluloid 获胜。新版 PDF 说 celluloid 来自植物纤维素、樟脑和乙醇溶液，随后用于刀柄、可拆领口和袖口等日用品；最著名产品是 photographic film。"
+      },
+      {
+        "label": "Paragraph 3",
+        "text": "Celluloid 可被反复加热软化并重塑，是 thermoplastic。1907 年，Leo Baekeland 在美国发明 Bakelite；它属于 thermosets，可热铸模，但定型后不能再被热软化。新版 PDF 强调 Bakelite 是良好绝缘体，耐水耐酸，用于 electrical switches 和各种家用品。"
+      },
+      {
+        "label": "Paragraph 4",
+        "text": "随着塑料种类增加，英国化学家在 1930 年代发现乙烯可聚合成 polythene；1950 年代出现 polypropylene，两者都用于瓶子、管道和塑料袋。改变化学起始材料得到 rigid PVC，它是 fireproof，适合排水沟槽；soft PVC 可用于 waterproof clothing；Teflon/PTFE 摩擦很小，适合不粘锅。"
+      },
+      {
+        "label": "Paragraph 5",
+        "text": "Polystyrene 在 1930 年代于德国开发，是硬质、透明、像玻璃的材料，用于 food containers 和 toys。Expanded polystyrene 是 rigid，用于包装和保温。Polyurethane 同样在德国开发，通常制成 foam，用于 insulating materials。新版 PDF 随后介绍 nylon：Wallace Carothers 在杜邦工作，尼龙先用于二战降落伞，战后取代丝袜中的丝。"
+      },
+      {
+        "label": "Paragraph 6",
+        "text": "塑料有巨大用途，但最大缺点来自它的 indestructibility。全球海滩都有难以破坏的塑料瓶。回收也不容易，因为同一物品里常有不同种类塑料，处理方式不同。加入 starch 可让塑料被细菌攻击后分解；加入会在阳光中衰变的材料时，瓶子必须避光储存，避免使用前解体。"
+      }
+    ]
+  },
+  {
+    "id": "p2-high-21",
+    "title": "Stress Less 工作压力",
+    "category": "P2",
+    "frequency": "高频",
+    "difficultyScore": 3,
+    "passageHtml": "<h2>READING PASSAGE 2</h2>\n            <p>You should spend about 20 minutes on Questions 14–26, which are based on Reading Passage 2 below.</p>\n            \n            <h3>Stress Less</h3>\n            \n            <p>How busy is too busy? For some it means sometimes having to have a short lunch; for others it may mean missing lunch altogether. For a few, it is not being able to take a day off once a month. Then there is a group of people for whom working every evening and weekend is normal, and feeling stressed is taken for granted. For most senior executives, workloads swing between extremely busy and frenzied. Neil Plumridge, vice-president of a management consultancy company, says that his weeks vary from a 'manageable' 45 hours to 80 hours, but average 60 hours.</p>\n            <p>Three signs warn Plumridge about his workload: sleep, scheduling and family. He knows he is doing too much when he gets less than six hours' sleep for three consecutive nights, when he is constantly having to reschedule appointments, and when he misses a family birthday or anniversary. ‘Then,' he says, ‘I know things are out of control.' Plumridge states that stress is often caused by his having unrealistic expectations of himself. ‘I'll promise a client that I'll do something tomorrow, and then I'll promise another client that I'll do the same thing, when I know it's not going to happen. I could have said: “Why don't I give that to you in 48 hours?” The client wouldn't care.'</p>\n            <p>Over-committing is something people experience as an individual problem. However, new research indicates that people may be designed to over-commit. A study in the <em>Journal of Experimental Psychology</em> shows that people always believe that they will be less busy in the future. This is a misapprehension according to the authors of the report, Gal Zauberman of the University of North Carolina and John Lynch of Duke University. 'On average, an individual will be just as busy two weeks or a month from now as he or she is today. But that is not how it appears in everyday life,' they say. ‘People make commitments long in advance that they would never make if the same commitments required immediate action. They discount future time investments relatively steeply.'</p>\n            <p>Being 'too busy' is highly subjective, but for any individual there are some concrete signs of stress: disturbed sleep and declining mental and physical health are the most common examples. Figures for National Workers' Compensation (insurance against injury caused by work) show that stress causes the most loss of time of any workplace injury: employees suffering stress are absent from work for an average of 16.6 weeks. The effects of stress are also expensive. The Australian Government insurer reports that, in 2003–2004, claims for stress-related psychological injury accounted for 7% of insurance claims, but almost 27% of the amount paid out in claim payments.</p>\n            <p>Experts say the key to dealing with stress is not to focus on relief — a game of golf or a massage — but to reassess workloads. Neil Plumridge says he makes it a priority to work out what has to change: that might mean allocating extra staff to a job, allowing more time, or changing expectations. He also relies on the advice of colleagues, saying that his peers coach each other on business problems: ‘Just a fresh pair of eyes over an issue can help,' he states.</p>\n            <p>Executive stress is not confined to big organisations. Vanessa Stoykov has been running her own advertising agency and public relations business for seven years. Her company has grown so fast that it appeared on the <em>Business Review Weekly</em> ‘Fast 100' list of fastest-growing small enterprises in 2004, just after Stoykov had her first child. In 2005, revenue was projected to double to $2.4 million. She had just had her second child. With a fast-growing business and two small children, Stoykov says she has mastered the art of caring for children, typing, and talking on the phone at the same time. But, unlike many others, she appears to thrive on the mental stimulation of running her own business, despite the stress.</p>\n            <p>Jan Elsner, a psychologist who specialises in executive coaching, says that doing well on a demanding workload is typical of senior executives. Some people work best with high-adrenaline periods followed by quieter times, while others thrive under sustained pressure. Elsner's practice is based on a movement known as positive psychology, a school of thought that argues that positive experiences — feeling engaged and challenged, for example — do not balance out negative experiences such as stress; instead they help people increase their resilience over time. Elsner says that many of the senior business people she coaches are increasingly relying more on regulating stress through methods such as meditation. She points to research showing that meditation can alter the biochemistry of the brain and the way that brains and bodies react to stress.</p>\n            <p>Some experts believe there is too much emphasis on treating job stress as an individual problem. Tony LaMontagne, of the University of Melbourne, says that while personality traits do have some effect on stress, it is systemic stressors — qualities of job roles and organisations themselves — that have a far greater effect. His recent research shows that the major predictor of stress is the level of job control a person has. The best type of job combines challenging work with high autonomy. The worst jobs combine challenging work and low control. People with demanding jobs but little autonomy have up to four times the probability of depression and more than double the risk of heart attack.</p>\n\n            <div class=\"empty-space\"></div>\n        </section>\n        \n        <div id=\"divider\"></div>",
+    "questionGroups": [
+      {
+        "groupId": "group-1",
+        "kind": "matching",
+        "questionIds": [
+          "q1",
+          "q2",
+          "q3",
+          "q4",
+          "q5"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q1-2-3-4-5-anchor\">\n                <h4>Questions 14–18</h4>\n                <p>Look at the following statements (Questions 14–18) and the list of people below.</p>\n                <p>Match each statement with the correct person, <strong>A–D</strong>.</p>\n                <p><em>NB You may use any letter more than once.</em></p>\n                \n                <div class=\"match-question-item\">\n                    <p><strong>14</strong> High-level workers tend to react positively to stress</p>\n                    <div class=\"match-dropzone\" data-question=\"q1\"></div>\n                </div>\n                <div class=\"match-question-item\">\n                    <p><strong>15</strong> Stress levels are increased by trying to please customers</p>\n                    <div class=\"match-dropzone\" data-question=\"q2\"></div>\n                </div>\n                <div class=\"match-question-item\">\n                     <p><strong>16</strong> Support from other workers may relieve stress</p>\n                    <div class=\"match-dropzone\" data-question=\"q3\"></div>\n                </div>\n                 <div class=\"match-question-item\">\n                    <p><strong>17</strong> Lack of independence at work is often responsible for stress</p>\n                    <div class=\"match-dropzone\" data-question=\"q4\"></div>\n                </div>\n                <div class=\"match-question-item\">\n                    <p><strong>18</strong> Workers commonly expect their workloads to lessen over time</p>\n                    <div class=\"match-dropzone\" data-question=\"q5\"></div>\n                </div>\n\n                <div class=\"options-pool\" id=\"people-options-pool\">\n                    <strong>List of People</strong>\n                    <div class=\"pool-items\">\n                        <div class=\"drag-item\" id=\"person-A\" draggable=\"true\" data-option=\"A\">A Neil Plumridge</div>\n                        <div class=\"drag-item\" id=\"person-B\" draggable=\"true\" data-option=\"B\">B Gal Zauberman and John Lynch</div>\n                        <div class=\"drag-item\" id=\"person-C\" draggable=\"true\" data-option=\"C\">C Jan Elsner</div>\n                        <div class=\"drag-item\" id=\"person-D\" draggable=\"true\" data-option=\"D\">D Tony LaMontagne</div>\n                    </div>\n                </div>\n            </div>",
+        "allowOptionReuse": true,
+        "leadHtml": "<h3>Questions</h3>"
+      },
+      {
+        "groupId": "group-2",
+        "kind": "single_choice",
+        "questionIds": [
+          "q6",
+          "q7",
+          "q8"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q6-7-8-anchor\">\n                <h4>Questions 19–21</h4>\n                <p>Choose the correct letter, <strong>A, B, C</strong> or <strong>D</strong>.</p>\n                \n                <div class=\"question-item\">\n                    <p><strong>19</strong> Which of the following is <strong>NOT</strong> mentioned by Neil Plumridge as an indication that his workload is too heavy?</p>\n                    <label class=\"mcq-option\"><input type=\"radio\" name=\"q6\" value=\"A\"> A an inability to keep to his schedule</label>\n                    <label class=\"mcq-option\"><input type=\"radio\" name=\"q6\" value=\"B\"> B inattention to family celebrations</label>\n                    <label class=\"mcq-option\"><input type=\"radio\" name=\"q6\" value=\"C\"> C a lack of concentration on a task</label>\n                    <label class=\"mcq-option\"><input type=\"radio\" name=\"q6\" value=\"D\"> D a period of insufficient sleep</label>\n                </div>\n                <div class=\"question-item\">\n                    <p><strong>20</strong> Which method of lessening work stress is <strong>NOT</strong> suggested by Neil Plumridge?</p>\n                    <label class=\"mcq-option\"><input type=\"radio\" name=\"q7\" value=\"A\"> A rethinking ideas of what can be achieved</label>\n                    <label class=\"mcq-option\"><input type=\"radio\" name=\"q7\" value=\"B\"> B extending the deadline for completing the task</label>\n                    <label class=\"mcq-option\"><input type=\"radio\" name=\"q7\" value=\"C\"> C using more workers on a project</label>\n                    <label class=\"mcq-option\"><input type=\"radio\" name=\"q7\" value=\"D\"> D taking more time off for sport or other recreation</label>\n                </div>\n                 <div class=\"question-item\">\n                    <p><strong>21</strong> According to Jan Elsner, meditation offers a method of</p>\n                    <label class=\"mcq-option\"><input type=\"radio\" name=\"q8\" value=\"A\"> A taking a worker's mind off his troubles.</label>\n                    <label class=\"mcq-option\"><input type=\"radio\" name=\"q8\" value=\"B\"> B changing the physical response to stress.</label>\n                    <label class=\"mcq-option\"><input type=\"radio\" name=\"q8\" value=\"C\"> C resting more effectively.</label>\n                    <label class=\"mcq-option\"><input type=\"radio\" name=\"q8\" value=\"D\"> D encouraging executives to take breaks.</label>\n                </div>\n            </div>"
+      },
+      {
+        "groupId": "group-3",
+        "kind": "summary_completion",
+        "questionIds": [
+          "q9",
+          "q10",
+          "q11",
+          "q12",
+          "q13"
+        ],
+        "bodyHtml": "<div class=\"group\" id=\"q9-10-11-12-13-anchor\">\n                 <h4>Questions 22–26</h4>\n                <p>Complete the summary below.</p>\n                <p>Choose <strong>NO MORE THAN TWO WORDS AND/OR A NUMBER</strong> from the passage for each answer.</p>\n                <div class=\"summary-completion\">\n                    <h5>Stress: its effects and how to reduce it</h5>\n                    <p>\n                    Statistics on workers' compensation show that people take more time off work due to stress than for any other <strong>22</strong> <input name=\"q9\" type=\"text\" id=\"q22_input\"> at work. On average, workers who take time off because of stress stay away for <strong>23</strong> <input name=\"q10\" type=\"text\" id=\"q23_input\">. This absence comes at a high price — while the number of insurance claims due to stress amount to only <strong>24</strong> <input name=\"q11\" type=\"text\" id=\"q24_input\"> of the total, they account for a much higher proportion of the cost of claim payments.\n                    </p>\n                    <p>\n                    Experts believe that seeking to relieve stress through physical therapies such as sport or <strong>25</strong> <input name=\"q12\" type=\"text\" id=\"q25_input\"> may be less effective than simply reviewing your <strong>26</strong> <input name=\"q13\" type=\"text\" id=\"q26_input\">.\n                    </p>\n                </div>\n            </div>"
+      }
+    ],
+    "answerKey": {
+      "q1": "C",
+      "q2": "A",
+      "q3": "A",
+      "q4": "D",
+      "q5": "B",
+      "q6": "C",
+      "q7": "D",
+      "q8": "B",
+      "q9": "injury",
+      "q10": "16.6 weeks",
+      "q11": "7%",
+      "q12": "massage",
+      "q13": "workloads"
+    },
+    "questionDisplayMap": {
+      "q1": "14",
+      "q2": "15",
+      "q3": "16",
+      "q4": "17",
+      "q5": "18",
+      "q6": "19",
+      "q7": "20",
+      "q8": "21",
+      "q9": "22",
+      "q10": "23",
+      "q11": "24",
+      "q12": "25",
+      "q13": "26"
+    },
+    "questionOrder": [
+      "q1",
+      "q2",
+      "q3",
+      "q4",
+      "q5",
+      "q6",
+      "q7",
+      "q8",
+      "q9",
+      "q10",
+      "q11",
+      "q12",
+      "q13"
+    ],
+    "explanations": [
+      {
+        "sectionTitle": "1. 匹配题（Questions 14–18）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 14,
+            "questionId": "q1",
+            "text": "（1）题目 14：High-level workers tend to react positively to stress\n题目翻译：高级管理人员往往会对压力作出积极反应。\n答案：C\n定位：正文第7段，第1至2句\n原文：doing well on a demanding workload is typical of senior executives. Some people work best with high-adrenaline periods followed by quieter times, while others thrive under sustained pressure.\n译文：在高强度工作负荷下表现良好是高级管理人员的典型特点。有些人在高肾上腺素阶段之后配合较平静时期时表现最佳，另一些人则能在持续压力下蓬勃发展。\n\n解析：题干中的 high-level workers 对应 senior executives，react positively 对应 doing well、work best 和 thrive；这是 Jan Elsner 的观点，因此选 C。"
+          },
+          {
+            "questionNumber": 15,
+            "questionId": "q2",
+            "text": "（2）题目 15：Stress levels are increased by trying to please customers\n题目翻译：试图满足客户会提高压力水平。\n答案：A\n定位：正文第2段，末段引语\n原文：I’ll promise a client that I’ll do something tomorrow, and then I’ll promise another client that I’ll do the same thing, when I know it’s not going to happen.\n译文：我会答应一个客户明天完成某件事，接着又向另一个客户作出同样承诺，即使我知道根本做不到。\n\n解析：Neil Plumridge 把压力归因于对自己设定不现实的期望；为取悦多个客户而过度承诺正是具体表现，因此选 A。"
+          },
+          {
+            "questionNumber": 16,
+            "questionId": "q3",
+            "text": "（3）题目 16：Support from other workers may relieve stress\n题目翻译：其他同事的支持可能缓解压力。\n答案：A\n定位：正文第5段，末2句\n原文：He also relies on the advice of colleagues, saying that his peers coach each other on business problems: ‘Just a fresh pair of eyes over an issue can help,’\n译文：他也依靠同事的建议，并说同级同事会就业务问题相互指导：“换一双新眼睛看看问题就能有所帮助。”\n\n解析：support from other workers 对应 colleagues 的 advice 和 peers coach each other；发言者是 Neil Plumridge，因此选 A。"
+          },
+          {
+            "questionNumber": 17,
+            "questionId": "q4",
+            "text": "（4）题目 17：Lack of independence at work is often responsible for stress\n题目翻译：工作中缺乏自主权往往会造成压力。\n答案：D\n定位：正文第8段，中部\n原文：the major predictor of stress is the level of job control a person has.\n译文：压力的主要预测因素是一个人拥有的工作控制权。\n\n解析：lack of independence 对应 low control 和 little autonomy；这一研究结论由 Tony LaMontagne 提出，因此选 D。"
+          },
+          {
+            "questionNumber": 18,
+            "questionId": "q5",
+            "text": "（5）题目 18：Workers commonly expect their workloads to lessen over time\n题目翻译：人们通常认为自己的工作量会随着时间推移而减少。\n答案：B\n定位：正文第3段，第3句\n原文：people always believe that they will be less busy in the future.\n译文：人们总认为自己将来会没有现在这么忙。\n\n解析：less busy in the future 与 workloads to lessen over time 同义；该研究的作者是 Gal Zauberman 和 John Lynch，因此选 B。"
+          }
+        ],
+        "questionRange": {
+          "start": 14,
+          "end": 18
+        },
+        "text": "（1）题目 14：High-level workers tend to react positively to stress\n题目翻译：高级管理人员往往会对压力作出积极反应。\n答案：C\n定位：正文第7段，第1至2句\n原文：doing well on a demanding workload is typical of senior executives. Some people work best with high-adrenaline periods followed by quieter times, while others thrive under sustained pressure.\n译文：在高强度工作负荷下表现良好是高级管理人员的典型特点。有些人在高肾上腺素阶段之后配合较平静时期时表现最佳，另一些人则能在持续压力下蓬勃发展。\n\n解析：题干中的 high-level workers 对应 senior executives，react positively 对应 doing well、work best 和 thrive；这是 Jan Elsner 的观点，因此选 C。\n\n（2）题目 15：Stress levels are increased by trying to please customers\n题目翻译：试图满足客户会提高压力水平。\n答案：A\n定位：正文第2段，末段引语\n原文：I’ll promise a client that I’ll do something tomorrow, and then I’ll promise another client that I’ll do the same thing, when I know it’s not going to happen.\n译文：我会答应一个客户明天完成某件事，接着又向另一个客户作出同样承诺，即使我知道根本做不到。\n\n解析：Neil Plumridge 把压力归因于对自己设定不现实的期望；为取悦多个客户而过度承诺正是具体表现，因此选 A。\n\n（3）题目 16：Support from other workers may relieve stress\n题目翻译：其他同事的支持可能缓解压力。\n答案：A\n定位：正文第5段，末2句\n原文：He also relies on the advice of colleagues, saying that his peers coach each other on business problems: ‘Just a fresh pair of eyes over an issue can help,’\n译文：他也依靠同事的建议，并说同级同事会就业务问题相互指导：“换一双新眼睛看看问题就能有所帮助。”\n\n解析：support from other workers 对应 colleagues 的 advice 和 peers coach each other；发言者是 Neil Plumridge，因此选 A。\n\n（4）题目 17：Lack of independence at work is often responsible for stress\n题目翻译：工作中缺乏自主权往往会造成压力。\n答案：D\n定位：正文第8段，中部\n原文：the major predictor of stress is the level of job control a person has.\n译文：压力的主要预测因素是一个人拥有的工作控制权。\n\n解析：lack of independence 对应 low control 和 little autonomy；这一研究结论由 Tony LaMontagne 提出，因此选 D。\n\n（5）题目 18：Workers commonly expect their workloads to lessen over time\n题目翻译：人们通常认为自己的工作量会随着时间推移而减少。\n答案：B\n定位：正文第3段，第3句\n原文：people always believe that they will be less busy in the future.\n译文：人们总认为自己将来会没有现在这么忙。\n\n解析：less busy in the future 与 workloads to lessen over time 同义；该研究的作者是 Gal Zauberman 和 John Lynch，因此选 B。"
+      },
+      {
+        "sectionTitle": "2. Multiple Choice（Questions 19–21）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 19,
+            "questionId": "q6",
+            "text": "（1）题目 19：Which of the following is NOT mentioned by Neil Plumridge as an indication that his workload is too heavy?\n题目翻译：下列哪一项没有被 Neil Plumridge 提到作为工作量过重的迹象？\n答案：C（a lack of concentration on a task）\n定位：正文第2段，第1至2句\n原文：Three signs warn Plumridge about his workload: sleep, scheduling and family. He knows he is doing too much when he gets less than six hours’ sleep for three consecutive nights, when he is constantly having to reschedule appointments, and when he misses a family birthday or anniversary.\n译文：Plumridge 用三类迹象判断工作量是否过重：睡眠、日程和家庭。他若连续三晚睡眠不足六小时、不断改约，或错过家人的生日或纪念日，就知道工作已经过量。\n\n解析：原文列出睡眠不足、不断调整日程和错过家庭纪念日，没有提到“无法集中注意力”，因此选 a lack of concentration on a task。"
+          },
+          {
+            "questionNumber": 20,
+            "questionId": "q7",
+            "text": "（2）题目 20：Which method of lessening work stress is NOT suggested by Neil Plumridge?\n题目翻译：下列哪一种减轻工作压力的方法不是 Neil Plumridge 建议的？\n答案：D（taking more time off for sport or other recreation）\n定位：正文第5段，第1至2句\n原文：the key to dealing with stress is not to focus on relief — a game of golf or a massage — but to reassess workloads. Neil Plumridge says he makes it a priority to work out what has to change: that might mean allocating extra staff to a job, allowing more time, or changing expectations.\n译文：应对压力的关键并非靠打高尔夫或按摩来暂时缓解，而是重新评估工作量。Neil Plumridge 认为应先确定要改变什么，例如增加人手、延长时间或调整预期。\n\n解析：A、B、C 分别对应 changing expectations、allowing more time 和 allocating extra staff；休假参加运动或娱乐没有被他作为方法提出，因此选 taking more time off for sport or other recreation。"
+          },
+          {
+            "questionNumber": 21,
+            "questionId": "q8",
+            "text": "（3）题目 21：According to Jan Elsner, meditation offers a method of\n题目翻译：根据 Jan Elsner 的观点，冥想提供了一种什么方法？\n答案：B（changing the physical response to stress.）\n定位：正文第7段，末句\n原文：meditation can alter the biochemistry of the brain and the way that brains and bodies react to stress.\n译文：冥想可以改变大脑的生物化学状态，以及大脑和身体对压力作出反应的方式。\n\n解析：alter the biochemistry 和改变大脑、身体的反应方式，直接对应 changing the physical response to stress，因此选该项。"
+          }
+        ],
+        "questionRange": {
+          "start": 19,
+          "end": 21
+        },
+        "text": "（1）题目 19：Which of the following is NOT mentioned by Neil Plumridge as an indication that his workload is too heavy?\n题目翻译：下列哪一项没有被 Neil Plumridge 提到作为工作量过重的迹象？\n答案：C（a lack of concentration on a task）\n定位：正文第2段，第1至2句\n原文：Three signs warn Plumridge about his workload: sleep, scheduling and family. He knows he is doing too much when he gets less than six hours’ sleep for three consecutive nights, when he is constantly having to reschedule appointments, and when he misses a family birthday or anniversary.\n译文：Plumridge 用三类迹象判断工作量是否过重：睡眠、日程和家庭。他若连续三晚睡眠不足六小时、不断改约，或错过家人的生日或纪念日，就知道工作已经过量。\n\n解析：原文列出睡眠不足、不断调整日程和错过家庭纪念日，没有提到“无法集中注意力”，因此选 a lack of concentration on a task。\n\n（2）题目 20：Which method of lessening work stress is NOT suggested by Neil Plumridge?\n题目翻译：下列哪一种减轻工作压力的方法不是 Neil Plumridge 建议的？\n答案：D（taking more time off for sport or other recreation）\n定位：正文第5段，第1至2句\n原文：the key to dealing with stress is not to focus on relief — a game of golf or a massage — but to reassess workloads. Neil Plumridge says he makes it a priority to work out what has to change: that might mean allocating extra staff to a job, allowing more time, or changing expectations.\n译文：应对压力的关键并非靠打高尔夫或按摩来暂时缓解，而是重新评估工作量。Neil Plumridge 认为应先确定要改变什么，例如增加人手、延长时间或调整预期。\n\n解析：A、B、C 分别对应 changing expectations、allowing more time 和 allocating extra staff；休假参加运动或娱乐没有被他作为方法提出，因此选 taking more time off for sport or other recreation。\n\n（3）题目 21：According to Jan Elsner, meditation offers a method of\n题目翻译：根据 Jan Elsner 的观点，冥想提供了一种什么方法？\n答案：B（changing the physical response to stress.）\n定位：正文第7段，末句\n原文：meditation can alter the biochemistry of the brain and the way that brains and bodies react to stress.\n译文：冥想可以改变大脑的生物化学状态，以及大脑和身体对压力作出反应的方式。\n\n解析：alter the biochemistry 和改变大脑、身体的反应方式，直接对应 changing the physical response to stress，因此选该项。"
+      },
+      {
+        "sectionTitle": "3. Summary Completion（Questions 22–26）",
+        "mode": "group",
+        "items": [
+          {
+            "questionNumber": 22,
+            "questionId": "q9",
+            "text": "（1）题目 22：Statistics on workers’ compensation show that people take more time off work due to stress than for any other ________ at work. On average, workers who take time off because of stress stay away for ________. This absence comes at a high price — while the number of insurance claims due to stress amount to only ________ of the total, they account for a much higher proportion of the cost of claim payments.\n题目翻译：工伤赔偿统计表明，因压力而休假的时间超过任何其他________造成的休假时间。\n答案：injury\n定位：正文第4段，第2句\n原文：stress causes the most loss of time of any workplace injury\n译文：在所有工伤类型中，压力造成的时间损失最多。\n\n解析：题干用 take more time off 改写 most loss of time，并已给出 at work；空格填 injury 即可构成 any other injury at work。"
+          },
+          {
+            "questionNumber": 23,
+            "questionId": "q10",
+            "text": "（2）题目 23：Statistics on workers’ compensation show that people take more time off work due to stress than for any other ________ at work. On average, workers who take time off because of stress stay away for ________. This absence comes at a high price — while the number of insurance claims due to stress amount to only ________ of the total, they account for a much higher proportion of the cost of claim payments.\n题目翻译：因压力休假的员工平均会离岗________。\n答案：16.6 weeks\n定位：正文第4段，第2句\n原文：employees suffering stress are absent from work for an average of 16.6 weeks\n译文：承受压力的员工平均缺勤 16.6 周。\n\n解析：stay away 对应 are absent from work，On average 对应 an average of；时长为原文连续表达 16.6 weeks。"
+          },
+          {
+            "questionNumber": 24,
+            "questionId": "q11",
+            "text": "（3）题目 24：Statistics on workers’ compensation show that people take more time off work due to stress than for any other ________ at work. On average, workers who take time off because of stress stay away for ________. This absence comes at a high price — while the number of insurance claims due to stress amount to only ________ of the total, they account for a much higher proportion of the cost of claim payments.\n题目翻译：压力相关保险索赔只占全部索赔的________。\n答案：7%\n定位：正文第4段，末句\n原文：claims for stress-related psychological injury accounted for 7% of insurance claims\n译文：与压力相关的心理伤害索赔占全部保险索赔的 7%。\n\n解析：amount to 与 accounted for 同义，题干问占总数的比例，原文给出的数字是 7%。"
+          },
+          {
+            "questionNumber": 25,
+            "questionId": "q12",
+            "text": "（4）题目 25：Experts believe that seeking to relieve stress through physical therapies such as sport or ________ may be less effective than simply reviewing your ________.\n题目翻译：通过运动或________等身体疗法来缓解压力。\n答案：massage\n定位：正文第5段，第1句\n原文：not to focus on relief — a game of golf or a massage — but to reassess workloads\n译文：不要只关注打高尔夫或按摩等缓解方式，而应重新评估工作量。\n\n解析：sport 对应 a game of golf，or 后与其并列的身体疗法是 massage。"
+          },
+          {
+            "questionNumber": 26,
+            "questionId": "q13",
+            "text": "（5）题目 26：Experts believe that seeking to relieve stress through physical therapies such as sport or ________ may be less effective than simply reviewing your ________.\n题目翻译：这些方式可能不如直接重新审视你的________有效。\n答案：workloads\n定位：正文第5段，第1句\n原文：not to focus on relief — a game of golf or a massage — but to reassess workloads\n译文：不要把重点放在打高尔夫或按摩等临时缓解上，而要重新评估工作量。\n\n解析：reviewing 对应 reassess，所重新审视的对象是 workloads，因此填原文复数形式 workloads。"
+          }
+        ],
+        "questionRange": {
+          "start": 22,
+          "end": 26
+        },
+        "text": "（1）题目 22：Statistics on workers’ compensation show that people take more time off work due to stress than for any other ________ at work. On average, workers who take time off because of stress stay away for ________. This absence comes at a high price — while the number of insurance claims due to stress amount to only ________ of the total, they account for a much higher proportion of the cost of claim payments.\n题目翻译：工伤赔偿统计表明，因压力而休假的时间超过任何其他________造成的休假时间。\n答案：injury\n定位：正文第4段，第2句\n原文：stress causes the most loss of time of any workplace injury\n译文：在所有工伤类型中，压力造成的时间损失最多。\n\n解析：题干用 take more time off 改写 most loss of time，并已给出 at work；空格填 injury 即可构成 any other injury at work。\n\n（2）题目 23：Statistics on workers’ compensation show that people take more time off work due to stress than for any other ________ at work. On average, workers who take time off because of stress stay away for ________. This absence comes at a high price — while the number of insurance claims due to stress amount to only ________ of the total, they account for a much higher proportion of the cost of claim payments.\n题目翻译：因压力休假的员工平均会离岗________。\n答案：16.6 weeks\n定位：正文第4段，第2句\n原文：employees suffering stress are absent from work for an average of 16.6 weeks\n译文：承受压力的员工平均缺勤 16.6 周。\n\n解析：stay away 对应 are absent from work，On average 对应 an average of；时长为原文连续表达 16.6 weeks。\n\n（3）题目 24：Statistics on workers’ compensation show that people take more time off work due to stress than for any other ________ at work. On average, workers who take time off because of stress stay away for ________. This absence comes at a high price — while the number of insurance claims due to stress amount to only ________ of the total, they account for a much higher proportion of the cost of claim payments.\n题目翻译：压力相关保险索赔只占全部索赔的________。\n答案：7%\n定位：正文第4段，末句\n原文：claims for stress-related psychological injury accounted for 7% of insurance claims\n译文：与压力相关的心理伤害索赔占全部保险索赔的 7%。\n\n解析：amount to 与 accounted for 同义，题干问占总数的比例，原文给出的数字是 7%。\n\n（4）题目 25：Experts believe that seeking to relieve stress through physical therapies such as sport or ________ may be less effective than simply reviewing your ________.\n题目翻译：通过运动或________等身体疗法来缓解压力。\n答案：massage\n定位：正文第5段，第1句\n原文：not to focus on relief — a game of golf or a massage — but to reassess workloads\n译文：不要只关注打高尔夫或按摩等缓解方式，而应重新评估工作量。\n\n解析：sport 对应 a game of golf，or 后与其并列的身体疗法是 massage。\n\n（5）题目 26：Experts believe that seeking to relieve stress through physical therapies such as sport or ________ may be less effective than simply reviewing your ________.\n题目翻译：这些方式可能不如直接重新审视你的________有效。\n答案：workloads\n定位：正文第5段，第1句\n原文：not to focus on relief — a game of golf or a massage — but to reassess workloads\n译文：不要把重点放在打高尔夫或按摩等临时缓解上，而要重新评估工作量。\n\n解析：reviewing 对应 reassess，所重新审视的对象是 workloads，因此填原文复数形式 workloads。"
+      }
+    ],
+    "passageNotes": [
+      {
+        "label": "Paragraph 1",
+        "text": "多忙才算太忙？对一些人来说，这意味着有时不得不缩短午餐时间；对另一些人来说，可能意味着完全错过午餐。对少数人来说，这意味着无法每月休息一天。还有一群人，每个工作日晚上和周末工作是常态，感到压力被视为理所当然。对大多数高级管理人员来说，工作量在极其忙碌和极度疯狂之间波动。管理咨询公司副总裁尼尔·普拉姆里奇说，他的每周工作时间从“可管理的”45小时到80小时不等，但平均为60小时。"
+      },
+      {
+        "label": "Paragraph 2",
+        "text": "有三个信号提醒普拉姆里奇注意自己的工作量：睡眠、日程安排和家庭。当他连续三晚睡眠不足六小时、不断需要重新安排约会、以及错过家人的生日或纪念日时，他就知道自己做得太多了。“那时，”他说，“我知道事情已经失控了。”普拉姆里奇表示，压力往往源于他对自己抱有不切实际的期望。“我会向一个客户承诺明天做某事，然后又向另一个客户承诺做同样的事，而我知道这是不可能实现的。我本可以说：'我48小时后交给你怎么样？'客户不会在意的。"
+      },
+      {
+        "label": "Paragraph 3",
+        "text": "过度承诺是人们作为个人问题经历的事情。然而，新的研究表明，人类可能天生就倾向于过度承诺。《实验心理学杂志》的一项研究表明，人们总是相信自己将来会不那么忙。根据报告作者——北卡罗来纳大学的高尔·鲍曼和杜克大学的约翰·林奇的说法，这是一种误解。“平均而言，一个人两周后或一个月后的忙碌程度与今天一样。但在日常生活中看起来并非如此，”他们说。“人们很早就做出了如果需要立即行动就绝不会做出的承诺。他们对未来时间投入的折现相对陡峭。"
+      },
+      {
+        "label": "Paragraph 4",
+        "text": "“太忙”是高度主观的，但对任何个人来说，压力有一些具体的表现：睡眠障碍以及身心健康的下降是最常见的例子。国家工伤赔偿（针对因工作造成的伤害的保险）数据显示，压力导致的工作时间损失在所有工伤中最多：因压力而受苦的员工平均缺勤16.6周。压力的代价也很高昂。澳大利亚政府保险公司报告称，在2003-2004年间，与压力相关的心理伤害索赔仅占保险索赔总数的7%，但几乎占赔付金额的27%。"
+      },
+      {
+        "label": "Paragraph 5",
+        "text": "专家表示，应对压力的关键不是专注于缓解——打一场高尔夫或做一次按摩——而是重新评估工作量。尼尔·普拉姆里奇说，他将弄清需要改变什么作为优先事项：这可能意味着为一项工作分配更多的员工、允许更多时间，或者改变期望值。他还依赖同事的建议，说他的同行们会在商业问题上互相指导。“仅仅换一双新鲜的眼睛来看待一个问题就能有所帮助，”他说。"
+      },
+      {
+        "label": "Paragraph 6",
+        "text": "高管压力不仅限于大型组织。瓦内萨·斯托科夫经营自己的广告公司和公关业务已有七年。她的公司发展如此之快，以至于在2004年登上了《商业评论周刊》“快速100”增长最快的小企业榜单，就在斯托科夫生下第一个孩子之后不久。2005年，收入预计将翻倍至240万美元。她刚刚生了第二个孩子。面对快速增长的业务和两个年幼的孩子，斯托科夫说她已经掌握了同时照顾孩子、打字和打电话的艺术。但与许多其他人不同的是，尽管有压力，她似乎在经营自己企业的精神刺激中蓬勃发展。"
+      },
+      {
+        "label": "Paragraph 7",
+        "text": "专门从事高管辅导的心理学家简·埃尔斯纳说，在高要求的工作量下表现出色是高级管理人员的典型特征。有些人在高强度工作期之后需要安静期才能发挥最佳状态，而另一些人则在持续压力下茁壮成长。埃尔斯纳的实践基于一种被称为积极心理学的运动，这一学派认为积极的体验——例如感到投入和受到挑战——并不能抵消压力等消极体验；相反，它们帮助人们随着时间的推移增强抗压能力。埃尔斯纳说，她辅导的许多高级商界人士越来越依赖冥想等方法来调节压力。她指出研究表明冥想可以改变大脑的生化特性以及大脑和身体对压力的反应方式。"
+      },
+      {
+        "label": "Paragraph 8",
+        "text": "一些专家认为，将工作压力视为个人问题的做法过于强调个人因素。墨尔本大学的托尼·拉蒙塔涅说，虽然性格特征确实对压力有一定影响，但系统性压力源——即工作岗位和组织本身的特质——产生的影响要大得多。他最近的研究表明，压力的主要预测因素是一个人对工作的控制程度。最好的工作类型是将具有挑战性的工作与高度自主权相结合。最差的工作是将具有挑战性的工作与低控制权相结合。工作要求高但自主权低的人患抑郁症的概率高达四倍，心脏病发作的风险则高出一倍以上。"
+      }
+    ]
+  }
+];
