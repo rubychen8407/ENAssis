@@ -89,6 +89,7 @@ export const VocabularyManager: React.FC<Props> = ({
   onWordsChange,
   onSelectWordForPractice,
 }) => {
+  const [railCollapsed, setRailCollapsed] = useState(false);
   const [studyMode, setStudyMode] = useState<StudyMode>(() => {
     if (typeof window === 'undefined') return 'study';
     return localStorage.getItem('linguacraft-vocab-mode') === 'exam' ? 'exam' : 'study';
@@ -315,34 +316,90 @@ export const VocabularyManager: React.FC<Props> = ({
   }, [filterLevel, searchTerm, words]);
 
   return (
-    <div className="space-y-6 pb-24">
-      {/* Floating mode switch + import toolbar — fixed to the viewport, stays visible while scrolling */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 p-1.5 rounded-2xl bg-stone-900/95 backdrop-blur border border-stone-700 shadow-2xl">
+    <div className="flex gap-3">
+    <aside className={`hidden md:flex fixed left-3 top-28 z-30 flex-col items-center gap-0.5 rounded-2xl bg-stone-900/90 backdrop-blur border border-stone-800/60 shadow-xl ring-1 ring-white/5 py-2 h-fit transition-all duration-300 ${railCollapsed ? 'w-10' : 'w-14'}`}>
+      {/* Toggle collapse/expand */}
+      <button
+        onClick={() => setRailCollapsed((v) => !v)}
+        className="w-full flex items-center justify-center h-8 rounded-lg text-stone-500 hover:text-stone-300 hover:bg-white/[0.06] transition cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/50"
+        title={railCollapsed ? '展開導覽' : '收起導覽'}
+        aria-label={railCollapsed ? '展開導覽' : '收起導覽'}
+      >
+        <span className="text-[10px] font-bold leading-none">{railCollapsed ? '>' : '≡'}</span>
+      </button>
+
+      <div className="w-3 h-px bg-white/10 my-0.5" />
+      {/* M3 Collapsed Rail — narrow width, icon-only with optional tiny label/badge */}
+      <div className="relative w-full flex flex-col items-center">
         <button
-          type="button"
           onClick={() => setMode('study')}
-          title="Study Mode 字卡"
-          className={`inline-flex items-center justify-center p-2.5 rounded-xl transition cursor-pointer ${studyMode === 'study' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-300 hover:text-white'}`}
+          className={`relative w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-200 cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/70 active:scale-95 ${studyMode === 'study' ? 'text-stone-950' : 'text-stone-500 hover:text-stone-300 hover:bg-white/[0.06]'}`}
+          title="字卡 Study Mode"
+          aria-label="字卡"
         >
-          <Layers3 className="w-4 h-4" />
+          {studyMode === 'study' && (
+            <span className="absolute inset-0.5 rounded-lg bg-amber-400 z-0" />
+          )}
+          <span className="relative z-10"><Layers3 className="w-4.5 h-4.5" /></span>
         </button>
+      </div>
+
+      <div className="relative w-full flex flex-col items-center">
+        <button
+          onClick={() => setMode('exam')}
+          className={`relative w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-200 cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/70 active:scale-95 ${studyMode === 'exam' ? 'text-stone-950' : 'text-stone-500 hover:text-stone-300 hover:bg-white/[0.06]'}`}
+          title="考題 Exam Mode"
+          aria-label="考題"
+        >
+          {studyMode === 'exam' && (
+            <span className="absolute inset-0.5 rounded-lg bg-amber-400 z-0" />
+          )}
+          <span className="relative z-10"><Brain className="w-4.5 h-4.5" /></span>
+          {newWordsCount > 0 && (
+            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-stone-900 z-20" aria-label={`${newWordsCount} 個新收錄`} />
+          )}
+        </button>
+      </div>
+
+      <div className="w-4 h-px bg-white/10 my-0.5" />
+
+      <div className="relative w-full flex flex-col items-center">
         <button
           type="button"
-          onClick={() => setMode('exam')}
-          title="Exam Mode 考題"
-          className={`inline-flex items-center justify-center p-2.5 rounded-xl transition cursor-pointer ${studyMode === 'exam' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-300 hover:text-white'}`}
+          onClick={() => openImport('clipboard')}
+          className={`relative w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-200 cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/70 active:scale-95 ${isImportModalOpen ? 'text-stone-950' : 'text-stone-500 hover:text-stone-300 hover:bg-white/[0.06]'}`}
+          title="匯入單字"
+          aria-label="匯入單字"
         >
-          <Brain className="w-4 h-4" />
+          {isImportModalOpen && (
+            <span className="absolute inset-0.5 rounded-lg bg-amber-400 z-0" />
+          )}
+          <span className="relative z-10"><Upload className="w-4 h-4" /></span>
         </button>
-        {studyMode === 'study' && (
-          <>
-            <div className="w-px self-stretch bg-stone-700" />
-            <button type="button" onClick={() => openImport('clipboard')} title="匯入單字" className="inline-flex items-center justify-center p-2.5 rounded-xl text-stone-300 hover:text-white hover:bg-stone-800 cursor-pointer">
-              <Upload className="w-4 h-4" />
-            </button>
-          </>
-        )}
       </div>
+    </aside>
+
+    {/* Mobile Bottom Navigation — M3 NavigationBar, shown only below md (responsive behavior per spec) */}
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-stone-900/95 backdrop-blur border-t border-stone-800/60 shadow-[0_-8px_30px_rgba(0,0,0,0.25)]">
+      <div className="flex items-center justify-around h-14 px-2">
+        <button onClick={() => setMode('study')} className={`flex flex-col items-center justify-center w-16 h-12 rounded-xl transition cursor-pointer ${studyMode === 'study' ? 'text-amber-400' : 'text-stone-400 hover:text-stone-200'}`} aria-label="字卡">
+          <Layers3 className="w-5 h-5" />
+          <span className="text-[9px] font-semibold mt-0.5">字卡</span>
+          {studyMode === 'study' && <span className="absolute bottom-1 w-1 h-1 rounded-full bg-amber-400" />}
+        </button>
+        <button onClick={() => setMode('exam')} className={`flex flex-col items-center justify-center w-16 h-12 rounded-xl transition cursor-pointer ${studyMode === 'exam' ? 'text-amber-400' : 'text-stone-400 hover:text-stone-200'}`} aria-label="考題">
+          <Brain className="w-5 h-5" />
+          <span className="text-[9px] font-semibold mt-0.5">考題</span>
+          {studyMode === 'exam' && <span className="absolute bottom-1 w-1 h-1 rounded-full bg-amber-400" />}
+        </button>
+        <button type="button" onClick={() => openImport('clipboard')} className={`flex flex-col items-center justify-center w-16 h-12 rounded-xl transition cursor-pointer ${isImportModalOpen ? 'text-amber-400' : 'text-stone-400 hover:text-stone-200'}`} aria-label="匯入單字">
+          <Upload className="w-5 h-5" />
+          <span className="text-[9px] font-semibold mt-0.5">匯入</span>
+          {isImportModalOpen && <span className="absolute bottom-1 w-1 h-1 rounded-full bg-amber-400" />}
+        </button>
+      </div>
+    </nav>
+    <div className="space-y-6 pb-24">
 
       {studyMode === 'exam' ? (
         <VocabAIQuiz words={words} onWordsChange={onWordsChange} />
@@ -624,6 +681,7 @@ export const VocabularyManager: React.FC<Props> = ({
           />
         </>
       )}
+    </div>
     </div>
   );
 };

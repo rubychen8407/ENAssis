@@ -46,6 +46,8 @@ export default function App() {
   const [writingRecords, setWritingRecords] = useState<IELTSWritingRecord[]>([]);
   const [generalSettings, setGeneralSettings] = useState<GeneralSettings>(() => getGeneralSettings());
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [navCollapsed, setNavCollapsed] = useState(false);
+  const [zenMode, setZenMode] = useState(false);
   const [prefilledWord, setPrefilledWord] = useState<VocabWord | null>(null);
   const [clipboardAlert, setClipboardAlert] = useState<string | null>(null);
   const [selectedWritingPromptId, setSelectedWritingPromptId] = useState('task2-opinion-practice');
@@ -56,9 +58,26 @@ export default function App() {
   });
 
   useEffect(() => {
+    setZenMode(generalSettings.zenMode || false);
+  }, [generalSettings.zenMode]);
+
+  useEffect(() => {
     document.documentElement.classList.toggle('dark', isDarkMode);
     localStorage.setItem('linguacraft-theme', isDarkMode ? 'dark' : 'light');
   }, [isDarkMode]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'z' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        // Only when not typing in input/textarea
+        const tag = (e.target as HTMLElement)?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+        setZenMode((v) => !v);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   // Load state from localStorage
   const refreshWords = () => {
@@ -129,28 +148,33 @@ export default function App() {
   return (
     <div className="min-h-screen bg-stone-100/60 text-stone-900 flex flex-col">
       {/* Top Navbar */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-2xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* Logo & Subtitle */}
-          <div className="flex items-center gap-3">
+      <header className={`sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-2xs ${zenMode ? 'hidden' : ''}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-4">
+          {/* Logo */}
+          <div className="flex items-center gap-3 shrink-0">
             <div className="w-9 h-9 rounded-xl bg-stone-900 text-white flex items-center justify-center font-serif text-lg font-bold shadow-xs">
               L
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-bold text-stone-900 text-base tracking-tight">LinguaCraft</span>
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
-                  聽・說・讀・寫
-                </span>
               </div>
-              <p className="text-[11px] text-stone-500 hidden sm:block">
-                智慧生字庫 • AI及時語音對話 • 文法組句與寫作精修
-              </p>
+              <div />
             </div>
           </div>
 
-          {/* Quick Stats & Controls */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          {/* Navigator Tabs (inline with logo) */}
+          <div className="hidden md:flex items-center gap-1 overflow-x-auto whitespace-nowrap">
+            <button onClick={() => setActiveTab('dashboard')} className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${activeTab === 'dashboard' ? 'bg-stone-900 text-white' : 'text-stone-500 hover:text-stone-900 hover:bg-stone-100'}`}><LayoutDashboard className="w-3.5 h-3.5 inline mr-1"/>今日進度</button>
+            <button onClick={() => setActiveTab('vocabulary')} className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${activeTab === 'vocabulary' ? 'bg-stone-900 text-white' : 'text-stone-500 hover:text-stone-900 hover:bg-stone-100'}`}><BookMarked className="w-3.5 h-3.5 inline mr-1"/>生字庫 (Vocabulary)</button>
+            <button onClick={() => setActiveTab('listening')} className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${activeTab === 'listening' ? 'bg-stone-900 text-white' : 'text-stone-500 hover:text-stone-900 hover:bg-stone-100'}`}><Headphones className="w-3.5 h-3.5 inline mr-1"/>聽力 (Listening)</button>
+            <button onClick={() => setActiveTab('speaking')} className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${activeTab === 'speaking' ? 'bg-stone-900 text-white' : 'text-stone-500 hover:text-stone-900 hover:bg-stone-100'}`}><Mic className="w-3.5 h-3.5 inline mr-1 text-rose-400"/>口說 (Speaking)</button>
+            <button onClick={() => setActiveTab('reading')} className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${activeTab === 'reading' ? 'bg-stone-900 text-white' : 'text-stone-500 hover:text-stone-900 hover:bg-stone-100'}`}><BookOpen className="w-3.5 h-3.5 inline mr-1"/>閱讀 (Reading)</button>
+            <button onClick={() => setActiveTab('writing')} className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${activeTab === 'writing' ? 'bg-stone-900 text-white' : 'text-stone-500 hover:text-stone-900 hover:bg-stone-100'}`}><PenTool className="w-3.5 h-3.5 inline mr-1"/>寫作 (Writing)</button>
+          </div>
+
+          {/* Theme + Profile */}
+          <div className="flex items-center gap-2 sm:gap-3 ml-auto">
             <button
               id="btn-theme-toggle-navbar"
               onClick={() => setIsDarkMode((value) => !value)}
@@ -161,108 +185,22 @@ export default function App() {
               {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
 
-            {/* General Settings Button */}
+            {/* Profile */}
             <button
-              id="btn-general-settings-navbar"
               onClick={() => setIsSettingsModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-xs font-semibold text-amber-900 transition cursor-pointer shadow-2xs"
-              title="調整雅思總目標與考期設定"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-stone-900 text-white text-xs font-bold shadow hover:bg-stone-800 transition cursor-pointer"
+              aria-label="Profile"
             >
-              <Sliders className="w-3.5 h-3.5 text-amber-600" />
-              <span>目標 Band {generalSettings.targetOverallBand.toFixed(1)}</span>
+              {generalSettings.avatarUrl ? (
+                <img src={generalSettings.avatarUrl} alt="Profile" className="w-5 h-5 rounded-full object-cover ring-1 ring-white/30" />
+              ) : (
+                <span className="w-5 h-5 rounded-full bg-gradient-to-br from-amber-400 to-rose-400 flex items-center justify-center text-[10px]">{(generalSettings.profileName || '學').charAt(0)}</span>
+              )}
+              <span className="hidden sm:inline">{generalSettings.profileName || '設定'}</span>
             </button>
-
-            <button
-              id="btn-quick-clipboard-navbar"
-              onClick={handleQuickClipboardRead}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-50 hover:bg-stone-100 border border-stone-200 text-xs font-medium text-stone-700 transition cursor-pointer shadow-2xs"
-              title="讀取剪貼簿單字或文字"
-            >
-              <ClipboardPaste className="w-3.5 h-3.5 text-stone-600" />
-              <span className="hidden sm:inline">讀取剪貼簿生字</span>
-            </button>
-
-            <div className="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-xl bg-stone-50 border border-stone-200 text-xs text-stone-600">
-              <Award className="w-3.5 h-3.5 text-amber-500" />
-              <span>生字庫：</span>
-              <span className="font-bold text-stone-900">{savedWords.length}</span>
-              <span className="text-stone-400">/</span>
-              <span className="text-emerald-700 font-semibold">{masteredCount} 熟記</span>
-            </div>
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap gap-1.5 py-2">
-          <button
-            id="tab-dashboard"
-            onClick={() => setActiveTab('dashboard')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
-              activeTab === 'dashboard' ? 'bg-stone-900 text-white shadow-2xs' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
-            }`}
-          >
-            <LayoutDashboard className="w-4 h-4" /> 今日進度
-          </button>
-
-          <button
-            id="tab-vocabulary"
-            onClick={() => setActiveTab('vocabulary')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
-              activeTab === 'vocabulary'
-                ? 'bg-stone-900 text-white shadow-2xs'
-                : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
-            }`}
-          >
-            <BookMarked className="w-4 h-4" />
-            生字庫 (Vocabulary)
-          </button>
-
-          <button
-            id="tab-listening"
-            onClick={() => setActiveTab('listening')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
-              activeTab === 'listening'
-                ? 'bg-stone-900 text-white shadow-2xs'
-                : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
-            }`}
-          >
-            <Headphones className="w-4 h-4" />
-            聽力 (Listening)
-          </button>
-
-          <button
-            id="tab-speaking"
-            onClick={() => setActiveTab('speaking')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
-              activeTab === 'speaking' ? 'bg-stone-900 text-white shadow-2xs' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
-            }`}
-          >
-            <Mic className="w-4 h-4 text-rose-400" />
-            口說 (Speaking)
-          </button>
-
-          <button
-            id="tab-reading"
-            onClick={() => setActiveTab('reading')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
-              activeTab === 'reading' ? 'bg-stone-900 text-white shadow-2xs' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
-            }`}
-          >
-            <BookOpen className="w-4 h-4" />
-            閱讀 (Reading)
-          </button>
-
-          <button
-            id="tab-writing"
-            onClick={() => setActiveTab('writing')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
-              activeTab === 'writing' ? 'bg-stone-900 text-white shadow-2xs' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
-            }`}
-          >
-            <PenTool className="w-4 h-4" />
-            寫作 (Writing)
-          </button>
-        </div>
       </header>
 
       {/* Floating Clipboard Notification */}
@@ -317,10 +255,11 @@ export default function App() {
             onPromptChange={setSelectedWritingPromptId}
           />
         )}
+
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-stone-200 bg-white/70 py-4 text-center text-xs text-stone-500">
+      <footer className={`border-t border-stone-200 bg-white/70 py-4 text-center text-xs text-stone-500 ${zenMode ? 'hidden' : ''}`}>
         LinguaCraft 英文全方位學習 • 聽、說、讀、寫四維一體 • 結合語意分析與即時語音回饋
       </footer>
 

@@ -35,7 +35,7 @@ export const GeneralSettingsModal: React.FC<Props> = ({
 }) => {
   const [formData, setFormData] = useState<GeneralSettings>({ ...settings });
   const [savedSuccess, setSavedSuccess] = useState(false);
-  const [activeTab, setActiveTab] = useState<'goals' | 'exam' | 'examiner' | 'data'>('goals');
+  const [activeTab, setActiveTab] = useState<'goals' | 'exam' | 'examiner' | 'data' | 'profile' | 'shortcuts'>('goals');
 
   if (!isOpen) return null;
 
@@ -138,6 +138,26 @@ export const GeneralSettingsModal: React.FC<Props> = ({
             }`}
           >
             ⚙️ 資料管理
+          </button>
+          <button
+            onClick={() => setActiveTab('profile')}
+            className={`px-3.5 py-2 text-xs font-semibold rounded-t-xl transition border-b-2 cursor-pointer ${
+              activeTab === 'profile'
+                ? 'border-stone-900 text-stone-900 bg-stone-50/80'
+                : 'border-transparent text-stone-500 hover:text-stone-800'
+            }`}
+          >
+            👤 Profile
+          </button>
+          <button
+            onClick={() => setActiveTab('shortcuts')}
+            className={`px-3.5 py-2 text-xs font-semibold rounded-t-xl transition border-b-2 cursor-pointer ${
+              activeTab === 'shortcuts'
+                ? 'border-stone-900 text-stone-900 bg-stone-50/80'
+                : 'border-transparent text-stone-500 hover:text-stone-800'
+            }`}
+          >
+            ⌨️ Shortcut
           </button>
         </div>
 
@@ -559,6 +579,45 @@ export const GeneralSettingsModal: React.FC<Props> = ({
           >
             恢復預設值
           </button>
+        {activeTab === 'profile' && (
+          <div className="space-y-4 animate-fade-in">
+            <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-stone-700 mb-3">Profile / 形象</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-stone-600 mb-1 block">名稱</label>
+                  <input value={formData.profileName || ''} onChange={e => setFormData({ ...formData, profileName: e.target.value })} className="w-full px-3 py-2 rounded-xl bg-white border border-stone-200 text-sm text-stone-900 focus:outline-hidden" placeholder="學員" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-stone-600 mb-1 block">圖像網址 (URL)</label>
+                  <input value={formData.avatarUrl || ''} onChange={e => setFormData({ ...formData, avatarUrl: e.target.value })} className="w-full px-3 py-2 rounded-xl bg-white border border-stone-200 text-sm text-stone-900 focus:outline-hidden" placeholder="https://..." />
+                </div>
+              </div>
+              <div className="mt-3 flex items-center gap-3">
+                <img src={formData.avatarUrl || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'} alt="avatar preview" className="w-10 h-10 rounded-full object-cover ring-2 ring-stone-200" />
+                <span className="text-xs text-stone-500">預覽會即時更新</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'shortcuts' && (
+          <div className="space-y-4 animate-fade-in">
+            <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-stone-700 mb-3">快捷鍵 Shortcut</h4>
+              <ul className="text-sm text-stone-700 space-y-2">
+                <li className="flex items-center gap-2"><kbd className="px-2 py-0.5 rounded bg-stone-900 text-white text-xs font-bold">Z</kbd> <span>Zen Mode（隱藏導航，只顯示內容）</span></li>
+                <li className="flex items-center gap-2"><kbd className="px-2 py-0.5 rounded bg-stone-900 text-white text-xs font-bold">Esc</kbd> <span>關閉視窗 / Modal</span></li>
+                <li className="flex items-center gap-2"><kbd className="px-2 py-0.5 rounded bg-stone-900 text-white text-xs font-bold">Ctrl + S</kbd> <span>儲存設定</span></li>
+              </ul>
+              <div className="mt-3 flex items-center gap-3">
+                <button type="button" onClick={() => setFormData({ ...formData, zenMode: !formData.zenMode })} className={`px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${formData.zenMode ? 'bg-emerald-600 text-white' : 'bg-stone-200 text-stone-700 hover:bg-stone-300'}`}>{formData.zenMode ? 'Zen 開啟' : '開啟 Zen Mode'}</button>
+                <span className="text-xs text-stone-500">也可按 Z 快速切換</span>
+              </div>
+            </div>
+          </div>
+        )}
+
           <div className="flex items-center gap-3">
             <button
               type="button"

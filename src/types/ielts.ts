@@ -133,4 +133,7 @@ export interface GeneralSettings {
   feedbackLanguage: 'zh-TW' | 'en';
   examinerStrictness: 'strict_liz' | 'standard' | 'encouraging';
   studyPlanTitle?: string;
+  avatarUrl?: string;
+  profileName?: string;
+  zenMode?: boolean;
 }

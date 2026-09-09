@@ -26,6 +26,9 @@ export const DEFAULT_GENERAL_SETTINGS: GeneralSettings = {
   feedbackLanguage: 'zh-TW',
   examinerStrictness: 'strict_liz',
   studyPlanTitle: '雅思 7.0+ 衝刺計劃',
+  avatarUrl: '',
+  profileName: '學員',
+  zenMode: false,
 };
 
 export const INITIAL_SAMPLE_WRITING_RECORDS: IELTSWritingRecord[] = [
