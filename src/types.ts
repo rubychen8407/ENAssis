@@ -1,4 +1,4 @@
-export type SkillTab = 'dashboard' | 'vocabulary' | 'ielts' | 'speaking' | 'writing' | 'writing-practice' | 'reading' | 'listening';
+export type SkillTab = 'vocabulary' | 'speaking' | 'writing' | 'reading' | 'listening';
 
 export interface VocabWord {
   id: string;

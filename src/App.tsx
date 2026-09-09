@@ -165,7 +165,7 @@ export default function App() {
             }`}
           >
             <BookMarked className="w-4 h-4" />
-            生字庫
+            生字庫 (Vocabulary)
           </button>
 
           <button
@@ -178,7 +178,7 @@ export default function App() {
             }`}
           >
             <Headphones className="w-4 h-4" />
-            聽力
+            聽力 (Listening)
           </button>
 
           <button
@@ -191,7 +191,7 @@ export default function App() {
             }`}
           >
             <Mic className="w-4 h-4 text-rose-400" />
-            口說
+            口說 (Speaking)
           </button>
 
           <button
@@ -204,20 +204,7 @@ export default function App() {
             }`}
           >
             <BookOpen className="w-4 h-4" />
-            閱讀
-          </button>
-
-          <button
-            id="tab-ielts"
-            onClick={() => setActiveTab('ielts')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition cursor-pointer ${
-              activeTab === 'ielts'
-                ? 'bg-amber-500 text-stone-950 shadow-2xs'
-                : 'text-stone-700 hover:text-stone-900 hover:bg-amber-50/70 border border-amber-200/60'
-            }`}
-          >
-            <GraduationCap className="w-4 h-4 text-amber-600" />
-            IELTS 題庫
+            閱讀 (Reading)
           </button>
 
           <button
@@ -230,7 +217,7 @@ export default function App() {
             }`}
           >
             <PenTool className="w-4 h-4" />
-            IELTS 寫作
+            寫作 (Writing)
           </button>
 
         </div>
@@ -273,10 +260,6 @@ export default function App() {
 
         {activeTab === 'reading' && (
           <ReadingHub savedWords={savedWords} onWordsChange={refreshWords} />
-        )}
-
-        {activeTab === 'ielts' && (
-          <IELTSPracticeHub onWordAdded={refreshWords} onOpenWriting={() => setActiveTab('writing')} />
         )}
 
         {activeTab === 'writing' && (
