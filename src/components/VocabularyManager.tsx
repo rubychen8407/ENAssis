@@ -16,6 +16,8 @@ import {
   Clock,
   AlertCircle,
   HelpCircle,
+  GraduationCap,
+  BookMarked,
 } from 'lucide-react';
 import { VocabWord, SkillTab } from '../types';
 import { speakText } from '../utils/speech';
@@ -28,6 +30,7 @@ import {
   recordWordPracticeResult,
 } from '../utils/storage';
 import { VocabMasteryCheckModal } from './VocabMasteryCheckModal';
+import { IELTSVocabExplorer } from './ielts/IELTSVocabExplorer';
 
 interface Props {
   words: VocabWord[];
@@ -50,6 +53,8 @@ export const VocabularyManager: React.FC<Props> = ({
   const [isSingleLoading, setIsSingleLoading] = useState(false);
   const [selectedTestWord, setSelectedTestWord] = useState<VocabWord | null>(null);
   const [isCheckModalOpen, setIsCheckModalOpen] = useState(false);
+  // Vocabulary source view: my own notebook vs. the curated IELTS core wordlist
+  const [vocabSource, setVocabSource] = useState<'mine' | 'ielts-core'>('mine');
 
   const formatAddedTimeAgo = (dateStr?: string): string => {
     if (!dateStr) return '';
@@ -216,6 +221,38 @@ export const VocabularyManager: React.FC<Props> = ({
         </div>
       </div>
 
+      {/* Vocabulary Source Switch: my notebook vs. curated IELTS core wordlist */}
+      <div className="bg-white rounded-2xl border border-stone-200 p-2 shadow-xs flex items-center gap-2">
+        <button
+          id="btn-vocab-source-mine"
+          onClick={() => setVocabSource('mine')}
+          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer ${
+            vocabSource === 'mine'
+              ? 'bg-stone-900 text-white shadow-2xs'
+              : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
+          }`}
+        >
+          <BookMarked className="w-4 h-4" />
+          我的生字本
+        </button>
+        <button
+          id="btn-vocab-source-ielts"
+          onClick={() => setVocabSource('ielts-core')}
+          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition cursor-pointer ${
+            vocabSource === 'ielts-core'
+              ? 'bg-amber-500 text-stone-950 shadow-2xs'
+              : 'text-stone-700 hover:text-stone-900 hover:bg-amber-50/70 border border-amber-200/60'
+          }`}
+        >
+          <GraduationCap className="w-4 h-4" />
+          雅思核心字表 (3,610詞)
+        </button>
+      </div>
+
+      {vocabSource === 'ielts-core' ? (
+        <IELTSVocabExplorer onWordAdded={onWordsChange} />
+      ) : (
+      <>
       {/* Mastery Feedback Rules Banner */}
       <div className="bg-gradient-to-r from-stone-50 via-amber-50/40 to-emerald-50/40 border border-stone-200/80 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-3">
@@ -633,6 +670,8 @@ export const VocabularyManager: React.FC<Props> = ({
             </div>
           </div>
         </div>
+      )}
+      </>
       )}
     </div>
   );

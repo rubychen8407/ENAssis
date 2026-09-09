@@ -9,7 +9,6 @@ import {
   Sparkles,
   Volume2,
   Award,
-  GraduationCap,
 } from 'lucide-react';
 import { SkillTab, VocabWord } from './types';
 import { getSavedVocabulary, readClipboardTextSafe, addWordToVocabulary } from './utils/storage';
@@ -18,7 +17,6 @@ import { SentenceBuilder } from './components/SentenceBuilder';
 import { VoiceDialogue } from './components/VoiceDialogue';
 import { ListeningLab } from './components/ListeningLab';
 import { ReadingHub } from './components/ReadingHub';
-import { IELTSPracticeHub } from './components/ielts/IELTSPracticeHub';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<SkillTab>('vocabulary');
@@ -145,7 +143,7 @@ export default function App() {
             }`}
           >
             <BookMarked className="w-4 h-4" />
-            生字庫與剪貼簿 (Vocabulary)
+            生字庫 (Vocabulary)
           </button>
 
           <button
@@ -158,7 +156,7 @@ export default function App() {
             }`}
           >
             <Headphones className="w-4 h-4" />
-            聽力理解 (Listening)
+            聽力 (Listening)
           </button>
 
           <button
@@ -171,7 +169,7 @@ export default function App() {
             }`}
           >
             <Mic className="w-4 h-4 text-rose-400" />
-            及時語音對話 (Speaking & Voice)
+            口說 (Speaking)
           </button>
 
           <button
@@ -184,20 +182,7 @@ export default function App() {
             }`}
           >
             <BookOpen className="w-4 h-4" />
-            情境閱讀與查詞 (Reading)
-          </button>
-
-          <button
-            id="tab-ielts"
-            onClick={() => setActiveTab('ielts')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition cursor-pointer ${
-              activeTab === 'ielts'
-                ? 'bg-amber-500 text-stone-950 shadow-2xs'
-                : 'text-stone-700 hover:text-stone-900 hover:bg-amber-50/70 border border-amber-200/60'
-            }`}
-          >
-            <GraduationCap className="w-4 h-4 text-amber-600" />
-            雅思全真模考與題庫 (IELTS Practice)
+            閱讀 (Reading)
           </button>
 
           <button
@@ -210,7 +195,7 @@ export default function App() {
             }`}
           >
             <PenTool className="w-4 h-4" />
-            語法造句與寫作 (Writing & Sentences)
+            寫作 (Writing)
           </button>
         </div>
       </header>
@@ -243,10 +228,6 @@ export default function App() {
 
         {activeTab === 'reading' && (
           <ReadingHub savedWords={savedWords} onWordsChange={refreshWords} />
-        )}
-
-        {activeTab === 'ielts' && (
-          <IELTSPracticeHub onWordAdded={refreshWords} />
         )}
 
         {activeTab === 'writing' && (

@@ -7,7 +7,6 @@ import {
   CheckCircle2,
   AlertCircle,
   FileText,
-  Layers,
   Sparkles,
   Zap,
   Filter,
@@ -22,7 +21,6 @@ import { INITIAL_IELTS_EXAMS } from '../../data/ielts/curatedExams';
 import { getIELTSRecords, getIELTSMistakes, getCustomExams, saveCustomExam } from '../../utils/ielts';
 import { IELTSExamArena } from './IELTSExamArena';
 import { IELTSFlashStudy } from './IELTSFlashStudy';
-import { IELTSVocabExplorer } from './IELTSVocabExplorer';
 import { IELTSMistakeNotebook } from './IELTSMistakeNotebook';
 
 interface Props {
@@ -31,7 +29,7 @@ interface Props {
 
 export const IELTSPracticeHub: React.FC<Props> = ({ onWordAdded }) => {
   // Navigation tabs inside IELTS hub
-  const [activeTab, setActiveTab] = useState<'bank' | 'arena' | 'flash' | 'vocab' | 'mistakes'>('bank');
+  const [activeTab, setActiveTab] = useState<'bank' | 'arena' | 'flash' | 'mistakes'>('bank');
 
   // Exam list & selection
   const [exams, setExams] = useState<IELTSExam[]>(INITIAL_IELTS_EXAMS);
@@ -152,7 +150,7 @@ export const IELTSPracticeHub: React.FC<Props> = ({ onWordAdded }) => {
                 </span>
               </div>
               <p className="text-xs text-stone-500">
-                源自 IELTS-practice 官方真題庫架構：含 P1/P2/P3 閱讀全真模考、背題定位精析、3,610 核心高頻詞庫與錯題本
+                源自 IELTS-practice 官方真題庫架構：含 P1/P2/P3 閱讀全真模考、背題定位精析與錯題本（雅思核心字彙請至「生字本」分頁查看）
               </p>
             </div>
           </div>
@@ -196,19 +194,6 @@ export const IELTSPracticeHub: React.FC<Props> = ({ onWordAdded }) => {
             >
               <Compass className="w-3.5 h-3.5" />
               背題定位
-            </button>
-
-            <button
-              id="tab-ielts-vocab"
-              onClick={() => setActiveTab('vocab')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
-                activeTab === 'vocab'
-                  ? 'bg-stone-900 text-white shadow-2xs'
-                  : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
-              }`}
-            >
-              <Layers className="w-3.5 h-3.5" />
-              3,600+ 核心詞庫
             </button>
 
             <button
@@ -294,8 +279,6 @@ export const IELTSPracticeHub: React.FC<Props> = ({ onWordAdded }) => {
           onBackToBank={() => setActiveTab('bank')}
           onWordAdded={onWordAdded}
         />
-      ) : activeTab === 'vocab' ? (
-        <IELTSVocabExplorer onWordAdded={onWordAdded} />
       ) : activeTab === 'mistakes' ? (
         <IELTSMistakeNotebook onSelectExamForPractice={handleStartExam} />
       ) : (
