@@ -16,6 +16,8 @@ import {
   Calendar,
   Moon,
   Sun,
+  Cloud,
+  RefreshCw,
 } from 'lucide-react';
 import { SkillTab, VocabWord } from './types';
 import { getSavedVocabulary, readClipboardTextSafe, addWordToVocabulary } from './utils/storage';
@@ -27,6 +29,13 @@ import { IELTSPracticeHub } from './components/ielts/IELTSPracticeHub';
 import { IELTSWritingStudio } from './components/ielts/IELTSWritingStudio';
 import { Dashboard } from './components/Dashboard';
 import { GeneralSettingsModal } from './components/GeneralSettingsModal';
+import { AccountSyncModal } from './components/AccountSyncModal';
+import {
+  initAutoSync,
+  subscribeSyncState,
+  SyncState,
+  getSyncAccountId,
+} from './utils/syncManager';
 import { IELTSMistakeItem, IELTSRecord, IELTSWritingRecord, GeneralSettings } from './types/ielts';
 import {
   getIELTSMistakes,
@@ -46,6 +55,13 @@ export default function App() {
   const [writingRecords, setWritingRecords] = useState<IELTSWritingRecord[]>([]);
   const [generalSettings, setGeneralSettings] = useState<GeneralSettings>(() => getGeneralSettings());
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
+  const [syncState, setSyncState] = useState<SyncState>(() => ({
+    status: 'idle',
+    accountId: getSyncAccountId(),
+    accountName: '學員',
+    lastSyncTime: null,
+  }));
   const [navCollapsed, setNavCollapsed] = useState(false);
   const [zenMode, setZenMode] = useState(false);
   const [prefilledWord, setPrefilledWord] = useState<VocabWord | null>(null);
@@ -91,6 +107,21 @@ export default function App() {
 
   useEffect(() => {
     refreshWords();
+    initAutoSync();
+
+    const unsub = subscribeSyncState((st) => {
+      setSyncState(st);
+    });
+
+    const handleSyncEvent = () => {
+      refreshWords();
+    };
+    window.addEventListener('linguacraft-data-synced', handleSyncEvent);
+
+    return () => {
+      unsub();
+      window.removeEventListener('linguacraft-data-synced', handleSyncEvent);
+    };
   }, []);
 
   // One-click clipboard quick reader
@@ -185,6 +216,29 @@ export default function App() {
               {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
 
+            {/* Cloud Sync Status Button */}
+            <button
+              id="btn-cloud-sync-status"
+              onClick={() => setIsSyncModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-stone-50 hover:bg-stone-100 dark:bg-stone-800 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 transition cursor-pointer shadow-2xs text-xs font-semibold"
+              title={`跨裝置同步代碼：${syncState.accountId}`}
+              aria-label="跨裝置同步"
+            >
+              {syncState.status === 'syncing' ? (
+                <RefreshCw className="w-3.5 h-3.5 text-amber-500 animate-spin" />
+              ) : syncState.status === 'error' ? (
+                <Cloud className="w-3.5 h-3.5 text-rose-500" />
+              ) : (
+                <div className="relative flex items-center justify-center">
+                  <Cloud className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+                  <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-500 ring-1 ring-white" />
+                </div>
+              )}
+              <span className="hidden sm:inline text-[11px] font-medium font-mono text-stone-600 dark:text-stone-400">
+                {syncState.accountId}
+              </span>
+            </button>
+
             {/* Profile */}
             <button
               onClick={() => setIsSettingsModalOpen(true)}
@@ -238,7 +292,11 @@ export default function App() {
         )}
 
         {activeTab === 'listening' && (
-          <ListeningLab savedWords={savedWords} prefilledWord={prefilledWord} />
+          <ListeningLab
+            savedWords={savedWords}
+            prefilledWord={prefilledWord}
+            onRecordSaved={refreshWords}
+          />
         )}
 
         {activeTab === 'speaking' && (
@@ -280,6 +338,13 @@ export default function App() {
           clearAllIELTSWritingRecords();
           refreshWords();
         }}
+      />
+
+      {/* Cross-Device Account Sync Modal */}
+      <AccountSyncModal
+        isOpen={isSyncModalOpen}
+        onClose={() => setIsSyncModalOpen(false)}
+        onSyncCompleted={refreshWords}
       />
     </div>
   );

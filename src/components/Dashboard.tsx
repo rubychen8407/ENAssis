@@ -13,6 +13,7 @@ import {
   Download,
   ExternalLink,
   GraduationCap,
+  Headphones,
   Layers,
   Lightbulb,
   PenTool,
@@ -69,13 +70,51 @@ export const Dashboard: React.FC<Props> = ({
   // Calculate statistics
   const writingStats = useMemo(() => calculateWritingStats(writingRecords), [writingRecords]);
 
-  const readingStats = useMemo(() => {
+  const listeningRecords = useMemo(
+    () =>
+      records.filter(
+        (r) =>
+          r.category?.toLowerCase().includes('listening') ||
+          r.examId.startsWith('ielts_listen_') ||
+          r.examTitle.includes('聽力')
+      ),
+    [records]
+  );
+
+  const readingRecords = useMemo(
+    () =>
+      records.filter(
+        (r) =>
+          !(
+            r.category?.toLowerCase().includes('listening') ||
+            r.examId.startsWith('ielts_listen_') ||
+            r.examTitle.includes('聽力')
+          )
+      ),
+    [records]
+  );
+
+  const examStats = useMemo(() => {
     const averageBand = records.length
       ? (records.reduce((total, record) => total + record.bandScore, 0) / records.length).toFixed(1)
       : null;
+    const listeningAvg = listeningRecords.length
+      ? (
+          listeningRecords.reduce((total, record) => total + record.bandScore, 0) /
+          listeningRecords.length
+        ).toFixed(1)
+      : null;
+    const readingAvg = readingRecords.length
+      ? (
+          readingRecords.reduce((total, record) => total + record.bandScore, 0) /
+          readingRecords.length
+        ).toFixed(1)
+      : null;
     const latestRecord = records[0] || null;
-    return { averageBand, latestRecord };
-  }, [records]);
+    return { averageBand, listeningAvg, readingAvg, latestRecord };
+  }, [records, listeningRecords, readingRecords]);
+
+  const readingStats = examStats; // Backwards compatibility for existing references
 
   const masteredWords = useMemo(
     () => savedWords.filter((word) => word.masteryLevel === 'mastered').length,
@@ -599,22 +638,54 @@ export const Dashboard: React.FC<Props> = ({
           </div>
 
           <div className="mt-5 rounded-2xl bg-stone-50 p-4 border border-stone-100">
-            <p className="text-xs font-semibold text-stone-600">最近一次閱讀模考紀錄</p>
-            {readingStats.latestRecord ? (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+              <p className="text-xs font-semibold text-stone-600">最新模考歷程 (聽力 / 閱讀)</p>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {examStats.listeningAvg && (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200">
+                    聽力均分 Band {examStats.listeningAvg}
+                  </span>
+                )}
+                {examStats.readingAvg && (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-200">
+                    閱讀均分 Band {examStats.readingAvg}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {examStats.latestRecord ? (
               <div className="mt-2 flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-sm font-semibold text-stone-900">{readingStats.latestRecord.examTitle}</p>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span
+                      className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
+                        examStats.latestRecord.category?.toLowerCase().includes('listening') ||
+                        examStats.latestRecord.examId.startsWith('ielts_listen_') ||
+                        examStats.latestRecord.examTitle.includes('聽力')
+                          ? 'bg-amber-100 text-amber-900 dark:bg-amber-950/60 dark:text-amber-300'
+                          : 'bg-emerald-100 text-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-300'
+                      }`}
+                    >
+                      {examStats.latestRecord.category?.toLowerCase().includes('listening') ||
+                      examStats.latestRecord.examId.startsWith('ielts_listen_') ||
+                      examStats.latestRecord.examTitle.includes('聽力')
+                        ? '聽力 Listening'
+                        : '閱讀 Reading'}
+                    </span>
+                    <p className="text-sm font-semibold text-stone-900">{examStats.latestRecord.examTitle}</p>
+                  </div>
                   <p className="mt-1 text-xs text-stone-500">
-                    {readingStats.latestRecord.date} · 答對 {readingStats.latestRecord.score}/
-                    {readingStats.latestRecord.totalQuestions} 題 ({readingStats.latestRecord.percentage}%)
+                    {examStats.latestRecord.date} · 答對 {examStats.latestRecord.score}/
+                    {examStats.latestRecord.totalQuestions} 題 ({examStats.latestRecord.percentage}%)
                   </p>
                 </div>
-                <span className="text-xl font-bold text-emerald-700">
-                  Band {readingStats.latestRecord.bandScore.toFixed(1)}
+                <span className="text-xl font-black text-emerald-700">
+                  Band {examStats.latestRecord.bandScore.toFixed(1)}
                 </span>
               </div>
             ) : (
-              <p className="mt-2 text-xs text-stone-600">尚未有聽讀模考紀錄，建議先完成一回真題測試。</p>
+              <p className="mt-2 text-xs text-stone-600">尚未有聽讀模考紀錄，建議前往聽力實驗室或真題模考完成一次測試。</p>
             )}
           </div>
         </section>
@@ -625,8 +696,22 @@ export const Dashboard: React.FC<Props> = ({
             <h2 className="text-sm font-bold text-stone-900 mb-3">各模組快捷導航</h2>
             <div className="space-y-2">
               <button
-                onClick={() => onNavigate('writing')}
+                onClick={() => onNavigate('listening')}
                 className="flex w-full items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50/40 p-3 text-left hover:bg-amber-100/50 transition cursor-pointer"
+              >
+                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-800 flex items-center justify-center">
+                  <Headphones className="h-4 w-4" />
+                </div>
+                <span className="flex-1">
+                  <span className="block text-xs font-bold text-stone-900">聽力實驗室 (Listening Lab)</span>
+                  <span className="block text-[11px] text-stone-500">IELTS 聽力模考、生字篇章與語音匯入</span>
+                </span>
+                <ArrowRight className="h-4 w-4 text-stone-400" />
+              </button>
+
+              <button
+                onClick={() => onNavigate('writing')}
+                className="flex w-full items-center gap-3 rounded-2xl border border-stone-200 p-3 text-left hover:border-stone-300 hover:bg-stone-50 transition cursor-pointer"
               >
                 <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-800 flex items-center justify-center">
                   <PenTool className="h-4 w-4" />
@@ -646,7 +731,7 @@ export const Dashboard: React.FC<Props> = ({
                   <GraduationCap className="h-4 w-4" />
                 </div>
                 <span className="flex-1">
-                  <span className="block text-xs font-bold text-stone-900">真題模考與錯題本</span>
+                  <span className="block text-xs font-bold text-stone-900">真題閱讀模考與錯題本</span>
                   <span className="block text-[11px] text-stone-500">計時模考、自動判分與詳解</span>
                 </span>
                 <ArrowRight className="h-4 w-4 text-stone-400" />

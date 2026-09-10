@@ -34,6 +34,7 @@ import {
 import { VocabMasteryCheckModal } from './VocabMasteryCheckModal';
 import { toTraditionalChinese } from '../utils/chineseConverter';
 import { VocabAIQuiz } from './VocabAIQuiz';
+import { VocabToolbar } from './VocabToolbar';
 
 interface Props {
   words: VocabWord[];
@@ -89,7 +90,6 @@ export const VocabularyManager: React.FC<Props> = ({
   onWordsChange,
   onSelectWordForPractice,
 }) => {
-  const [railCollapsed, setRailCollapsed] = useState(false);
   const [studyMode, setStudyMode] = useState<StudyMode>(() => {
     if (typeof window === 'undefined') return 'study';
     return localStorage.getItem('linguacraft-vocab-mode') === 'exam' ? 'exam' : 'study';
@@ -316,91 +316,7 @@ export const VocabularyManager: React.FC<Props> = ({
   }, [filterLevel, searchTerm, words]);
 
   return (
-    <div className="flex gap-3">
-    <aside className={`hidden md:flex fixed left-3 top-28 z-30 flex-col items-center gap-0.5 rounded-2xl bg-stone-900/90 backdrop-blur border border-stone-800/60 shadow-xl ring-1 ring-white/5 py-2 h-fit transition-all duration-300 ${railCollapsed ? 'w-10' : 'w-14'}`}>
-      {/* Toggle collapse/expand */}
-      <button
-        onClick={() => setRailCollapsed((v) => !v)}
-        className="w-full flex items-center justify-center h-8 rounded-lg text-stone-500 hover:text-stone-300 hover:bg-white/[0.06] transition cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/50"
-        title={railCollapsed ? '展開導覽' : '收起導覽'}
-        aria-label={railCollapsed ? '展開導覽' : '收起導覽'}
-      >
-        <span className="text-[10px] font-bold leading-none">{railCollapsed ? '>' : '≡'}</span>
-      </button>
-
-      <div className="w-3 h-px bg-white/10 my-0.5" />
-      {/* M3 Collapsed Rail — narrow width, icon-only with optional tiny label/badge */}
-      <div className="relative w-full flex flex-col items-center">
-        <button
-          onClick={() => setMode('study')}
-          className={`relative w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-200 cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/70 active:scale-95 ${studyMode === 'study' ? 'text-stone-950' : 'text-stone-500 hover:text-stone-300 hover:bg-white/[0.06]'}`}
-          title="字卡 Study Mode"
-          aria-label="字卡"
-        >
-          {studyMode === 'study' && (
-            <span className="absolute inset-0.5 rounded-lg bg-amber-400 z-0" />
-          )}
-          <span className="relative z-10"><Layers3 className="w-4.5 h-4.5" /></span>
-        </button>
-      </div>
-
-      <div className="relative w-full flex flex-col items-center">
-        <button
-          onClick={() => setMode('exam')}
-          className={`relative w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-200 cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/70 active:scale-95 ${studyMode === 'exam' ? 'text-stone-950' : 'text-stone-500 hover:text-stone-300 hover:bg-white/[0.06]'}`}
-          title="考題 Exam Mode"
-          aria-label="考題"
-        >
-          {studyMode === 'exam' && (
-            <span className="absolute inset-0.5 rounded-lg bg-amber-400 z-0" />
-          )}
-          <span className="relative z-10"><Brain className="w-4.5 h-4.5" /></span>
-          {newWordsCount > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-stone-900 z-20" aria-label={`${newWordsCount} 個新收錄`} />
-          )}
-        </button>
-      </div>
-
-      <div className="w-4 h-px bg-white/10 my-0.5" />
-
-      <div className="relative w-full flex flex-col items-center">
-        <button
-          type="button"
-          onClick={() => openImport('clipboard')}
-          className={`relative w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-200 cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/70 active:scale-95 ${isImportModalOpen ? 'text-stone-950' : 'text-stone-500 hover:text-stone-300 hover:bg-white/[0.06]'}`}
-          title="匯入單字"
-          aria-label="匯入單字"
-        >
-          {isImportModalOpen && (
-            <span className="absolute inset-0.5 rounded-lg bg-amber-400 z-0" />
-          )}
-          <span className="relative z-10"><Upload className="w-4 h-4" /></span>
-        </button>
-      </div>
-    </aside>
-
-    {/* Mobile Bottom Navigation — M3 NavigationBar, shown only below md (responsive behavior per spec) */}
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-stone-900/95 backdrop-blur border-t border-stone-800/60 shadow-[0_-8px_30px_rgba(0,0,0,0.25)]">
-      <div className="flex items-center justify-around h-14 px-2">
-        <button onClick={() => setMode('study')} className={`flex flex-col items-center justify-center w-16 h-12 rounded-xl transition cursor-pointer ${studyMode === 'study' ? 'text-amber-400' : 'text-stone-400 hover:text-stone-200'}`} aria-label="字卡">
-          <Layers3 className="w-5 h-5" />
-          <span className="text-[9px] font-semibold mt-0.5">字卡</span>
-          {studyMode === 'study' && <span className="absolute bottom-1 w-1 h-1 rounded-full bg-amber-400" />}
-        </button>
-        <button onClick={() => setMode('exam')} className={`flex flex-col items-center justify-center w-16 h-12 rounded-xl transition cursor-pointer ${studyMode === 'exam' ? 'text-amber-400' : 'text-stone-400 hover:text-stone-200'}`} aria-label="考題">
-          <Brain className="w-5 h-5" />
-          <span className="text-[9px] font-semibold mt-0.5">考題</span>
-          {studyMode === 'exam' && <span className="absolute bottom-1 w-1 h-1 rounded-full bg-amber-400" />}
-        </button>
-        <button type="button" onClick={() => openImport('clipboard')} className={`flex flex-col items-center justify-center w-16 h-12 rounded-xl transition cursor-pointer ${isImportModalOpen ? 'text-amber-400' : 'text-stone-400 hover:text-stone-200'}`} aria-label="匯入單字">
-          <Upload className="w-5 h-5" />
-          <span className="text-[9px] font-semibold mt-0.5">匯入</span>
-          {isImportModalOpen && <span className="absolute bottom-1 w-1 h-1 rounded-full bg-amber-400" />}
-        </button>
-      </div>
-    </nav>
-    <div className="space-y-6 pb-24">
-
+    <div className="w-full space-y-6 pb-24">
       {studyMode === 'exam' ? (
         <VocabAIQuiz words={words} onWordsChange={onWordsChange} />
       ) : (
@@ -612,67 +528,6 @@ export const VocabularyManager: React.FC<Props> = ({
             )}
           </div>
 
-          {/* Import modal */}
-          {isImportModalOpen && (
-            <div className="fixed inset-0 z-50 bg-stone-950/70 backdrop-blur-sm flex items-center justify-center p-4">
-              <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border border-stone-200 bg-white shadow-2xl p-6 space-y-5 dark:bg-stone-900 dark:border-stone-700">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-2"><Upload className="w-5 h-5 text-emerald-500" /><h3 className="text-lg font-bold text-stone-900">匯入單字</h3></div>
-                    <p className="mt-1 text-xs text-stone-600">選擇來源 → 轉成文字 → AI 擷取適合學習的單字。</p>
-                  </div>
-                  <button onClick={() => setIsImportModalOpen(false)} className="text-stone-400 hover:text-stone-900 text-sm font-semibold cursor-pointer">關閉</button>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  {[
-                    { id: 'clipboard', label: '剪貼簿', icon: ClipboardPaste, desc: '貼上文章、單字或片語' },
-                    { id: 'file', label: '檔案', icon: FileText, desc: 'TXT / MD / CSV / HTML' },
-                    { id: 'website', label: '網站', icon: Link, desc: '公開網址轉成文字' },
-                  ].map((source) => {
-                    const Icon = source.icon;
-                    return <button key={source.id} type="button" onClick={() => setImportSource(source.id as ImportSource)} className={`rounded-2xl border p-3 text-left transition cursor-pointer ${importSource === source.id ? 'border-emerald-500 bg-emerald-50' : 'border-stone-200 bg-stone-50 hover:border-stone-300'}`}>
-                      <Icon className="w-5 h-5 text-stone-800 mb-2" />
-                      <div className="text-sm font-bold text-stone-900">{source.label}</div>
-                      <div className="text-[11px] text-stone-500 mt-0.5">{source.desc}</div>
-                    </button>;
-                  })}
-                </div>
-
-                {importSource === 'clipboard' && (
-                  <div className="space-y-3">
-                    <button type="button" onClick={readClipboardIntoImport} className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-stone-900 text-white text-sm font-semibold hover:bg-stone-800 cursor-pointer"><ClipboardPaste className="w-4 h-4" />讀取剪貼簿</button>
-                    <textarea value={importText} onChange={(e) => setImportText(e.target.value)} rows={7} placeholder="也可以直接貼上英文單字清單或文章..." className="w-full rounded-2xl border border-stone-200 bg-stone-50 p-3.5 text-sm text-stone-900 placeholder:text-stone-400 outline-none focus:ring-2 focus:ring-emerald-200" />
-                  </div>
-                )}
-
-                {importSource === 'file' && (
-                  <div className="space-y-3">
-                    <input ref={fileInputRef} type="file" accept=".txt,.md,.csv,.json,.html,.htm" onChange={handleFileImport} className="hidden" />
-                    <button type="button" onClick={() => fileInputRef.current?.click()} className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-stone-900 text-white text-sm font-semibold hover:bg-stone-800 cursor-pointer"><FileText className="w-4 h-4" />選擇檔案</button>
-                    <textarea value={importText} onChange={(e) => setImportText(e.target.value)} rows={7} placeholder="選擇檔案後會在這裡預覽文字..." className="w-full rounded-2xl border border-stone-200 bg-stone-50 p-3.5 text-sm text-stone-900 placeholder:text-stone-400 outline-none focus:ring-2 focus:ring-emerald-200" />
-                  </div>
-                )}
-
-                {importSource === 'website' && (
-                  <div className="space-y-3">
-                    <div className="flex gap-2"><input value={sourceUrl} onChange={(e) => setSourceUrl(e.target.value)} placeholder="https://example.com/article" className="flex-1 rounded-xl border border-stone-200 bg-stone-50 px-3.5 py-2.5 text-sm text-stone-900 outline-none" /><button type="button" onClick={fetchWebsiteText} disabled={isFetchingUrl} className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-stone-900 text-white text-sm font-semibold disabled:opacity-40 cursor-pointer">{isFetchingUrl ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Link className="w-4 h-4" />}抓取文字</button></div>
-                    <textarea value={importText} onChange={(e) => setImportText(e.target.value)} rows={7} placeholder="抓取成功後會顯示轉換後的文章文字..." className="w-full rounded-2xl border border-stone-200 bg-stone-50 p-3.5 text-sm text-stone-900 placeholder:text-stone-400 outline-none focus:ring-2 focus:ring-emerald-200" />
-                  </div>
-                )}
-
-                {analysisError && <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800">{analysisError}</div>}
-
-                <div className="flex items-center justify-between gap-3 pt-1">
-                  <span className="text-xs text-stone-500">內容會先轉成文字，再交給 AI 選出高價值生字。</span>
-                  <button type="button" disabled={isAnalyzing || !importText.trim()} onClick={handleBatchAnalyze} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 disabled:opacity-40 cursor-pointer">
-                    {isAnalyzing ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />} AI 分析並匯入
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
           <VocabMasteryCheckModal
             word={selectedTestWord}
             isOpen={isCheckModalOpen}
@@ -681,7 +536,75 @@ export const VocabularyManager: React.FC<Props> = ({
           />
         </>
       )}
-    </div>
+
+      {/* Batch Import Modal — accessible in both Study Mode and Exam Mode */}
+      {isImportModalOpen && (
+        <div className="fixed inset-0 z-50 bg-stone-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border border-stone-200 bg-white shadow-2xl p-6 space-y-5 dark:bg-stone-900 dark:border-stone-700">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2"><Upload className="w-5 h-5 text-emerald-500" /><h3 className="text-lg font-bold text-stone-900 dark:text-stone-100">匯入單字</h3></div>
+                <p className="mt-1 text-xs text-stone-600 dark:text-stone-400">選擇來源 → 轉成文字 → AI 擷取適合學習的單字。</p>
+              </div>
+              <button onClick={() => setIsImportModalOpen(false)} className="text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 text-sm font-semibold cursor-pointer">關閉</button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {[
+                { id: 'clipboard', label: '剪貼簿', icon: ClipboardPaste, desc: '貼上文章、單字或片語' },
+                { id: 'file', label: '檔案', icon: FileText, desc: 'TXT / MD / CSV / HTML' },
+                { id: 'website', label: '網站', icon: Link, desc: '公開網址轉成文字' },
+              ].map((source) => {
+                const Icon = source.icon;
+                return <button key={source.id} type="button" onClick={() => setImportSource(source.id as ImportSource)} className={`rounded-2xl border p-3 text-left transition cursor-pointer ${importSource === source.id ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 dark:border-emerald-500' : 'border-stone-200 bg-stone-50 hover:border-stone-300 dark:border-stone-800 dark:bg-stone-800/60 dark:hover:border-stone-700'}`}>
+                  <Icon className="w-5 h-5 text-stone-800 dark:text-stone-200 mb-2" />
+                  <div className="text-sm font-bold text-stone-900 dark:text-stone-100">{source.label}</div>
+                  <div className="text-[11px] text-stone-500 dark:text-stone-400 mt-0.5">{source.desc}</div>
+                </button>;
+              })}
+            </div>
+
+            {importSource === 'clipboard' && (
+              <div className="space-y-3">
+                <button type="button" onClick={readClipboardIntoImport} className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-stone-900 dark:bg-stone-800 text-white text-sm font-semibold hover:bg-stone-800 dark:hover:bg-stone-700 cursor-pointer"><ClipboardPaste className="w-4 h-4" />讀取剪貼簿</button>
+                <textarea value={importText} onChange={(e) => setImportText(e.target.value)} rows={7} placeholder="也可以直接貼上英文單字清單或文章..." className="w-full rounded-2xl border border-stone-200 bg-stone-50 p-3.5 text-sm text-stone-900 placeholder:text-stone-400 outline-none focus:ring-2 focus:ring-emerald-200 dark:bg-stone-800/80 dark:border-stone-700 dark:text-stone-100 dark:placeholder:text-stone-500" />
+              </div>
+            )}
+
+            {importSource === 'file' && (
+              <div className="space-y-3">
+                <input ref={fileInputRef} type="file" accept=".txt,.md,.csv,.json,.html,.htm" onChange={handleFileImport} className="hidden" />
+                <button type="button" onClick={() => fileInputRef.current?.click()} className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-stone-900 dark:bg-stone-800 text-white text-sm font-semibold hover:bg-stone-800 dark:hover:bg-stone-700 cursor-pointer"><FileText className="w-4 h-4" />選擇檔案</button>
+                <textarea value={importText} onChange={(e) => setImportText(e.target.value)} rows={7} placeholder="選擇檔案後會在這裡預覽文字..." className="w-full rounded-2xl border border-stone-200 bg-stone-50 p-3.5 text-sm text-stone-900 placeholder:text-stone-400 outline-none focus:ring-2 focus:ring-emerald-200 dark:bg-stone-800/80 dark:border-stone-700 dark:text-stone-100 dark:placeholder:text-stone-500" />
+              </div>
+            )}
+
+            {importSource === 'website' && (
+              <div className="space-y-3">
+                <div className="flex gap-2"><input value={sourceUrl} onChange={(e) => setSourceUrl(e.target.value)} placeholder="https://example.com/article" className="flex-1 rounded-xl border border-stone-200 bg-stone-50 px-3.5 py-2.5 text-sm text-stone-900 outline-none dark:bg-stone-800 dark:border-stone-700 dark:text-stone-100" /><button type="button" onClick={fetchWebsiteText} disabled={isFetchingUrl} className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-stone-900 dark:bg-stone-800 text-white text-sm font-semibold disabled:opacity-40 cursor-pointer">{isFetchingUrl ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Link className="w-4 h-4" />}抓取文字</button></div>
+                <textarea value={importText} onChange={(e) => setImportText(e.target.value)} rows={7} placeholder="抓取成功後會顯示轉換後的文章文字..." className="w-full rounded-2xl border border-stone-200 bg-stone-50 p-3.5 text-sm text-stone-900 placeholder:text-stone-400 outline-none focus:ring-2 focus:ring-emerald-200 dark:bg-stone-800/80 dark:border-stone-700 dark:text-stone-100 dark:placeholder:text-stone-500" />
+              </div>
+            )}
+
+            {analysisError && <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800 dark:bg-rose-950/40 dark:border-rose-900 dark:text-rose-300">{analysisError}</div>}
+
+            <div className="flex items-center justify-between gap-3 pt-1">
+              <span className="text-xs text-stone-500 dark:text-stone-400">內容會先轉成文字，再交給 AI 選出高價值生字。</span>
+              <button type="button" disabled={isAnalyzing || !importText.trim()} onClick={handleBatchAnalyze} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 disabled:opacity-40 cursor-pointer">
+                {isAnalyzing ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />} AI 分析並匯入
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bottom-Right Toolbar */}
+      <VocabToolbar
+        studyMode={studyMode}
+        onToggleMode={() => setMode(studyMode === 'study' ? 'exam' : 'study')}
+        onBatchImport={() => openImport('clipboard')}
+        newWordsCount={newWordsCount}
+      />
     </div>
   );
 };

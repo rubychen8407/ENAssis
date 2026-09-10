@@ -34,14 +34,14 @@ type Question = {
   explanation?: string;
 };
 
-const shuffle = <T,>(items: T[]): T[] => {
+function shuffle<T>(items: T[]): T[] {
   const copy = [...items];
   for (let i = copy.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1));
     [copy[i], copy[j]] = [copy[j], copy[i]];
   }
   return copy;
-};
+}
 
 const pickWords = (words: VocabWord[], count: number) => {
   return shuffle(
@@ -86,7 +86,7 @@ export const VocabAIQuiz: React.FC<Props> = ({ words, onWordsChange }) => {
     const generated = chosen.map((word, i) => {
       const type = plan[i % plan.length];
       if (type === 'choice') {
-        const distractors = shuffle(eligibleWords.filter((w) => w.id !== word.id)).slice(0, 3).map((w) => w.translation);
+        const distractors = shuffle(eligibleWords.filter((w) => w.id !== word.id)).slice(0, 3).map((w: VocabWord) => w.translation);
         return {
           id: `${word.id}-choice-${Date.now()}-${i}`,
           type,
@@ -101,12 +101,13 @@ export const VocabAIQuiz: React.FC<Props> = ({ words, onWordsChange }) => {
         const correct = word.collocations?.[0];
         const pool = shuffle(eligibleWords.flatMap((w) => w.collocations || []).filter(Boolean)).filter((c) => c !== correct);
         if (!correct || pool.length < 2) {
+          const fallbackDistractors = shuffle(eligibleWords.filter((w) => w.id !== word.id)).slice(0, 3).map((w: VocabWord) => w.translation);
           return {
             id: `${word.id}-choice-${Date.now()}-${i}`,
             type: 'choice' as const,
             word,
             prompt: `「${word.word}」最接近哪個意思？`,
-            options: shuffle([word.translation, ...shuffle(eligibleWords.filter((w) => w.id !== word.id)).slice(0, 3).map((w) => w.translation)]),
+            options: shuffle([word.translation, ...fallbackDistractors]),
             answer: word.translation,
             explanation: word.definitionEn || word.translation,
           };

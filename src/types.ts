@@ -128,6 +128,15 @@ export interface ListeningItem {
   level: string;
   topic: string;
   audioScript: string;
+  audioUrl?: string;
+  sourceType?: 'ai' | 'ielts_external' | 'voice_import' | 'youtube' | 'podcast' | 'upload' | 'direct_audio';
+  sourceUrl?: string;
+  targetWords?: string[];
+  coverageInfo?: {
+    total: number;
+    covered: number;
+    percentage: number;
+  };
   sentences: {
     en: string;
     zh: string;

@@ -1,4 +1,5 @@
 import { VocabWord } from '../types';
+import { triggerDebouncedSync } from './syncManager';
 
 const VOCAB_STORAGE_KEY = 'linguacraft_vocab_v1';
 const HISTORY_STORAGE_KEY = 'linguacraft_history_v1';
@@ -169,10 +170,13 @@ export function getSavedVocabulary(): VocabWord[] {
   }
 }
 
-export function saveVocabularyList(words: VocabWord[]): void {
+export function saveVocabularyList(words: VocabWord[], syncCloud = true): void {
   if (typeof window === 'undefined') return;
   try {
     localStorage.setItem(VOCAB_STORAGE_KEY, JSON.stringify(words));
+    if (syncCloud) {
+      triggerDebouncedSync(1200);
+    }
   } catch (err) {
     console.error('Failed to save vocabulary:', err);
   }

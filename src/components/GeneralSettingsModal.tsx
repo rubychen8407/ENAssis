@@ -12,9 +12,18 @@ import {
   AlertCircle,
   Clock,
   ShieldCheck,
+  Cloud,
+  Copy,
+  Smartphone,
+  RefreshCw,
 } from 'lucide-react';
 import { GeneralSettings } from '../types/ielts';
 import { DEFAULT_GENERAL_SETTINGS } from '../utils/ielts';
+import {
+  getSyncAccountId,
+  performCrossDeviceSync,
+  switchAndPullAccount,
+} from '../utils/syncManager';
 
 interface Props {
   isOpen: boolean;
@@ -544,6 +553,42 @@ export const GeneralSettingsModal: React.FC<Props> = ({
                 </button>
               </div>
 
+              <div className="p-4 rounded-2xl bg-sky-50/50 border border-sky-200">
+                <div className="flex items-center gap-2 mb-2">
+                  <Cloud className="w-4 h-4 text-sky-600" />
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-sky-900">
+                    同帳號跨裝置同步 (Cross-Device Sync)
+                  </h4>
+                </div>
+                <p className="text-xs text-sky-800/80 mb-3">
+                  當前裝置綁定同步代碼：<code className="px-1.5 py-0.5 rounded bg-white font-mono font-bold text-sky-950 border border-sky-200">{getSyncAccountId()}</code>。在其他手機或電腦輸入相同代碼，即可隨時雙向同步生字庫與成績。
+                </p>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(getSyncAccountId());
+                      alert('已複製同步代碼：' + getSyncAccountId());
+                    }}
+                    className="px-3.5 py-2 rounded-xl bg-white border border-sky-300 hover:bg-sky-100 text-xs font-bold text-sky-700 transition cursor-pointer inline-flex items-center gap-1.5 shadow-2xs"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    複製同步代碼
+                  </button>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await performCrossDeviceSync();
+                      alert('雲端資料同步完成！');
+                    }}
+                    className="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-xs font-bold text-white transition cursor-pointer inline-flex items-center gap-1.5 shadow-2xs"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    立即雲端同步
+                  </button>
+                </div>
+              </div>
+
               <div className="p-4 rounded-2xl bg-rose-50/50 border border-rose-200">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-rose-900 mb-2">
                   重置與清理紀錄
@@ -568,6 +613,100 @@ export const GeneralSettingsModal: React.FC<Props> = ({
               </div>
             </div>
           )}
+
+          {activeTab === 'profile' && (
+            <div className="space-y-4 animate-fade-in">
+              <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-stone-700 mb-3">個人檔案 (Profile)</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-semibold text-stone-600 mb-1 block">稱呼 / 名稱</label>
+                    <input
+                      value={formData.profileName || ''}
+                      onChange={(e) => setFormData({ ...formData, profileName: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl bg-white border border-stone-200 text-sm text-stone-900 focus:outline-hidden"
+                      placeholder="學員"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-stone-600 mb-1 block">圖像網址 (URL)</label>
+                    <input
+                      value={formData.avatarUrl || ''}
+                      onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl bg-white border border-stone-200 text-sm text-stone-900 focus:outline-hidden"
+                      placeholder="https://..."
+                    />
+                  </div>
+                </div>
+                <div className="mt-3 flex items-center gap-3">
+                  <img
+                    src={formData.avatarUrl || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'}
+                    alt="avatar preview"
+                    className="w-10 h-10 rounded-full object-cover ring-2 ring-stone-200"
+                  />
+                  <span className="text-xs text-stone-500">頭像會出現在頂部狀態欄</span>
+                </div>
+              </div>
+
+              {/* Account Sync Card */}
+              <div className="p-4 rounded-2xl bg-sky-50/50 border border-sky-200">
+                <div className="flex items-center gap-2 mb-2">
+                  <Cloud className="w-4 h-4 text-sky-600" />
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-sky-900">
+                    跨裝置同帳號同步
+                  </h4>
+                </div>
+                <p className="text-xs text-sky-800/80 mb-3">
+                  您的同步帳號代碼：<code className="px-1.5 py-0.5 rounded bg-white font-mono font-bold text-sky-950 border border-sky-200">{getSyncAccountId()}</code>
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(getSyncAccountId());
+                    alert('已複製同步代碼：' + getSyncAccountId());
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-white border border-sky-300 hover:bg-sky-100 text-xs font-bold text-sky-700 transition cursor-pointer inline-flex items-center gap-1.5 shadow-2xs"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                  複製代碼至其他裝置登入
+                </button>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'shortcuts' && (
+            <div className="space-y-4 animate-fade-in">
+              <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-stone-700 mb-3">快捷鍵 (Shortcuts)</h4>
+                <ul className="text-sm text-stone-700 space-y-2">
+                  <li className="flex items-center gap-2">
+                    <kbd className="px-2 py-0.5 rounded bg-stone-900 text-white text-xs font-bold">Z</kbd>
+                    <span>Zen Mode（專注模式，隱藏四周導航）</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <kbd className="px-2 py-0.5 rounded bg-stone-900 text-white text-xs font-bold">Esc</kbd>
+                    <span>關閉彈窗視窗 (Modal)</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <kbd className="px-2 py-0.5 rounded bg-stone-900 text-white text-xs font-bold">Ctrl + S</kbd>
+                    <span>快速儲存設定</span>
+                  </li>
+                </ul>
+                <div className="mt-4 pt-3 border-t border-stone-200/70 flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, zenMode: !formData.zenMode })}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                      formData.zenMode ? 'bg-emerald-600 text-white' : 'bg-stone-200 text-stone-700 hover:bg-stone-300'
+                    }`}
+                  >
+                    {formData.zenMode ? 'Zen Mode 已開啟' : '切換為 Zen Mode'}
+                  </button>
+                  <span className="text-xs text-stone-500">隨時按鍵盤 Z 鍵亦可無縫切換</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Modal Footer */}
@@ -579,44 +718,6 @@ export const GeneralSettingsModal: React.FC<Props> = ({
           >
             恢復預設值
           </button>
-        {activeTab === 'profile' && (
-          <div className="space-y-4 animate-fade-in">
-            <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-stone-700 mb-3">Profile / 形象</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs font-semibold text-stone-600 mb-1 block">名稱</label>
-                  <input value={formData.profileName || ''} onChange={e => setFormData({ ...formData, profileName: e.target.value })} className="w-full px-3 py-2 rounded-xl bg-white border border-stone-200 text-sm text-stone-900 focus:outline-hidden" placeholder="學員" />
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-stone-600 mb-1 block">圖像網址 (URL)</label>
-                  <input value={formData.avatarUrl || ''} onChange={e => setFormData({ ...formData, avatarUrl: e.target.value })} className="w-full px-3 py-2 rounded-xl bg-white border border-stone-200 text-sm text-stone-900 focus:outline-hidden" placeholder="https://..." />
-                </div>
-              </div>
-              <div className="mt-3 flex items-center gap-3">
-                <img src={formData.avatarUrl || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'} alt="avatar preview" className="w-10 h-10 rounded-full object-cover ring-2 ring-stone-200" />
-                <span className="text-xs text-stone-500">預覽會即時更新</span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'shortcuts' && (
-          <div className="space-y-4 animate-fade-in">
-            <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-stone-700 mb-3">快捷鍵 Shortcut</h4>
-              <ul className="text-sm text-stone-700 space-y-2">
-                <li className="flex items-center gap-2"><kbd className="px-2 py-0.5 rounded bg-stone-900 text-white text-xs font-bold">Z</kbd> <span>Zen Mode（隱藏導航，只顯示內容）</span></li>
-                <li className="flex items-center gap-2"><kbd className="px-2 py-0.5 rounded bg-stone-900 text-white text-xs font-bold">Esc</kbd> <span>關閉視窗 / Modal</span></li>
-                <li className="flex items-center gap-2"><kbd className="px-2 py-0.5 rounded bg-stone-900 text-white text-xs font-bold">Ctrl + S</kbd> <span>儲存設定</span></li>
-              </ul>
-              <div className="mt-3 flex items-center gap-3">
-                <button type="button" onClick={() => setFormData({ ...formData, zenMode: !formData.zenMode })} className={`px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${formData.zenMode ? 'bg-emerald-600 text-white' : 'bg-stone-200 text-stone-700 hover:bg-stone-300'}`}>{formData.zenMode ? 'Zen 開啟' : '開啟 Zen Mode'}</button>
-                <span className="text-xs text-stone-500">也可按 Z 快速切換</span>
-              </div>
-            </div>
-          </div>
-        )}
 
           <div className="flex items-center gap-3">
             <button

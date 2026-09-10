@@ -748,13 +748,13 @@ app.post('/api/gemini/generate-listening', async (req, res) => {
 
     const ai = getAI();
     const prompt = `You are a listening test creator for English learners.
-Create an engaging spoken English listening audio passage (approx 100-150 words) on the topic "${topic}" at CEFR Level "${level}".
-${vocabWords.length > 0 ? `Must incorporate these target vocabulary words: ${vocabWords.join(', ')}` : ''}
+Create an engaging spoken English listening audio passage (approx 130-180 words) on the topic "${topic}" at CEFR Level "${level}".
+${vocabWords.length > 0 ? `CRITICAL REQUIREMENT: You MUST naturally incorporate ALL of these target vocabulary words into the passage: ${vocabWords.join(', ')}. Each word must appear in the audioScript and be included in vocabularyList and dictation practice.` : ''}
 
 Output strictly JSON:
 {
   "id": "listen_${Date.now()}",
-  "title": "Short title",
+  "title": "Short descriptive title",
   "level": "${level}",
   "topic": "${topic}",
   "audioScript": "Complete spoken text for audio listening (natural conversational or narrative monologue/dialogue)",
@@ -768,7 +768,7 @@ Output strictly JSON:
   "vocabularyList": [
     {
       "word": "word",
-      "definition": "Traditional Chinese definition"
+      "definition": "Traditional Chinese 繁體中文 definition"
     }
   ],
   "dictationPractice": [
@@ -804,6 +804,256 @@ Output strictly JSON:
   } catch (error: any) {
     console.error('Error in generate-listening:', error);
     res.status(500).json({ error: error?.message || 'Listening generation failed' });
+  }
+});
+
+// 6b. Parse External IELTS Listening Test from URL or Text
+app.post('/api/gemini/parse-external-ielts-listening', async (req, res) => {
+  try {
+    const { url = '', rawText = '', section = 'Section 1' } = req.body;
+    const ai = getAI();
+
+    let externalContext = (rawText || '').trim();
+    let pageTitle = '';
+
+    if (url && url.startsWith('http')) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 7000);
+        const fetchRes = await fetch(url, {
+          signal: controller.signal,
+          headers: {
+            'User-Agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          },
+        });
+        clearTimeout(timeoutId);
+        if (fetchRes.ok) {
+          const html = await fetchRes.text();
+          const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+          if (titleMatch) pageTitle = titleMatch[1].trim();
+          const stripped = html
+            .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+            .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+          externalContext = (pageTitle ? `Title: ${pageTitle}\n` : '') + stripped.slice(0, 10000);
+        }
+      } catch (err: any) {
+        console.warn('Could not fetch external URL, generating authentic test based on context:', err?.message);
+        externalContext = `Target resource URL: ${url}. Construct an authentic Cambridge IELTS Listening test module for ${section}.`;
+      }
+    }
+
+    const prompt = `You are an elite IELTS Listening Examiner and Cambridge Curriculum Developer.
+Construct a complete, authentic official Cambridge-format IELTS Listening test module for ${section} based on the following external material:
+
+Resource Context:
+${externalContext ? externalContext.slice(0, 8000) : `Standard ${section} Listening test`}
+
+Requirements:
+1. Provide a realistic spoken audio script (180-320 words) with clear speaker identifiers (e.g. Officer / Student / Speaker) that contains the context, clues, and answers.
+2. Formulate 5 official IELTS Listening questions matching standard test formats (fill_blank with single or two words, or choice).
+3. Specify exact standard answer keys (one-word or two-word exact match for blanks, or choice strings).
+4. Provide the exact locating sentence from the audio script where the answer is stated or paraphrased.
+5. Provide a clear Traditional Chinese (繁體中文) explanation for each question.
+6. Provide a breakdown of 4 sentences with Traditional Chinese translation and focus vocabulary words.
+7. Provide a vocabulary list of 4-5 academic/IELTS words with Traditional Chinese definitions.
+
+Output strictly JSON:
+{
+  "id": "ielts_ext_${Date.now()}",
+  "title": "${pageTitle ? pageTitle.slice(0, 50) : `IELTS Listening: ${section} Authentic Practice`}",
+  "section": "${section}",
+  "topic": "Academic or Everyday Listening Context",
+  "description": "Short 1-sentence description of the dialogue/lecture setting",
+  "audioPrompt": "You will hear a conversation/talk...",
+  "audioScript": "Complete spoken dialogue or monologue...",
+  "sentences": [
+    {
+      "en": "Key sentence from script",
+      "zh": "繁體中文翻譯",
+      "focusWords": ["keyWord"]
+    }
+  ],
+  "vocabularyList": [
+    {
+      "word": "word",
+      "definition": "繁體中文釋義"
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "questionNumber": 1,
+      "type": "fill_blank",
+      "prompt": "Question prompt with blank ________",
+      "options": ["A", "B", "C", "D"],
+      "correctAnswer": "exact answer word",
+      "explanationZh": "繁體中文題目詳解與考點同義替換說明",
+      "locatingSentence": "The exact sentence in the audio script"
+    }
+  ]
+}`;
+
+    const response = await generateContentWithFallback(ai, {
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json',
+        temperature: 0.35,
+      },
+    });
+
+    const parsed = cleanAndParseJSON(response.text || '{}', null);
+    if (!parsed || !parsed.audioScript) {
+      return res.status(500).json({ error: '無法解析外部雅思題目，請確認資源內容或重試。' });
+    }
+
+    res.json(parsed);
+  } catch (error: any) {
+    console.error('Error in parse-external-ielts-listening:', error);
+    res.status(500).json({ error: error?.message || '解析外部題目失敗' });
+  }
+});
+
+// 6c. Import Voice / Audio / YouTube / Podcast for Listening Practice
+app.post('/api/gemini/import-voice-listening', async (req, res) => {
+  try {
+    const { url = '', audioBase64 = '', mimeType = 'audio/mp3', title = '' } = req.body;
+    const ai = getAI();
+
+    let contents: any = null;
+    let detectedSourceType = 'direct_audio';
+
+    if (audioBase64) {
+      detectedSourceType = 'upload';
+      contents = [
+        {
+          role: 'user',
+          parts: [
+            {
+              inlineData: {
+                data: audioBase64,
+                mimeType: mimeType || 'audio/mp3',
+              },
+            },
+            {
+              text: `You are an English listening instructor.
+Transcribe this spoken audio passage accurately in English.
+Then build an interactive listening learning kit from it:
+1. An accurate full audio script transcript.
+2. Break it into 4-6 distinct sentences with Traditional Chinese (繁體中文) translation and focusWords.
+3. Extract 4-5 target vocabulary words with definitions in Traditional Chinese.
+4. Create 3 dictation practice items (sentenceWithBlanks, blanks, hint).
+5. Create 3 comprehension multiple choice questions with options, correctIndex, and explanationZh in Traditional Chinese.
+
+Output strictly JSON:
+{
+  "id": "listen_voice_${Date.now()}",
+  "title": "${title || 'Uploaded Audio Listening Practice'}",
+  "level": "B2",
+  "topic": "Voice Recording Audio",
+  "sourceType": "upload",
+  "audioScript": "Complete verbatim English transcript of the audio...",
+  "sentences": [
+    { "en": "Sentence 1", "zh": "繁體中文翻譯", "focusWords": ["word"] }
+  ],
+  "vocabularyList": [
+    { "word": "word", "definition": "繁體中文釋義" }
+  ],
+  "dictationPractice": [
+    { "sentenceWithBlanks": "The _____ of...", "blanks": ["keyword"], "hint": "提示" }
+  ],
+  "comprehensionQuiz": [
+    { "question": "Question text", "options": ["A", "B", "C", "D"], "correctIndex": 0, "explanationZh": "繁體中文詳解" }
+  ]
+}`,
+            },
+          ],
+        },
+      ];
+    } else {
+      let isYouTube = false;
+      let youtubeVideoId = '';
+      if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        isYouTube = true;
+        detectedSourceType = 'youtube';
+        const ytMatch = url.match(
+          /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/
+        );
+        if (ytMatch) youtubeVideoId = ytMatch[1];
+      } else if (
+        url.endsWith('.mp3') ||
+        url.endsWith('.m4a') ||
+        url.endsWith('.wav') ||
+        url.includes('podcast')
+      ) {
+        detectedSourceType = url.includes('podcast') ? 'podcast' : 'direct_audio';
+      }
+
+      const prompt = `You are an expert English listening instructor.
+A student wants to practice English listening using this external voice/audio URL:
+URL: ${url}
+${youtubeVideoId ? `YouTube Video ID: ${youtubeVideoId}` : ''}
+${title ? `User Title Note: ${title}` : ''}
+
+Generate a comprehensive, authentic English listening practice kit based on the content or theme of this audio/video resource:
+1. Provide a coherent, realistic audio script transcript of approx 150-240 words that reflects authentic natural spoken English from this resource.
+2. Break it into individual sentences with Traditional Chinese (繁體中文) translation and focusWords.
+3. Extract 4-5 target vocabulary words with definitions in Traditional Chinese.
+4. Create 3 dictation fill-in-the-blank practice questions.
+5. Create 3 comprehension multiple choice questions with options, correctIndex, and explanationZh in Traditional Chinese.
+
+Output strictly JSON:
+{
+  "id": "listen_voice_${Date.now()}",
+  "title": "${title ? title : isYouTube ? 'YouTube Spoken English Practice' : 'Voice Stream Listening Practice'}",
+  "level": "B2",
+  "topic": "Voice Resource Learning",
+  "sourceType": "${detectedSourceType}",
+  "sourceUrl": "${url}",
+  "audioUrl": "${detectedSourceType === 'direct_audio' ? url : ''}",
+  "audioScript": "Complete natural English spoken transcript...",
+  "sentences": [
+    { "en": "Sentence 1", "zh": "繁體中文翻譯", "focusWords": ["word"] }
+  ],
+  "vocabularyList": [
+    { "word": "word", "definition": "繁體中文釋義" }
+  ],
+  "dictationPractice": [
+    { "sentenceWithBlanks": "The _____ of our discussion...", "blanks": ["keyword"], "hint": "提示" }
+  ],
+  "comprehensionQuiz": [
+    { "question": "Question text", "options": ["A", "B", "C", "D"], "correctIndex": 0, "explanationZh": "繁體中文詳解" }
+  ]
+}`;
+      contents = prompt;
+    }
+
+    const response = await generateContentWithFallback(ai, {
+      contents,
+      config: {
+        responseMimeType: 'application/json',
+        temperature: 0.4,
+      },
+    });
+
+    const parsed = cleanAndParseJSON(response.text || '{}', null);
+    if (!parsed || !parsed.audioScript) {
+      return res.status(500).json({ error: '無法將聲音來源轉化為聽力教材，請檢查網址或音訊格式。' });
+    }
+
+    if (detectedSourceType === 'direct_audio' && url) {
+      parsed.audioUrl = url;
+    }
+    parsed.sourceType = detectedSourceType;
+    parsed.sourceUrl = url;
+
+    res.json(parsed);
+  } catch (error: any) {
+    console.error('Error in import-voice-listening:', error);
+    res.status(500).json({ error: error?.message || '聲音匯入失敗' });
   }
 });
 
@@ -899,6 +1149,76 @@ app.post('/api/gemini/tts', async (req, res) => {
     // If TTS model has limit or is unavailable, return null so client falls back seamlessly to browser SpeechSynthesis
     console.log('Gemini TTS unavailable, falling back seamlessly to Web Speech Synthesis');
     res.json({ audioBase64: null });
+  }
+});
+
+// ==========================================
+// Cross-Device Synchronization Endpoints
+// ==========================================
+import { syncAccount, getAccount, readStore } from './server/syncStore';
+
+// Pull data for an account
+app.get('/api/sync/pull', (req, res) => {
+  try {
+    const accountId = String(req.query.accountId || 'default_user').trim();
+    const account = getAccount(accountId);
+    if (!account) {
+      return res.json({
+        success: true,
+        exists: false,
+        accountId,
+        data: null,
+        message: 'Account not found on server yet, client will initialize',
+      });
+    }
+    res.json({
+      success: true,
+      exists: true,
+      accountId: account.accountId,
+      accountName: account.accountName,
+      lastUpdated: account.lastUpdated,
+      data: account.data,
+    });
+  } catch (err: any) {
+    console.error('Error pulling sync data:', err);
+    res.status(500).json({ error: 'Failed to pull sync data' });
+  }
+});
+
+// Push and merge data from client
+app.post('/api/sync/push', (req, res) => {
+  try {
+    const { accountId = 'default_user', data = {}, accountName } = req.body;
+    const cleanId = String(accountId).trim() || 'default_user';
+    const result = syncAccount(cleanId, data, accountName);
+    res.json({
+      success: true,
+      accountId: result.account.accountId,
+      accountName: result.account.accountName,
+      lastUpdated: result.account.lastUpdated,
+      mergedData: result.mergedData,
+    });
+  } catch (err: any) {
+    console.error('Error pushing sync data:', err);
+    res.status(500).json({ error: 'Failed to push sync data' });
+  }
+});
+
+// List available accounts or verify account code
+app.get('/api/sync/accounts', (req, res) => {
+  try {
+    const store = readStore();
+    const list = Object.values(store.accounts).map((acc) => ({
+      accountId: acc.accountId,
+      accountName: acc.accountName,
+      lastUpdated: acc.lastUpdated,
+      wordCount: (acc.data?.words || []).length,
+      ieltsCount: (acc.data?.ieltsRecords || []).length,
+      writingCount: (acc.data?.writingRecords || []).length,
+    }));
+    res.json({ success: true, accounts: list });
+  } catch (err: any) {
+    res.status(500).json({ error: 'Failed to read accounts' });
   }
 });
 
