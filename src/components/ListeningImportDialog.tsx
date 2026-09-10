@@ -9,7 +9,6 @@ import {
   Link as LinkIcon,
   RefreshCw,
   AlertCircle,
-  GraduationCap,
   BookOpen,
   Headphones,
   CheckCircle,
@@ -17,13 +16,11 @@ import {
   Podcast,
 } from 'lucide-react';
 import { VocabWord } from '../types';
-import { IELTSListeningExam } from '../data/ielts/curatedListeningExams';
 import { StudyListeningItem } from './ListeningLab';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  mode: 'exam' | 'study';
   savedWords: VocabWord[];
   targetVocabBatch: VocabWord[];
   vocabCoverageStats: {
@@ -34,42 +31,26 @@ interface Props {
   onNextVocabBatch: () => void;
   onVocabGenerated: (newItem: StudyListeningItem) => void;
   onSourceImported: (newItem: StudyListeningItem) => void;
-  onExamCreated: (newExam: IELTSListeningExam) => void;
 }
 
 export const ListeningImportDialog: React.FC<Props> = ({
   isOpen,
   onClose,
-  mode: initialMode,
   savedWords,
   targetVocabBatch,
   vocabCoverageStats,
   onNextVocabBatch,
   onVocabGenerated,
   onSourceImported,
-  onExamCreated,
 }) => {
-  const [activeTab, setActiveTab] = useState<'exam' | 'study_vocab' | 'study_external'>(
-    initialMode === 'exam' ? 'exam' : 'study_external'
-  );
+  const [activeTab, setActiveTab] = useState<'study_vocab' | 'study_external'>('study_external');
 
-  // Sync tab when opened or mode toggles
+  // Reset to the default tab whenever the dialog is (re)opened
   useEffect(() => {
     if (isOpen) {
-      if (initialMode === 'exam') {
-        setActiveTab('exam');
-      } else {
-        setActiveTab('study_external');
-      }
+      setActiveTab('study_external');
     }
-  }, [isOpen, initialMode]);
-
-  // Exam import state (Matches Image 2)
-  const [examUrl, setExamUrl] = useState('');
-  const [examRawText, setExamRawText] = useState('');
-  const [examSection, setExamSection] = useState<'Section 1' | 'Section 2' | 'Section 3' | 'Section 4'>('Section 1');
-  const [isFetchingExam, setIsFetchingExam] = useState(false);
-  const [examError, setExamError] = useState<string | null>(null);
+  }, [isOpen]);
 
   // Study vocab generation state (Matches Image 1)
   const [studyTopic, setStudyTopic] = useState('Daily Communication & Nuances');
@@ -86,41 +67,6 @@ export const ListeningImportDialog: React.FC<Props> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
-
-  // 1. Exam AI 抓取
-  const handleFetchExam = async () => {
-    if (!examUrl.trim() && !examRawText.trim()) {
-      setExamError('請輸入外部題目網址（可支援 YouTube/Podcast/模擬考網頁）或直接貼上題目與錄音稿內容');
-      return;
-    }
-    setIsFetchingExam(true);
-    setExamError(null);
-
-    try {
-      const res = await fetch('/api/gemini/parse-external-ielts-listening', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          url: examUrl.trim(),
-          rawText: examRawText.trim(),
-          section: examSection,
-        }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || '解析外部雅思試題失敗');
-      }
-
-      const newExam: IELTSListeningExam = await res.json();
-      onExamCreated(newExam);
-      onClose();
-    } catch (err: any) {
-      setExamError(err?.message || '抓取失敗，請確認題目網址或文字格式');
-    } finally {
-      setIsFetchingExam(false);
-    }
-  };
 
   // 2. 生字庫生成篇章
   const handleGenerateFromVocab = async () => {
@@ -309,7 +255,7 @@ export const ListeningImportDialog: React.FC<Props> = ({
               </h2>
             </div>
             <p className="mt-1 text-xs text-stone-600 dark:text-stone-400">
-              支援 YouTube 影片、Podcast 節目、本機音訊上傳、生字簿輪轉篇章或外部雅思考題匯入。
+              支援 YouTube 影片、Podcast 節目、本機音訊上傳，或由生字簿輪轉生成篇章。
             </p>
           </div>
           <button
@@ -323,7 +269,7 @@ export const ListeningImportDialog: React.FC<Props> = ({
         </div>
 
         {/* 模式切換 Tabs */}
-        <div className="grid grid-cols-3 gap-2 p-1 rounded-2xl bg-stone-100 dark:bg-stone-800/80 border border-stone-200/80 dark:border-stone-700/80">
+        <div className="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-stone-100 dark:bg-stone-800/80 border border-stone-200/80 dark:border-stone-700/80">
           <button
             type="button"
             onClick={() => setActiveTab('study_external')}
@@ -348,19 +294,6 @@ export const ListeningImportDialog: React.FC<Props> = ({
           >
             <Sparkles className="w-3.5 h-3.5" />
             生字庫文章生成
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab('exam')}
-            className={`flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold transition cursor-pointer ${
-              activeTab === 'exam'
-                ? 'bg-amber-500 text-stone-950 shadow-xs'
-                : 'text-stone-600 dark:text-stone-300 hover:text-stone-900'
-            }`}
-          >
-            <GraduationCap className="w-3.5 h-3.5" />
-            抓取雅思考卷
           </button>
         </div>
 
@@ -388,38 +321,6 @@ export const ListeningImportDialog: React.FC<Props> = ({
                 onChange={(e) => setExternalUrl(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-700 bg-stone-800 text-xs text-stone-100 outline-none focus:border-amber-400"
               />
-
-              {/* 快速填入測試連結 (1-Click Test Buttons) */}
-              <div className="space-y-1.5 pt-1">
-                <span className="text-[11px] font-semibold text-stone-400 block">
-                  快速帶入測試連結（點擊立即填入）：
-                </span>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setExternalUrl('https://youtu.be/jN6oML_RKQY?si=p9PRfOgktGi2tfxt');
-                      setExternalTitle('BBC News: UK accuses Israel of backing ethnic cleansing');
-                    }}
-                    className="px-2.5 py-1.5 rounded-lg text-[11px] font-medium bg-stone-800 hover:bg-stone-700 text-rose-300 border border-stone-700/80 transition cursor-pointer flex items-center gap-1.5"
-                  >
-                    <Youtube className="w-3.5 h-3.5 text-rose-500" />
-                    BBC News (YouTube 影片)
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setExternalUrl('https://podcasts.apple.com/tw/podcast/ep247-describing-someones-face-daily-life/id1788815085?i=1000787840771');
-                      setExternalTitle('EnglishPod EP247 - Describing Someone\'s Face');
-                    }}
-                    className="px-2.5 py-1.5 rounded-lg text-[11px] font-medium bg-stone-800 hover:bg-stone-700 text-purple-300 border border-stone-700/80 transition cursor-pointer flex items-center gap-1.5"
-                  >
-                    <Podcast className="w-3.5 h-3.5 text-purple-400" />
-                    EnglishPod (Apple Podcast 原聲)
-                  </button>
-                </div>
-              </div>
 
               <div>
                 <label className="text-[11px] font-semibold text-stone-400 block mb-1">
@@ -585,113 +486,6 @@ export const ListeningImportDialog: React.FC<Props> = ({
           </div>
         )}
 
-        {/* ======================================================== */}
-        {/* Tab 3: 外部雅思題目來源抓取 (Exact match with Image 2) */}
-        {/* ======================================================== */}
-        {activeTab === 'exam' && (
-          <div className="space-y-4 animate-fade-in">
-            <div className="p-4 rounded-2xl border-2 border-amber-500/40 bg-stone-900 text-stone-100 space-y-3.5">
-              <div className="flex items-center justify-between text-xs font-bold text-stone-100">
-                <span className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
-                  輸入外部雅思題目來源或影音演講
-                </span>
-                <span className="text-[10px] text-amber-400 font-medium bg-amber-400/10 px-2 py-0.5 rounded-md border border-amber-400/20">
-                  支援轉化為劍橋題組
-                </span>
-              </div>
-
-              {/* 網址輸入 (Image 2) */}
-              <input
-                type="url"
-                placeholder="https://mini-ielts.com/listening/... 或 YouTube 演講 / Podcast 網址"
-                value={examUrl}
-                onChange={(e) => setExamUrl(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-stone-700 bg-stone-800 text-xs text-stone-100 outline-none focus:border-amber-400"
-              />
-
-              {/* 快速填入測試考卷來源 */}
-              <div className="space-y-1">
-                <span className="text-[11px] font-semibold text-stone-400 block">
-                  快速帶入測試來源：
-                </span>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setExamUrl('https://youtu.be/jN6oML_RKQY?si=p9PRfOgktGi2tfxt');
-                      setExamSection('Section 4');
-                    }}
-                    className="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-stone-800 hover:bg-stone-700 text-rose-300 border border-stone-700/80 transition cursor-pointer flex items-center gap-1.5"
-                  >
-                    <Youtube className="w-3.5 h-3.5 text-rose-500" />
-                    帶入 YouTube 影片轉為 Section 4 考卷
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setExamUrl('https://podcasts.apple.com/tw/podcast/ep247-describing-someones-face-daily-life/id1788815085?i=1000787840771');
-                      setExamSection('Section 1');
-                    }}
-                    className="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-stone-800 hover:bg-stone-700 text-purple-300 border border-stone-700/80 transition cursor-pointer flex items-center gap-1.5"
-                  >
-                    <Podcast className="w-3.5 h-3.5 text-purple-400" />
-                    帶入 Podcast 節目轉為 Section 1 考卷
-                  </button>
-                </div>
-              </div>
-
-              {/* Section 選擇下拉選單 (Image 2) */}
-              <div className="space-y-1">
-                <label className="text-[11px] font-semibold text-stone-400 block">
-                  目標 IELTS 考題單元 (Section)：
-                </label>
-                <select
-                  value={examSection}
-                  onChange={(e) => setExamSection(e.target.value as any)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-700 bg-stone-800 text-xs font-bold text-stone-100 outline-none focus:border-amber-400 cursor-pointer"
-                >
-                  <option value="Section 1">Section 1 (生活諮詢日常對話)</option>
-                  <option value="Section 2">Section 2 (公共設施介紹獨白)</option>
-                  <option value="Section 3">Section 3 (學術小組專案討論)</option>
-                  <option value="Section 4">Section 4 (學術專題講座演說)</option>
-                </select>
-              </div>
-
-              {/* 文本區塊 (Image 2) */}
-              <textarea
-                rows={3}
-                placeholder="或直接貼上題庫網頁文本、錄音稿與填空題目..."
-                value={examRawText}
-                onChange={(e) => setExamRawText(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-stone-700 bg-stone-800 text-xs text-stone-100 outline-none focus:border-amber-400 resize-none"
-              />
-
-              {examError && (
-                <div className="p-3 rounded-xl bg-rose-950/50 border border-rose-800 text-xs text-rose-300 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
-                  <span>{examError}</span>
-                </div>
-              )}
-
-              {/* AI 抓取按鈕 (Image 2) */}
-              <button
-                type="button"
-                disabled={isFetchingExam}
-                onClick={handleFetchExam}
-                className="w-full py-3 rounded-xl bg-stone-950 hover:bg-stone-900 border border-stone-700 text-amber-400 hover:text-amber-300 font-bold text-xs transition cursor-pointer flex items-center justify-center gap-2 shadow-md disabled:opacity-50"
-              >
-                {isFetchingExam ? (
-                  <RefreshCw className="w-4 h-4 animate-spin text-amber-400" />
-                ) : (
-                  <Sparkles className="w-4 h-4 text-amber-400" />
-                )}
-                <span>AI 抓取並生成聽力考卷</span>
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

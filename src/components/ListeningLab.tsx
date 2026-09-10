@@ -1511,7 +1511,6 @@ export const ListeningLab: React.FC<Props> = ({
       <ListeningImportDialog
         isOpen={isImportDialogOpen}
         onClose={() => setIsImportDialogOpen(false)}
-        mode={mainMode}
         savedWords={savedWords}
         targetVocabBatch={currentTargetWords}
         vocabCoverageStats={vocabCoverageStats}
@@ -1527,11 +1526,6 @@ export const ListeningLab: React.FC<Props> = ({
           const updated = [newItem, ...studyItems];
           saveStudyItemsList(updated);
           setSelectedStudyId(newItem.id);
-          setWorkflowStage('source');
-        }}
-        onExamCreated={(newExam) => {
-          setCustomExams((prev) => [newExam, ...prev]);
-          setSelectedExamId(newExam.id);
           setWorkflowStage('source');
         }}
       />
