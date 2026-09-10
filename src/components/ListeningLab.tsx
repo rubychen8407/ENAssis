@@ -1034,6 +1034,12 @@ export const ListeningLab: React.FC<Props> = ({
                 <h2 className="text-base sm:text-lg font-bold text-stone-900 dark:text-stone-100 mt-1">
                   {mainMode === 'exam' ? currentExam.title : currentStudyItem.title}
                 </h2>
+                {mainMode === 'study' && currentStudyItem.isVerbatimTranscript === false && (
+                  <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-[11px] font-semibold text-rose-700 dark:text-rose-300">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                    AI 模擬內容，非該來源的真實逐字稿
+                  </div>
+                )}
               </div>
 
               {/* Exam Mode 計時器 */}
@@ -1479,6 +1485,7 @@ export const ListeningLab: React.FC<Props> = ({
             fullScript={
               mainMode === 'exam' ? currentExam.audioScript : currentStudyItem.audioScript
             }
+            isVerbatimTranscript={mainMode === 'study' ? currentStudyItem.isVerbatimTranscript : undefined}
             sentences={
               mainMode === 'exam'
                 ? undefined

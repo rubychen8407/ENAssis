@@ -131,6 +131,8 @@ export interface ListeningItem {
   audioUrl?: string;
   sourceType?: 'ai' | 'ielts_external' | 'voice_import' | 'youtube' | 'podcast' | 'upload' | 'direct_audio';
   sourceUrl?: string;
+  isVerbatimTranscript?: boolean;
+  transcriptSource?: 'audio_transcription' | 'youtube_captions' | 'youtube_captions_auto' | 'ai_approximated';
   targetWords?: string[];
   coverageInfo?: {
     total: number;

@@ -32,6 +32,7 @@ interface Props {
   feedbacks: ListeningItemFeedback[];
   // Full transcript & sentences
   fullScript: string;
+  isVerbatimTranscript?: boolean;
   sentences?: { en: string; zh: string; focusWords?: string[] }[];
   questions?: Array<{
     id?: string;
@@ -63,6 +64,7 @@ export const ListeningReviewFeedback: React.FC<Props> = ({
   accuracyPercentage,
   feedbacks,
   fullScript,
+  isVerbatimTranscript,
   sentences = [],
   questions = [],
   vocabularyList = [],
@@ -314,6 +316,12 @@ export const ListeningReviewFeedback: React.FC<Props> = ({
 
         {/* 右側欄位 (Col 6)：逐句全文內容展開、錯題關鍵句 Highlight 與生字精析 */}
         <div className="lg:col-span-6 space-y-5">
+          {isVerbatimTranscript === false && (
+            <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-xs font-semibold text-rose-700 dark:text-rose-300">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              以下逐字稿為 AI 模擬內容，非該來源的真實逐字稿
+            </div>
+          )}
           {/* 1. 逐句對照式原文檢視器 (支援分頁長文、錯題 highlight、定位句標記) */}
           <SentenceTranscriptViewer
             audioScript={fullScript}
