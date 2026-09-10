@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   X,
   Sparkles,
@@ -13,6 +13,8 @@ import {
   BookOpen,
   Headphones,
   CheckCircle,
+  PlayCircle,
+  Podcast,
 } from 'lucide-react';
 import { VocabWord } from '../types';
 import { IELTSListeningExam } from '../data/ielts/curatedListeningExams';
@@ -48,8 +50,19 @@ export const ListeningImportDialog: React.FC<Props> = ({
   onExamCreated,
 }) => {
   const [activeTab, setActiveTab] = useState<'exam' | 'study_vocab' | 'study_external'>(
-    initialMode === 'exam' ? 'exam' : 'study_vocab'
+    initialMode === 'exam' ? 'exam' : 'study_external'
   );
+
+  // Sync tab when opened or mode toggles
+  useEffect(() => {
+    if (isOpen) {
+      if (initialMode === 'exam') {
+        setActiveTab('exam');
+      } else {
+        setActiveTab('study_external');
+      }
+    }
+  }, [isOpen, initialMode]);
 
   // Exam import state (Matches Image 2)
   const [examUrl, setExamUrl] = useState('');
@@ -69,6 +82,7 @@ export const ListeningImportDialog: React.FC<Props> = ({
   const [externalTitle, setExternalTitle] = useState('');
   const [isImportingExternal, setIsImportingExternal] = useState(false);
   const [externalError, setExternalError] = useState<string | null>(null);
+  const [importStatusMessage, setImportStatusMessage] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
@@ -76,7 +90,7 @@ export const ListeningImportDialog: React.FC<Props> = ({
   // 1. Exam AI 抓取
   const handleFetchExam = async () => {
     if (!examUrl.trim() && !examRawText.trim()) {
-      setExamError('請輸入外部題目網址或直接貼上題目與錄音稿內容');
+      setExamError('請輸入外部題目網址（可支援 YouTube/Podcast/模擬考網頁）或直接貼上題目與錄音稿內容');
       return;
     }
     setIsFetchingExam(true);
@@ -150,14 +164,22 @@ export const ListeningImportDialog: React.FC<Props> = ({
     }
   };
 
-  // 3. 匯入外部音源 (YouTube / 音訊網址)
+  // 3. 匯入外部音源 (YouTube / Podcast / 音訊網址)
   const handleImportExternal = async () => {
     if (!externalUrl.trim()) {
-      setExternalError('請輸入 YouTube、音訊串流或 Podcast 網址');
+      setExternalError('請輸入 YouTube、Podcast 或音訊串流網址');
       return;
     }
     setIsImportingExternal(true);
     setExternalError(null);
+
+    if (externalUrl.includes('youtube') || externalUrl.includes('youtu.be')) {
+      setImportStatusMessage('正在分析 YouTube 影片主題與頻道資訊，生成對應新聞或對話精聽聽寫題組...');
+    } else if (externalUrl.includes('podcast') || externalUrl.includes('anchor.fm')) {
+      setImportStatusMessage('正在抓取 Podcast 節目串流並透過 Gemini 進行高精準度語音辨識與出題...');
+    } else {
+      setImportStatusMessage('正在解析外部語音資源並建立聽力教材...');
+    }
 
     try {
       const res = await fetch('/api/gemini/import-voice-listening', {
@@ -175,20 +197,24 @@ export const ListeningImportDialog: React.FC<Props> = ({
       }
 
       const data = await res.json();
-      let ytId: string | undefined = undefined;
-      const ytMatch = externalUrl.match(
-        /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/
-      );
-      if (ytMatch) {
-        ytId = ytMatch[1];
+      let ytId: string | undefined = data.youtubeId;
+      if (!ytId) {
+        const ytMatch = externalUrl.match(
+          /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/
+        );
+        if (ytMatch) ytId = ytMatch[1];
       }
+
+      const isPod = data.sourceType === 'podcast' || externalUrl.includes('podcast');
 
       const newStudyItem: StudyListeningItem = {
         ...data,
         id: `study_import_${Date.now()}`,
         sourceType: 'imported',
         sourceLabel: ytId
-          ? '外部匯入 (YouTube)'
+          ? '外部匯入 (YouTube 影音)'
+          : isPod
+          ? '外部匯入 (Podcast 節目)'
           : externalUrl.match(/\.(mp3|m4a|wav|aac)/i)
           ? '外部匯入 (音訊串流)'
           : '外部匯入',
@@ -203,6 +229,7 @@ export const ListeningImportDialog: React.FC<Props> = ({
       setExternalError(err?.message || '匯入失敗，請確認網址是否可公開存取');
     } finally {
       setIsImportingExternal(false);
+      setImportStatusMessage('');
     }
   };
 
@@ -213,6 +240,7 @@ export const ListeningImportDialog: React.FC<Props> = ({
 
     setIsImportingExternal(true);
     setExternalError(null);
+    setImportStatusMessage('正在上傳音訊檔案並透過 Gemini 進行語音逐字轉譯出題...');
 
     try {
       const objectUrl = URL.createObjectURL(file);
@@ -251,12 +279,14 @@ export const ListeningImportDialog: React.FC<Props> = ({
           setExternalError(innerErr?.message || '解析上傳檔案失敗');
         } finally {
           setIsImportingExternal(false);
+          setImportStatusMessage('');
         }
       };
       reader.readAsDataURL(file);
     } catch (err: any) {
       setExternalError('讀取本地音訊檔案失敗');
       setIsImportingExternal(false);
+      setImportStatusMessage('');
     }
   };
 
@@ -279,7 +309,7 @@ export const ListeningImportDialog: React.FC<Props> = ({
               </h2>
             </div>
             <p className="mt-1 text-xs text-stone-600 dark:text-stone-400">
-              支援從生字簿輪轉生成高頻聽力篇章、解析 YouTube / 音訊，或抓取外部雅思模擬題庫。
+              支援 YouTube 影片、Podcast 節目、本機音訊上傳、生字簿輪轉篇章或外部雅思考題匯入。
             </p>
           </div>
           <button
@@ -292,21 +322,8 @@ export const ListeningImportDialog: React.FC<Props> = ({
           </button>
         </div>
 
-        {/* 模式切換 Tabs (包含 Image 1 與 Image 2 樣式) */}
+        {/* 模式切換 Tabs */}
         <div className="grid grid-cols-3 gap-2 p-1 rounded-2xl bg-stone-100 dark:bg-stone-800/80 border border-stone-200/80 dark:border-stone-700/80">
-          <button
-            type="button"
-            onClick={() => setActiveTab('study_vocab')}
-            className={`flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold transition cursor-pointer ${
-              activeTab === 'study_vocab'
-                ? 'bg-amber-500 text-stone-950 shadow-xs'
-                : 'text-stone-600 dark:text-stone-300 hover:text-stone-900'
-            }`}
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            由生字庫生成
-          </button>
-
           <button
             type="button"
             onClick={() => setActiveTab('study_external')}
@@ -317,7 +334,20 @@ export const ListeningImportDialog: React.FC<Props> = ({
             }`}
           >
             <Radio className="w-3.5 h-3.5" />
-            匯入外部語音
+            YouTube / Podcast
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('study_vocab')}
+            className={`flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold transition cursor-pointer ${
+              activeTab === 'study_vocab'
+                ? 'bg-amber-500 text-stone-950 shadow-xs'
+                : 'text-stone-600 dark:text-stone-300 hover:text-stone-900'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            生字庫文章生成
           </button>
 
           <button
@@ -335,7 +365,126 @@ export const ListeningImportDialog: React.FC<Props> = ({
         </div>
 
         {/* ======================================================== */}
-        {/* Tab 1: 由生字庫生成 (Exact match with Image 1) */}
+        {/* Tab 1: 匯入外部語音來源 (YouTube / Podcast / 音訊檔) */}
+        {/* ======================================================== */}
+        {activeTab === 'study_external' && (
+          <div className="space-y-4 animate-fade-in">
+            <div className="p-4 rounded-2xl border-2 border-amber-500/40 bg-stone-900 text-stone-100 space-y-4">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-stone-200 block flex items-center gap-2">
+                  <Youtube className="w-4 h-4 text-rose-500" />
+                  <Podcast className="w-4 h-4 text-purple-400" />
+                  YouTube / Apple Podcast / 音訊串流網址：
+                </label>
+                <span className="text-[10px] text-amber-400 font-medium bg-amber-400/10 px-2 py-0.5 rounded-md border border-amber-400/20">
+                  支援語音轉文字
+                </span>
+              </div>
+
+              <input
+                type="url"
+                placeholder="https://youtu.be/... 或 Apple Podcast 連結 或 .mp3 串流"
+                value={externalUrl}
+                onChange={(e) => setExternalUrl(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-stone-700 bg-stone-800 text-xs text-stone-100 outline-none focus:border-amber-400"
+              />
+
+              {/* 快速填入測試連結 (1-Click Test Buttons) */}
+              <div className="space-y-1.5 pt-1">
+                <span className="text-[11px] font-semibold text-stone-400 block">
+                  快速帶入測試連結（點擊立即填入）：
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setExternalUrl('https://youtu.be/jN6oML_RKQY?si=p9PRfOgktGi2tfxt');
+                      setExternalTitle('BBC News: UK accuses Israel of backing ethnic cleansing');
+                    }}
+                    className="px-2.5 py-1.5 rounded-lg text-[11px] font-medium bg-stone-800 hover:bg-stone-700 text-rose-300 border border-stone-700/80 transition cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Youtube className="w-3.5 h-3.5 text-rose-500" />
+                    BBC News (YouTube 影片)
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setExternalUrl('https://podcasts.apple.com/tw/podcast/ep247-describing-someones-face-daily-life/id1788815085?i=1000787840771');
+                      setExternalTitle('EnglishPod EP247 - Describing Someone\'s Face');
+                    }}
+                    className="px-2.5 py-1.5 rounded-lg text-[11px] font-medium bg-stone-800 hover:bg-stone-700 text-purple-300 border border-stone-700/80 transition cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Podcast className="w-3.5 h-3.5 text-purple-400" />
+                    EnglishPod (Apple Podcast 原聲)
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[11px] font-semibold text-stone-400 block mb-1">
+                  篇章自訂備註標題（選填，系統亦會自動解析）：
+                </label>
+                <input
+                  type="text"
+                  placeholder="例如：BBC News 專題報導 或 EnglishPod 臉部特徵描繪"
+                  value={externalTitle}
+                  onChange={(e) => setExternalTitle(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-700 bg-stone-800 text-xs text-stone-100 outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <div className="pt-1 flex items-center justify-between gap-3">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="audio/*,.mp3,.m4a,.wav"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-stone-700 bg-stone-800 text-stone-300 hover:text-white hover:bg-stone-700 text-xs font-bold transition cursor-pointer"
+                >
+                  <Upload className="w-3.5 h-3.5 text-amber-400" />
+                  上傳本機音訊檔案 (.mp3/.wav/.m4a)
+                </button>
+              </div>
+
+              {isImportingExternal && (
+                <div className="p-3 rounded-xl bg-amber-950/40 border border-amber-800/80 text-xs text-amber-300 flex items-center gap-2.5">
+                  <RefreshCw className="w-4 h-4 shrink-0 animate-spin text-amber-400" />
+                  <span className="leading-relaxed">{importStatusMessage || '正在進行語音轉譯與聽力教材分析...'}</span>
+                </div>
+              )}
+
+              {externalError && (
+                <div className="p-3 rounded-xl bg-rose-950/50 border border-rose-800 text-xs text-rose-300 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{externalError}</span>
+                </div>
+              )}
+
+              <button
+                type="button"
+                disabled={isImportingExternal || !externalUrl.trim()}
+                onClick={handleImportExternal}
+                className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs transition cursor-pointer flex items-center justify-center gap-2 shadow-md disabled:opacity-40"
+              >
+                {isImportingExternal ? (
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                ) : (
+                  <LinkIcon className="w-4 h-4" />
+                )}
+                <span>解析並加入精聽教材庫</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ======================================================== */}
+        {/* Tab 2: 由生字庫生成 (Exact match with Image 1) */}
         {/* ======================================================== */}
         {activeTab === 'study_vocab' && (
           <div className="space-y-4 animate-fade-in">
@@ -437,116 +586,83 @@ export const ListeningImportDialog: React.FC<Props> = ({
         )}
 
         {/* ======================================================== */}
-        {/* Tab 2: 匯入外部語音來源 (YouTube / 音訊檔) */}
-        {/* ======================================================== */}
-        {activeTab === 'study_external' && (
-          <div className="space-y-4 animate-fade-in">
-            <div className="p-4 rounded-2xl border-2 border-stone-700/80 bg-stone-900 text-stone-100 space-y-4">
-              <div>
-                <label className="text-xs font-bold text-stone-200 block mb-1.5 flex items-center gap-1.5">
-                  <Youtube className="w-4 h-4 text-rose-500" />
-                  YouTube 影片網址或音訊串流：
-                </label>
-                <input
-                  type="url"
-                  placeholder="https://www.youtube.com/watch?v=... 或 MP3 網址"
-                  value={externalUrl}
-                  onChange={(e) => setExternalUrl(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-700 bg-stone-800 text-xs text-stone-100 outline-none focus:border-amber-400"
-                />
-              </div>
-
-              <div>
-                <label className="text-[11px] font-semibold text-stone-400 block mb-1">
-                  篇章自訂備註標題（選填）：
-                </label>
-                <input
-                  type="text"
-                  placeholder="例如：TED-Ed: Why is sleep important?"
-                  value={externalTitle}
-                  onChange={(e) => setExternalTitle(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-700 bg-stone-800 text-xs text-stone-100 outline-none focus:border-amber-400"
-                />
-              </div>
-
-              <div className="pt-1 flex items-center justify-between gap-3">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="audio/*,.mp3,.m4a,.wav"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                />
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-stone-700 bg-stone-800 text-stone-300 hover:text-white hover:bg-stone-700 text-xs font-bold transition cursor-pointer"
-                >
-                  <Upload className="w-3.5 h-3.5 text-amber-400" />
-                  上傳本機音訊檔案 (.mp3/.wav)
-                </button>
-              </div>
-
-              {externalError && (
-                <div className="p-3 rounded-xl bg-rose-950/50 border border-rose-800 text-xs text-rose-300 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
-                  <span>{externalError}</span>
-                </div>
-              )}
-
-              <button
-                type="button"
-                disabled={isImportingExternal || !externalUrl.trim()}
-                onClick={handleImportExternal}
-                className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs transition cursor-pointer flex items-center justify-center gap-2 shadow-md disabled:opacity-40"
-              >
-                {isImportingExternal ? (
-                  <RefreshCw className="w-4 h-4 animate-spin" />
-                ) : (
-                  <LinkIcon className="w-4 h-4" />
-                )}
-                <span>解析並加入精聽教材庫</span>
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* ======================================================== */}
         {/* Tab 3: 外部雅思題目來源抓取 (Exact match with Image 2) */}
         {/* ======================================================== */}
         {activeTab === 'exam' && (
           <div className="space-y-4 animate-fade-in">
             <div className="p-4 rounded-2xl border-2 border-amber-500/40 bg-stone-900 text-stone-100 space-y-3.5">
-              <div className="flex items-center gap-2 text-xs font-bold text-stone-100">
-                <Sparkles className="w-4 h-4 text-amber-400" />
-                輸入外部雅思題目來源
+              <div className="flex items-center justify-between text-xs font-bold text-stone-100">
+                <span className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  輸入外部雅思題目來源或影音演講
+                </span>
+                <span className="text-[10px] text-amber-400 font-medium bg-amber-400/10 px-2 py-0.5 rounded-md border border-amber-400/20">
+                  支援轉化為劍橋題組
+                </span>
               </div>
 
               {/* 網址輸入 (Image 2) */}
               <input
                 type="url"
-                placeholder="https://mini-ielts.com/listening/... 或題庫網址"
+                placeholder="https://mini-ielts.com/listening/... 或 YouTube 演講 / Podcast 網址"
                 value={examUrl}
                 onChange={(e) => setExamUrl(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-700 bg-stone-800 text-xs text-stone-100 outline-none focus:border-amber-400"
               />
 
+              {/* 快速填入測試考卷來源 */}
+              <div className="space-y-1">
+                <span className="text-[11px] font-semibold text-stone-400 block">
+                  快速帶入測試來源：
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setExamUrl('https://youtu.be/jN6oML_RKQY?si=p9PRfOgktGi2tfxt');
+                      setExamSection('Section 4');
+                    }}
+                    className="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-stone-800 hover:bg-stone-700 text-rose-300 border border-stone-700/80 transition cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Youtube className="w-3.5 h-3.5 text-rose-500" />
+                    帶入 YouTube 影片轉為 Section 4 考卷
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setExamUrl('https://podcasts.apple.com/tw/podcast/ep247-describing-someones-face-daily-life/id1788815085?i=1000787840771');
+                      setExamSection('Section 1');
+                    }}
+                    className="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-stone-800 hover:bg-stone-700 text-purple-300 border border-stone-700/80 transition cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Podcast className="w-3.5 h-3.5 text-purple-400" />
+                    帶入 Podcast 節目轉為 Section 1 考卷
+                  </button>
+                </div>
+              </div>
+
               {/* Section 選擇下拉選單 (Image 2) */}
-              <select
-                value={examSection}
-                onChange={(e) => setExamSection(e.target.value as any)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-stone-700 bg-stone-800 text-xs font-bold text-stone-100 outline-none focus:border-amber-400 cursor-pointer"
-              >
-                <option value="Section 1">Section 1 (生活諮詢對話)</option>
-                <option value="Section 2">Section 2 (公共設施獨白)</option>
-                <option value="Section 3">Section 3 (學術小組討論)</option>
-                <option value="Section 4">Section 4 (學術專題演講)</option>
-              </select>
+              <div className="space-y-1">
+                <label className="text-[11px] font-semibold text-stone-400 block">
+                  目標 IELTS 考題單元 (Section)：
+                </label>
+                <select
+                  value={examSection}
+                  onChange={(e) => setExamSection(e.target.value as any)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-700 bg-stone-800 text-xs font-bold text-stone-100 outline-none focus:border-amber-400 cursor-pointer"
+                >
+                  <option value="Section 1">Section 1 (生活諮詢日常對話)</option>
+                  <option value="Section 2">Section 2 (公共設施介紹獨白)</option>
+                  <option value="Section 3">Section 3 (學術小組專案討論)</option>
+                  <option value="Section 4">Section 4 (學術專題講座演說)</option>
+                </select>
+              </div>
 
               {/* 文本區塊 (Image 2) */}
               <textarea
-                rows={4}
-                placeholder="或直接貼上題目、錄音稿與問題文本..."
+                rows={3}
+                placeholder="或直接貼上題庫網頁文本、錄音稿與填空題目..."
                 value={examRawText}
                 onChange={(e) => setExamRawText(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-700 bg-stone-800 text-xs text-stone-100 outline-none focus:border-amber-400 resize-none"

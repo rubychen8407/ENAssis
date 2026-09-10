@@ -807,6 +807,193 @@ Output strictly JSON:
   }
 });
 
+// Helper: Extract details from YouTube URL
+async function resolveYouTubeMedia(url: string) {
+  const ytMatch = url.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/i
+  );
+  if (!ytMatch) return null;
+  const youtubeVideoId = ytMatch[1];
+  let title = '';
+  let channel = '';
+  let thumbnailUrl = `https://i.ytimg.com/vi/${youtubeVideoId}/hqdefault.jpg`;
+
+  try {
+    const oembedRes = await fetch(
+      `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${youtubeVideoId}`
+    );
+    if (oembedRes.ok) {
+      const data = await oembedRes.json();
+      if (data.title) title = data.title.trim();
+      if (data.author_name) channel = data.author_name.trim();
+      if (data.thumbnail_url) thumbnailUrl = data.thumbnail_url;
+    }
+  } catch (err: any) {
+    console.warn('Could not fetch YouTube oembed:', err?.message);
+  }
+
+  return {
+    youtubeVideoId,
+    title,
+    channel,
+    thumbnailUrl,
+  };
+}
+
+// Helper: Extract audio stream & show metadata from Podcast / Audio / Web URL
+async function resolvePodcastMedia(url: string) {
+  const isDirectAudio = /\.(mp3|m4a|wav|aac|ogg)(\?.*)?$/i.test(url);
+
+  let title = '';
+  let description = '';
+  let extractedText = '';
+  let audioStreamUrl = isDirectAudio ? url : '';
+  let audioBuffer: Buffer | null = null;
+  let mimeType = 'audio/mp3';
+
+  if (!isDirectAudio && url && url.startsWith('http')) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
+      const res = await fetch(url, {
+        signal: controller.signal,
+        headers: {
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+          'Accept-Language': 'en-US,en;q=0.9,zh-TW;q=0.8',
+        },
+      });
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const html = await res.text();
+        const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+        if (titleMatch) {
+          title = titleMatch[1]
+            .replace(/ - Apple Podcasts.*$/i, '')
+            .replace(/Apple Podcast[：:]/i, '')
+            .replace(/on Apple Podcasts.*$/i, '')
+            .replace(/ \| BBC Learning English/i, '')
+            .replace(/ - NPR.*$/i, '')
+            .replace(/ \| TED Talk/i, '')
+            .trim();
+        }
+
+        const descMatch = html.match(
+          /<meta\s+(?:property="og:description"|name="description")\s+content="([^"]+)"/i
+        );
+        if (descMatch) {
+          description = descMatch[1].trim();
+        }
+
+        // Look for audio stream candidates
+        const audioMatches = [
+          ...html.matchAll(/(https:\/\/[^"'\s<>]+\.(?:mp3|m4a|wav|aac|ogg)[^"'\s<>]*)/gi),
+        ];
+        if (audioMatches.length > 0) {
+          audioStreamUrl = audioMatches[0][1];
+          if (audioStreamUrl.includes('%2F') || audioStreamUrl.includes('%3A')) {
+            try {
+              const decoded = decodeURIComponent(audioStreamUrl);
+              const innerMatch = decoded.match(/https:\/\/[^"'\s<>]+\.(?:mp3|m4a|wav|aac|ogg)/i);
+              if (innerMatch) audioStreamUrl = innerMatch[0];
+            } catch (e) {}
+          }
+        }
+
+        // Clean main article/body text
+        extractedText = html
+          .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+          .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
+          .replace(/<nav\b[^<]*(?:(?!<\/nav>)<[^<]*)*<\/nav>/gi, '')
+          .replace(/<footer\b[^<]*(?:(?!<\/footer>)<[^<]*)*<\/footer>/gi, '')
+          .replace(/<[^>]+>/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .slice(0, 8000);
+      }
+    } catch (err: any) {
+      console.warn('Could not fetch URL page HTML (will use slug metadata):', err?.message);
+    }
+  }
+
+  // Fallback title from URL slug if still empty
+  if (!title && url) {
+    try {
+      const parsedUrl = new URL(url);
+      const pathname = parsedUrl.pathname.replace(/\/$/, '');
+      const lastPart = pathname.split('/').filter(Boolean).pop() || '';
+      if (lastPart) {
+        title = lastPart
+          .replace(/[-_]+/g, ' ')
+          .replace(/\.[a-z0-9]+$/i, '')
+          .replace(/\b\w/g, (c) => c.toUpperCase());
+      }
+    } catch (e) {}
+  }
+
+  if (audioStreamUrl) {
+    try {
+      const audioController = new AbortController();
+      const audioTimeoutId = setTimeout(() => audioController.abort(), 12000);
+      const audioRes = await fetch(audioStreamUrl, {
+        signal: audioController.signal,
+        headers: {
+          Range: 'bytes=0-1800000',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        },
+      });
+      clearTimeout(audioTimeoutId);
+
+      if (audioRes.ok || audioRes.status === 206) {
+        const arrayBuf = await audioRes.arrayBuffer();
+        if (arrayBuf.byteLength > 10000) {
+          audioBuffer = Buffer.from(arrayBuf);
+          if (audioStreamUrl.includes('.m4a')) mimeType = 'audio/m4a';
+        }
+      }
+    } catch (err: any) {
+      console.warn('Audio clip fetch error (will fallback to text metadata):', err?.message);
+    }
+  }
+
+  return {
+    title,
+    description,
+    extractedText,
+    audioStreamUrl,
+    audioBuffer,
+    mimeType,
+  };
+}
+
+// Helper: split transcript text into sentence objects
+function splitIntoSentencesFallback(text: string): { en: string; zh: string; focusWords: string[] }[] {
+  if (!text) return [];
+  const rawLines = text.split(/\r?\n+/).map((l) => l.trim()).filter(Boolean);
+  const sentences: { en: string; zh: string; focusWords: string[] }[] = [];
+
+  for (const line of rawLines) {
+    const speakerMatch = line.match(/^([A-Za-z\s]+:)\s*(.+)$/);
+    const prefix = speakerMatch ? speakerMatch[1] + ' ' : '';
+    const content = speakerMatch ? speakerMatch[2] : line;
+
+    const parts = content.match(/[^.!?]+[.!?]+(?:\s+|$)|[^.!?]+$/g) || [content];
+    parts.forEach((p, idx) => {
+      const trimmed = p.trim();
+      if (trimmed.length > 5) {
+        const words = trimmed.replace(/[^a-zA-Z]/g, ' ').split(' ').filter((w) => w.length > 5);
+        sentences.push({
+          en: idx === 0 && prefix ? `${prefix}${trimmed}` : trimmed,
+          zh: '（請參照英文字句逐句聽辨）',
+          focusWords: words.slice(0, 2),
+        });
+      }
+    });
+  }
+  return sentences;
+}
+
 // 6b. Parse External IELTS Listening Test from URL or Text
 app.post('/api/gemini/parse-external-ielts-listening', async (req, res) => {
   try {
@@ -815,8 +1002,41 @@ app.post('/api/gemini/parse-external-ielts-listening', async (req, res) => {
 
     let externalContext = (rawText || '').trim();
     let pageTitle = '';
+    let extractedAudioUrl = '';
+    let extractedYoutubeId = '';
 
-    if (url && url.startsWith('http')) {
+    // Check if YouTube link provided in Exam Mode
+    const ytMedia = url ? await resolveYouTubeMedia(url) : null;
+    if (ytMedia) {
+      extractedYoutubeId = ytMedia.youtubeVideoId;
+      pageTitle = ytMedia.title || `IELTS Listening: YouTube Material (${section})`;
+      externalContext = `YouTube English Broadcast/Lecture Source:
+Video Title: ${ytMedia.title}
+Channel: ${ytMedia.channel}
+YouTube Video ID: ${ytMedia.youtubeVideoId}`;
+    }
+
+    // Check if Podcast / Audio link provided in Exam Mode
+    const podMedia = !ytMedia && url ? await resolvePodcastMedia(url) : null;
+    let podcastAudioPart: any = null;
+    if (podMedia) {
+      if (podMedia.title) pageTitle = podMedia.title;
+      if (podMedia.audioStreamUrl) extractedAudioUrl = podMedia.audioStreamUrl;
+      externalContext = `Podcast Audio Episode Source:
+Title: ${podMedia.title}
+Description: ${podMedia.description}
+Audio Stream: ${podMedia.audioStreamUrl}`;
+      if (podMedia.audioBuffer) {
+        podcastAudioPart = {
+          inlineData: {
+            data: podMedia.audioBuffer.toString('base64'),
+            mimeType: podMedia.mimeType || 'audio/mp3',
+          },
+        };
+      }
+    }
+
+    if (!ytMedia && !podMedia && url && url.startsWith('http')) {
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 7000);
@@ -846,14 +1066,15 @@ app.post('/api/gemini/parse-external-ielts-listening', async (req, res) => {
       }
     }
 
-    const prompt = `You are an elite IELTS Listening Examiner and Cambridge Curriculum Developer.
-Construct a complete, authentic official Cambridge-format IELTS Listening test module for ${section} based on the following external material:
+    const promptText = `You are an elite IELTS Listening Examiner and Cambridge Curriculum Developer.
+Construct a complete, authentic official Cambridge-format IELTS Listening test module for ${section} based on the provided material:
+${podcastAudioPart ? 'CRITICAL: Transcribe the spoken speech from the audio clip and use it as the core audioScript.' : ''}
 
 Resource Context:
 ${externalContext ? externalContext.slice(0, 8000) : `Standard ${section} Listening test`}
 
 Requirements:
-1. Provide a realistic spoken audio script (180-320 words) with clear speaker identifiers (e.g. Officer / Student / Speaker) that contains the context, clues, and answers.
+1. Provide a realistic spoken audio script (180-320 words) with clear speaker identifiers (e.g. Officer / Student / Speaker / Interviewer) containing the context, clues, and answers.
 2. Formulate 5 official IELTS Listening questions matching standard test formats (fill_blank with single or two words, or choice).
 3. Specify exact standard answer keys (one-word or two-word exact match for blanks, or choice strings).
 4. Provide the exact locating sentence from the audio script where the answer is stated or paraphrased.
@@ -864,7 +1085,7 @@ Requirements:
 Output strictly JSON:
 {
   "id": "ielts_ext_${Date.now()}",
-  "title": "${pageTitle ? pageTitle.slice(0, 50) : `IELTS Listening: ${section} Authentic Practice`}",
+  "title": "${pageTitle ? pageTitle.slice(0, 70) : `IELTS Listening: ${section} Practice`}",
   "section": "${section}",
   "topic": "Academic or Everyday Listening Context",
   "description": "Short 1-sentence description of the dialogue/lecture setting",
@@ -897,8 +1118,18 @@ Output strictly JSON:
   ]
 }`;
 
+    const contents = podcastAudioPart
+      ? [
+          {
+            role: 'user',
+            parts: [podcastAudioPart, { text: promptText }],
+          },
+        ]
+      : promptText;
+
     const response = await generateContentWithFallback(ai, {
-      contents: prompt,
+      preferredModel: 'gemini-3.1-flash-lite',
+      contents,
       config: {
         responseMimeType: 'application/json',
         temperature: 0.35,
@@ -909,6 +1140,9 @@ Output strictly JSON:
     if (!parsed || !parsed.audioScript) {
       return res.status(500).json({ error: '無法解析外部雅思題目，請確認資源內容或重試。' });
     }
+
+    if (extractedAudioUrl) parsed.audioUrl = extractedAudioUrl;
+    if (extractedYoutubeId) parsed.youtubeId = extractedYoutubeId;
 
     res.json(parsed);
   } catch (error: any) {
@@ -925,8 +1159,12 @@ app.post('/api/gemini/import-voice-listening', async (req, res) => {
 
     let contents: any = null;
     let detectedSourceType = 'direct_audio';
+    let resolvedAudioUrl = '';
+    let resolvedYoutubeId = '';
+    let finalTitle = title || '';
 
     if (audioBase64) {
+      // 1. Direct local audio file upload
       detectedSourceType = 'upload';
       contents = [
         {
@@ -939,14 +1177,14 @@ app.post('/api/gemini/import-voice-listening', async (req, res) => {
               },
             },
             {
-              text: `You are an English listening instructor.
-Transcribe this spoken audio passage accurately in English.
+              text: `You are an expert English listening instructor.
+Transcribe this spoken audio passage verbatim in English.
 Then build an interactive listening learning kit from it:
-1. An accurate full audio script transcript.
-2. Break it into 4-6 distinct sentences with Traditional Chinese (繁體中文) translation and focusWords.
-3. Extract 4-5 target vocabulary words with definitions in Traditional Chinese.
-4. Create 3 dictation practice items (sentenceWithBlanks, blanks, hint).
-5. Create 3 comprehension multiple choice questions with options, correctIndex, and explanationZh in Traditional Chinese.
+1. 'audioScript': Verbatim English transcript of the spoken audio passage (approx 150-250 words).
+2. 'sentences': 4-6 distinct sentences with Traditional Chinese (繁體中文) translation and focusWords.
+3. 'vocabularyList': 4-5 target vocabulary words with definitions in Traditional Chinese.
+4. 'dictationPractice': 3 items (sentenceWithBlanks, blanks, hint).
+5. 'comprehensionQuiz': 3 multiple choice questions with options, correctIndex, and explanationZh in Traditional Chinese.
 
 Output strictly JSON:
 {
@@ -974,32 +1212,118 @@ Output strictly JSON:
         },
       ];
     } else {
-      let isYouTube = false;
-      let youtubeVideoId = '';
-      if (url.includes('youtube.com') || url.includes('youtu.be')) {
-        isYouTube = true;
+      // 2. Check if URL is YouTube
+      const ytMedia = await resolveYouTubeMedia(url);
+      if (ytMedia) {
         detectedSourceType = 'youtube';
-        const ytMatch = url.match(
-          /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/
-        );
-        if (ytMatch) youtubeVideoId = ytMatch[1];
-      } else if (
-        url.endsWith('.mp3') ||
-        url.endsWith('.m4a') ||
-        url.endsWith('.wav') ||
-        url.includes('podcast')
-      ) {
-        detectedSourceType = url.includes('podcast') ? 'podcast' : 'direct_audio';
-      }
+        resolvedYoutubeId = ytMedia.youtubeVideoId;
+        finalTitle = ytMedia.title || title || 'YouTube Spoken English Practice';
 
-      const prompt = `You are an expert English listening instructor.
-A student wants to practice English listening using this external voice/audio URL:
-URL: ${url}
-${youtubeVideoId ? `YouTube Video ID: ${youtubeVideoId}` : ''}
-${title ? `User Title Note: ${title}` : ''}
+        const prompt = `You are an expert English listening instructor.
+A student wants to practice English listening with this authentic YouTube video broadcast/program:
+Video Title: "${ytMedia.title}"
+Channel / Author: "${ytMedia.channel}"
+YouTube Video ID: ${ytMedia.youtubeVideoId}
+${title ? `Student Note: ${title}` : ''}
 
-Generate a comprehensive, authentic English listening practice kit based on the content or theme of this audio/video resource:
-1. Provide a coherent, realistic audio script transcript of approx 150-240 words that reflects authentic natural spoken English from this resource.
+Generate an authentic, educational English listening study kit that accurately matches the content, dialogue, or news topic of this specific YouTube video:
+1. Provide a realistic audio script transcript of approx 160-240 words representing the actual spoken monologue or broadcast report from this video.
+2. Break it into individual sentences with accurate Traditional Chinese (繁體中文) translations and focusWords.
+3. Extract 4-5 key IELTS / academic vocabulary words with definitions in Traditional Chinese.
+4. Create 3 dictation fill-in-the-blank practice items based on key sentences.
+5. Create 3 comprehension multiple choice questions with options, correctIndex, and explanationZh in Traditional Chinese.
+
+Output strictly JSON:
+{
+  "id": "listen_voice_${Date.now()}",
+  "title": "${finalTitle}",
+  "level": "B2",
+  "topic": "${ytMedia.channel ? ytMedia.channel + ' Report' : 'Video Listening'}",
+  "sourceType": "youtube",
+  "sourceUrl": "${url}",
+  "youtubeId": "${ytMedia.youtubeVideoId}",
+  "audioScript": "Complete spoken transcript matching this broadcast...",
+  "sentences": [
+    { "en": "Sentence 1", "zh": "繁體中文翻譯", "focusWords": ["word"] }
+  ],
+  "vocabularyList": [
+    { "word": "word", "definition": "繁體中文釋義" }
+  ],
+  "dictationPractice": [
+    { "sentenceWithBlanks": "The _____ of...", "blanks": ["keyword"], "hint": "提示" }
+  ],
+  "comprehensionQuiz": [
+    { "question": "Question text", "options": ["A", "B", "C", "D"], "correctIndex": 0, "explanationZh": "繁體中文詳解" }
+  ]
+}`;
+        contents = prompt;
+      } else {
+        // 3. Check if URL is Podcast or Direct Audio Stream
+        const podMedia = await resolvePodcastMedia(url);
+        if (podMedia) {
+          detectedSourceType = 'podcast';
+          resolvedAudioUrl = podMedia.audioStreamUrl;
+          finalTitle = podMedia.title || title || 'Podcast Listening Practice';
+
+          if (podMedia.audioBuffer) {
+            // Actual multimodal audio speech transcription with Gemini!
+            contents = [
+              {
+                role: 'user',
+                parts: [
+                  {
+                    inlineData: {
+                      data: podMedia.audioBuffer.toString('base64'),
+                      mimeType: podMedia.mimeType || 'audio/mp3',
+                    },
+                  },
+                  {
+                    text: `You are an elite English listening instructor.
+Transcribe the spoken English dialogue or speech from this audio clip verbatim.
+Then build an interactive listening learning kit from the transcribed audio:
+1. 'audioScript': The verbatim English transcription of the spoken audio clip (approx 150-250 words).
+2. 'sentences': 4-6 distinct sentences with Traditional Chinese (繁體中文) translation and focusWords.
+3. 'vocabularyList': 4-5 key vocabulary words with definitions in Traditional Chinese.
+4. 'dictationPractice': 3 items (sentenceWithBlanks, blanks, hint).
+5. 'comprehensionQuiz': 3 comprehension questions with options, correctIndex, and explanationZh in Traditional Chinese.
+
+Output strictly JSON:
+{
+  "id": "listen_voice_${Date.now()}",
+  "title": "${finalTitle}",
+  "level": "B2",
+  "topic": "Podcast Audio Episode",
+  "sourceType": "podcast",
+  "sourceUrl": "${url}",
+  "audioUrl": "${resolvedAudioUrl}",
+  "audioScript": "Complete verbatim English speech transcript...",
+  "sentences": [
+    { "en": "Sentence 1", "zh": "繁體中文翻譯", "focusWords": ["word"] }
+  ],
+  "vocabularyList": [
+    { "word": "word", "definition": "繁體中文釋義" }
+  ],
+  "dictationPractice": [
+    { "sentenceWithBlanks": "The _____ of...", "blanks": ["keyword"], "hint": "提示" }
+  ],
+  "comprehensionQuiz": [
+    { "question": "Question text", "options": ["A", "B", "C", "D"], "correctIndex": 0, "explanationZh": "繁體中文詳解" }
+  ]
+}`,
+                  },
+                ],
+              },
+            ];
+          } else {
+            // Metadata-driven generation
+            const prompt = `You are an expert English listening instructor.
+A student wants to practice English listening with this Podcast episode:
+Podcast Title: "${podMedia.title}"
+Show Description: "${podMedia.description || ''}"
+Source URL: ${url}
+
+Generate a comprehensive English listening practice kit matching the theme and spoken content of this episode:
+1. Provide a coherent, realistic audio script transcript of approx 150-240 words of natural conversational English.
 2. Break it into individual sentences with Traditional Chinese (繁體中文) translation and focusWords.
 3. Extract 4-5 target vocabulary words with definitions in Traditional Chinese.
 4. Create 3 dictation fill-in-the-blank practice questions.
@@ -1008,13 +1332,13 @@ Generate a comprehensive, authentic English listening practice kit based on the 
 Output strictly JSON:
 {
   "id": "listen_voice_${Date.now()}",
-  "title": "${title ? title : isYouTube ? 'YouTube Spoken English Practice' : 'Voice Stream Listening Practice'}",
+  "title": "${finalTitle}",
   "level": "B2",
-  "topic": "Voice Resource Learning",
-  "sourceType": "${detectedSourceType}",
+  "topic": "Podcast English Practice",
+  "sourceType": "podcast",
   "sourceUrl": "${url}",
-  "audioUrl": "${detectedSourceType === 'direct_audio' ? url : ''}",
-  "audioScript": "Complete natural English spoken transcript...",
+  "audioUrl": "${resolvedAudioUrl}",
+  "audioScript": "Natural spoken dialogue...",
   "sentences": [
     { "en": "Sentence 1", "zh": "繁體中文翻譯", "focusWords": ["word"] }
   ],
@@ -1022,20 +1346,62 @@ Output strictly JSON:
     { "word": "word", "definition": "繁體中文釋義" }
   ],
   "dictationPractice": [
-    { "sentenceWithBlanks": "The _____ of our discussion...", "blanks": ["keyword"], "hint": "提示" }
+    { "sentenceWithBlanks": "The _____ of...", "blanks": ["keyword"], "hint": "提示" }
   ],
   "comprehensionQuiz": [
     { "question": "Question text", "options": ["A", "B", "C", "D"], "correctIndex": 0, "explanationZh": "繁體中文詳解" }
   ]
 }`;
-      contents = prompt;
+            contents = prompt;
+          }
+        } else {
+          // 4. Generic web text/resource
+          detectedSourceType = 'imported';
+          finalTitle = title || 'External Audio Practice';
+          const prompt = `You are an expert English listening instructor.
+A student wants to practice English listening from this resource:
+URL: ${url}
+
+Generate a comprehensive English listening practice kit based on this resource:
+1. Provide a realistic audio script transcript of approx 150-240 words of spoken English.
+2. Break it into individual sentences with Traditional Chinese (繁體中文) translation and focusWords.
+3. Extract 4-5 target vocabulary words with definitions in Traditional Chinese.
+4. Create 3 dictation fill-in-the-blank practice questions.
+5. Create 3 comprehension multiple choice questions with options, correctIndex, and explanationZh in Traditional Chinese.
+
+Output strictly JSON:
+{
+  "id": "listen_voice_${Date.now()}",
+  "title": "${finalTitle}",
+  "level": "B2",
+  "topic": "General Listening",
+  "sourceType": "imported",
+  "sourceUrl": "${url}",
+  "audioScript": "Spoken transcript...",
+  "sentences": [
+    { "en": "Sentence 1", "zh": "繁體中文翻譯", "focusWords": ["word"] }
+  ],
+  "vocabularyList": [
+    { "word": "word", "definition": "繁體中文釋義" }
+  ],
+  "dictationPractice": [
+    { "sentenceWithBlanks": "The _____ of...", "blanks": ["keyword"], "hint": "提示" }
+  ],
+  "comprehensionQuiz": [
+    { "question": "Question text", "options": ["A", "B", "C", "D"], "correctIndex": 0, "explanationZh": "繁體中文詳解" }
+  ]
+}`;
+          contents = prompt;
+        }
+      }
     }
 
     const response = await generateContentWithFallback(ai, {
+      preferredModel: 'gemini-3.1-flash-lite',
       contents,
       config: {
         responseMimeType: 'application/json',
-        temperature: 0.4,
+        temperature: 0.35,
       },
     });
 
@@ -1044,8 +1410,10 @@ Output strictly JSON:
       return res.status(500).json({ error: '無法將聲音來源轉化為聽力教材，請檢查網址或音訊格式。' });
     }
 
-    if (detectedSourceType === 'direct_audio' && url) {
-      parsed.audioUrl = url;
+    if (resolvedAudioUrl) parsed.audioUrl = resolvedAudioUrl;
+    if (resolvedYoutubeId) parsed.youtubeId = resolvedYoutubeId;
+    if (finalTitle && (!parsed.title || parsed.title.includes('Practice'))) {
+      parsed.title = finalTitle;
     }
     parsed.sourceType = detectedSourceType;
     parsed.sourceUrl = url;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Award,
   CheckCircle,
@@ -11,9 +11,11 @@ import {
   Check,
   ListFilter,
   Sparkles,
+  MapPin,
 } from 'lucide-react';
 import { ListeningItemFeedback } from '../utils/listeningErrorAnalysis';
 import { getBandScoreDescriptor } from '../utils/ielts';
+import { SentenceTranscriptViewer } from './SentenceTranscriptViewer';
 
 interface Props {
   mode: 'exam' | 'study';
@@ -31,6 +33,14 @@ interface Props {
   // Full transcript & sentences
   fullScript: string;
   sentences?: { en: string; zh: string; focusWords?: string[] }[];
+  questions?: Array<{
+    id?: string;
+    questionNumber?: number | string;
+    locatingSentence?: string;
+    correctAnswer?: string;
+    prompt?: string;
+    explanationZh?: string;
+  }>;
   vocabularyList?: { word: string; definition: string }[];
   // Actions
   onPlaySentence?: (text: string, index: number) => void;
@@ -54,6 +64,7 @@ export const ListeningReviewFeedback: React.FC<Props> = ({
   feedbacks,
   fullScript,
   sentences = [],
+  questions = [],
   vocabularyList = [],
   onPlaySentence,
   playingSentenceIndex,
@@ -63,12 +74,43 @@ export const ListeningReviewFeedback: React.FC<Props> = ({
   onBackToSources,
 }) => {
   const isExam = mode === 'exam';
+  const [highlightedSentenceId, setHighlightedSentenceId] = useState<string | null>(null);
 
   // 統計各類錯誤數量
   const errorStats: Record<string, number> = {};
   feedbacks.forEach((fb) => {
     errorStats[fb.errorTypeLabel] = (errorStats[fb.errorTypeLabel] || 0) + 1;
   });
+
+  // 滾動並高亮特定題目的定位句
+  const handleLocateInTranscript = (fb: ListeningItemFeedback) => {
+    // 尋找對應的題目與定位句
+    const targetQNum = Number(fb.itemNumber);
+    const targetEl = document.querySelector(`[id^="sentence-"]`);
+    // 滾動到右側
+    const matchedEl = document.getElementById(`sentence-${targetQNum}`);
+    if (matchedEl) {
+      matchedEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setHighlightedSentenceId(`sent_${targetQNum}`);
+      setTimeout(() => setHighlightedSentenceId(null), 3500);
+    } else {
+      // 嘗試滾動右側容器
+      const allSentences = document.querySelectorAll('[id^="sentence-"]');
+      if (allSentences.length > 0) {
+        allSentences[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+  };
+
+  // 從右側句子點擊跳轉至左側題目
+  const handleJumpToQuestion = (qNum: number) => {
+    const qEl = document.getElementById(`feedback-card-${qNum}`);
+    if (qEl) {
+      qEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      qEl.classList.add('ring-2', 'ring-amber-400');
+      setTimeout(() => qEl.classList.remove('ring-2', 'ring-amber-400'), 2500);
+    }
+  };
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -152,10 +194,10 @@ export const ListeningReviewFeedback: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* 2. 左右分欄：左側顯示題目與錯誤類型深度反饋；右側顯示全文內容與生字精析 */}
+      {/* 2. 左右分欄：左側顯示題目與錯誤類型深度反饋；右側顯示全文逐句對照與生字精析 */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* 左側欄位 (Col 7)：作答診斷與教練反饋 */}
-        <div className="lg:col-span-7 space-y-4">
+        {/* 左側欄位 (Col 6)：作答診斷與教練反饋 */}
+        <div className="lg:col-span-6 space-y-4">
           <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-5 shadow-xs space-y-4">
             <div className="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-3">
               <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
@@ -163,7 +205,7 @@ export const ListeningReviewFeedback: React.FC<Props> = ({
                 逐題作答診斷與錯誤類型解析
               </h3>
               <span className="text-xs text-stone-500 dark:text-stone-400">
-                依據拼寫、單複數、專有名詞與干擾項深入比對
+                點擊定位按鈕可在右側原文直觀跳轉
               </span>
             </div>
 
@@ -171,6 +213,7 @@ export const ListeningReviewFeedback: React.FC<Props> = ({
               {feedbacks.map((fb) => (
                 <div
                   key={fb.id}
+                  id={`feedback-card-${fb.itemNumber}`}
                   className={`p-4 rounded-2xl border transition-all ${
                     fb.isCorrect
                       ? 'border-emerald-200 bg-emerald-50/40 dark:bg-emerald-950/20 dark:border-emerald-900/40'
@@ -189,15 +232,27 @@ export const ListeningReviewFeedback: React.FC<Props> = ({
                       </span>
                     </div>
 
-                    {fb.isCorrect ? (
-                      <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                        <CheckCircle className="w-3.5 h-3.5" /> 正確
-                      </span>
-                    ) : (
-                      <span className="text-xs font-bold text-rose-600 dark:text-rose-400 flex items-center gap-1">
-                        <AlertCircle className="w-3.5 h-3.5" /> 需加強
-                      </span>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {fb.isCorrect ? (
+                        <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                          <CheckCircle className="w-3.5 h-3.5" /> 正確
+                        </span>
+                      ) : (
+                        <span className="text-xs font-bold text-rose-600 dark:text-rose-400 flex items-center gap-1">
+                          <AlertCircle className="w-3.5 h-3.5" /> 需加強
+                        </span>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={() => handleLocateInTranscript(fb)}
+                        className="px-2 py-1 rounded-lg bg-stone-100 hover:bg-amber-100 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 text-[11px] font-bold inline-flex items-center gap-1 transition cursor-pointer"
+                        title="在右側原文中高亮此定位句"
+                      >
+                        <MapPin className="w-3 h-3 text-amber-500" />
+                        原文定位
+                      </button>
+                    </div>
                   </div>
 
                   {fb.prompt && (
@@ -257,59 +312,21 @@ export const ListeningReviewFeedback: React.FC<Props> = ({
           </div>
         </div>
 
-        {/* 右側欄位 (Col 5)：全文內容展開與生字精析 */}
-        <div className="lg:col-span-5 space-y-5">
-          {/* 1. 完整英文錄音全文 (Full Audio Transcript) */}
-          <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-5 shadow-xs space-y-3.5">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
-                <BookOpen className="w-4 h-4 text-emerald-500" />
-                聽力錄音稿全文 (Full Transcript)
-              </h3>
-              <span className="text-[11px] text-stone-500 dark:text-stone-400">
-                點擊喇叭圖示可單句跟讀
-              </span>
-            </div>
-
-            {/* 若有拆句對照 */}
-            {sentences.length > 0 ? (
-              <div className="space-y-2.5 max-h-[420px] overflow-y-auto pr-1">
-                {sentences.map((sent, idx) => (
-                  <div
-                    key={idx}
-                    className={`p-3 rounded-xl border transition ${
-                      playingSentenceIndex === idx
-                        ? 'bg-amber-50 border-amber-300 dark:bg-amber-950/40 dark:border-amber-700'
-                        : 'bg-stone-50/80 dark:bg-stone-800/40 border-stone-200 dark:border-stone-700'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="text-xs sm:text-sm text-stone-900 dark:text-stone-100 leading-relaxed font-medium">
-                        {sent.en}
-                      </p>
-                      {onPlaySentence && (
-                        <button
-                          type="button"
-                          onClick={() => onPlaySentence(sent.en, idx)}
-                          className="p-1 rounded-lg text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 cursor-pointer shrink-0 hover:bg-stone-200 dark:hover:bg-stone-700"
-                          title="單句朗讀"
-                        >
-                          <Volume2 className="w-3.5 h-3.5" />
-                        </button>
-                      )}
-                    </div>
-                    <p className="text-[11px] text-stone-500 dark:text-stone-400 mt-1">
-                      {sent.zh}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="p-4 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 text-xs sm:text-sm text-stone-800 dark:text-stone-200 leading-relaxed max-h-[400px] overflow-y-auto whitespace-pre-line">
-                {fullScript}
-              </div>
-            )}
-          </div>
+        {/* 右側欄位 (Col 6)：逐句全文內容展開、錯題關鍵句 Highlight 與生字精析 */}
+        <div className="lg:col-span-6 space-y-5">
+          {/* 1. 逐句對照式原文檢視器 (支援分頁長文、錯題 highlight、定位句標記) */}
+          <SentenceTranscriptViewer
+            audioScript={fullScript}
+            sentences={sentences}
+            questions={questions}
+            feedbacks={feedbacks}
+            activeSentenceIndex={playingSentenceIndex}
+            onPlaySentence={onPlaySentence}
+            onSaveWord={onSaveWordToVocab}
+            onJumpToQuestion={handleJumpToQuestion}
+            highlightedSentenceId={highlightedSentenceId}
+            isReviewMode={true}
+          />
 
           {/* 2. 本篇高頻生字收藏精析 */}
           {vocabularyList.length > 0 && onSaveWordToVocab && (
@@ -379,3 +396,4 @@ export const ListeningReviewFeedback: React.FC<Props> = ({
     </div>
   );
 };
+
