@@ -127,8 +127,14 @@ export async function performCrossDeviceSync(): Promise<{ success: boolean; erro
       body: JSON.stringify(payload),
     });
 
+    const contentType = res.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      throw new Error(`伺服器尚未就緒 (${res.status})，將於背景自動重試`);
+    }
+
     if (!res.ok) {
-      throw new Error(`伺服器連線異常 (${res.status})`);
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || `伺服器連線異常 (${res.status})`);
     }
 
     const resData = await res.json();
@@ -199,7 +205,14 @@ export async function switchAndPullAccount(targetAccountId: string): Promise<{ s
 
   try {
     const res = await fetch(`/api/sync/pull?accountId=${encodeURIComponent(cleanId)}`);
-    if (!res.ok) throw new Error(`讀取帳號失敗 (${res.status})`);
+    const contentType = res.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      throw new Error(`伺服器尚未就緒 (${res.status})，請稍後重試`);
+    }
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || `讀取帳號失敗 (${res.status})`);
+    }
     const data = await res.json();
 
     if (data.exists && data.data) {

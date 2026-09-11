@@ -3,6 +3,7 @@ import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI, Type } from '@google/genai';
 import dotenv from 'dotenv';
+import { syncAccount, getAccount, readStore } from './server/syncStore';
 
 dotenv.config();
 
@@ -1688,7 +1689,6 @@ app.post('/api/gemini/tts', async (req, res) => {
 // ==========================================
 // Cross-Device Synchronization Endpoints
 // ==========================================
-import { syncAccount, getAccount, readStore } from './server/syncStore';
 
 // Pull data for an account
 app.get('/api/sync/pull', (req, res) => {
