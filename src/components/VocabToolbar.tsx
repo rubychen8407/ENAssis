@@ -40,6 +40,7 @@ export const VocabToolbar: React.FC<Props> = ({
           id="btn-vocab-toggle-mode"
           type="button"
           onClick={onToggleMode}
+          style={{ touchAction: 'manipulation' }}
           className={`relative w-11 h-11 flex items-center justify-center rounded-full transition-all duration-200 cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 active:scale-95 ${
             isStudy
               ? 'bg-stone-800 hover:bg-stone-700/90 text-sky-400 hover:text-sky-300'
@@ -90,6 +91,7 @@ export const VocabToolbar: React.FC<Props> = ({
           id="btn-vocab-batch-import"
           type="button"
           onClick={onBatchImport}
+          style={{ touchAction: 'manipulation' }}
           className="relative w-11 h-11 flex items-center justify-center rounded-full bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white transition-all duration-200 cursor-pointer shadow-md shadow-emerald-950/20 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
           title="批次匯入單字（剪貼簿、文件或網址文章分析）"
           aria-label="批次匯入單字"

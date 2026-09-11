@@ -43,18 +43,56 @@ function shuffle<T>(items: T[]): T[] {
   return copy;
 }
 
-const pickWords = (words: VocabWord[], count: number) => {
-  return shuffle(
-    [...words].sort((a, b) => {
-      const status = (w: VocabWord) => {
-        if (w.examStatus === 'review') return 0;
-        if (w.masteryLevel === 'new') return 1;
-        if (w.masteryLevel === 'learning') return 2;
-        return 3;
-      };
-      return status(a) - status(b);
-    }).slice(0, Math.max(count, Math.min(words.length, 14)))
-  ).slice(0, count);
+// 依「學習程度」「答對率」「多久沒複習」計算單字出題權重（分數越高越容易被抽到）。
+// 目前沒有語料頻率欄位，因此用學習需求作為重要度依據：待複習/新字權重最高，已掌握字仍保留最低機率被抽到（避免遺忘）。
+const getWordExamWeight = (word: VocabWord): number => {
+  let weight = 1;
+
+  if (word.examStatus === 'review') weight += 6;
+  else if (word.masteryLevel === 'new') weight += 4;
+  else if (word.masteryLevel === 'learning') weight += 2;
+  // 已掌握的字給予基礎權重 1，仍有機會被抽到做間隔複習
+
+  const accuracy = word.examAccuracy ?? 100;
+  weight += (100 - accuracy) / 100 * 3; // 答對率越低，權重越高（最多 +3）
+
+  if (word.lastTestedAt) {
+    const daysSinceTested = (Date.now() - new Date(word.lastTestedAt).getTime()) / (1000 * 60 * 60 * 24);
+    weight += Math.min(4, Math.max(0, daysSinceTested / 3)); // 越久沒複習權重越高，最多 +4（約 12 天封頂）
+  } else {
+    weight += 2; // 從未測驗過的字，額外加權鼓勵優先出現
+  }
+
+  return Math.max(0.5, weight);
+};
+
+// 加權隨機抽樣（不重複）：權重越高的字越容易被抽到，但每次結果不同，避免每次都固定同一批字
+const weightedSample = (items: VocabWord[], count: number): VocabWord[] => {
+  const pool = items.map((word) => ({ word, weight: getWordExamWeight(word) }));
+  const picked: VocabWord[] = [];
+  while (picked.length < count && pool.length > 0) {
+    const totalWeight = pool.reduce((sum, p) => sum + p.weight, 0);
+    let r = Math.random() * totalWeight;
+    let idx = 0;
+    for (let i = 0; i < pool.length; i++) {
+      r -= pool[i].weight;
+      if (r <= 0) {
+        idx = i;
+        break;
+      }
+    }
+    picked.push(pool[idx].word);
+    pool.splice(idx, 1);
+  }
+  return picked;
+};
+
+// 每輪題數不固定：依生字庫大小隨機決定一個區間，字越多、可以出的題也越多（上限 20 題）
+const pickWords = (words: VocabWord[]) => {
+  const minCount = Math.min(words.length, 5);
+  const maxCount = Math.min(words.length, 20);
+  const count = maxCount <= minCount ? maxCount : minCount + Math.floor(Math.random() * (maxCount - minCount + 1));
+  return weightedSample(words, count);
 };
 
 const typeLabel: Record<QuestionType, string> = {
@@ -81,17 +119,24 @@ export const VocabAIQuiz: React.FC<Props> = ({ words, onWordsChange }) => {
 
   const generateExam = () => {
     if (eligibleWords.length < 2) return;
-    const chosen = pickWords(eligibleWords, Math.min(8, eligibleWords.length));
-    const plan: QuestionType[] = ['choice', 'speaking', 'writing', 'collocation', 'article', 'choice', 'speaking', 'article'];
+    const chosen = pickWords(eligibleWords);
     const generated = chosen.map((word, i) => {
-      const type = plan[i % plan.length];
+      // 題型隨機分配（而非固定循環），並依單字實際可用資料決定候選題型，避免出現無法作答/不清楚的題目
+      const wordAppearsInExample = word.exampleEn
+        ? new RegExp(`\\b${word.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(word.exampleEn)
+        : false;
+      const candidateTypes: QuestionType[] = ['choice', 'speaking', 'writing'];
+      if (word.collocations && word.collocations.length > 0) candidateTypes.push('collocation');
+      if (wordAppearsInExample) candidateTypes.push('article');
+      const type = candidateTypes[Math.floor(Math.random() * candidateTypes.length)];
+
       if (type === 'choice') {
         const distractors = shuffle(eligibleWords.filter((w) => w.id !== word.id)).slice(0, 3).map((w: VocabWord) => w.translation);
         return {
           id: `${word.id}-choice-${Date.now()}-${i}`,
           type,
           word,
-          prompt: `「${word.word}」最接近哪個意思？`,
+          prompt: `「${word.word}」(${word.partOfSpeech || ''}) 最接近哪一個中文意思？`,
           options: shuffle([word.translation, ...distractors]),
           answer: word.translation,
           explanation: word.definitionEn || word.translation,
@@ -106,7 +151,7 @@ export const VocabAIQuiz: React.FC<Props> = ({ words, onWordsChange }) => {
             id: `${word.id}-choice-${Date.now()}-${i}`,
             type: 'choice' as const,
             word,
-            prompt: `「${word.word}」最接近哪個意思？`,
+            prompt: `「${word.word}」(${word.partOfSpeech || ''}) 最接近哪一個中文意思？`,
             options: shuffle([word.translation, ...fallbackDistractors]),
             answer: word.translation,
             explanation: word.definitionEn || word.translation,
@@ -116,19 +161,19 @@ export const VocabAIQuiz: React.FC<Props> = ({ words, onWordsChange }) => {
           id: `${word.id}-collocation-${Date.now()}-${i}`,
           type,
           word,
-          prompt: `哪一個是「${word.word}」最自然的搭配？`,
+          prompt: `哪一個詞最常與「${word.word}」搭配使用？`,
           options: shuffle([correct, ...pool.slice(0, 3)]),
           answer: correct,
           explanation: `常見搭配：${word.collocations.join('、')}`,
         };
       }
       if (type === 'article') {
-        const source = word.exampleEn || `The team learned to use ${word.word} in a real-world situation.`;
+        const source = word.exampleEn!;
         return {
           id: `${word.id}-article-${Date.now()}-${i}`,
           type,
           word,
-          prompt: `閱讀語境後填入最適合的單字：\n${source.replace(new RegExp(word.word, 'ig'), '_____')}`,
+          prompt: `請閱讀下方句子，填入空格中最適合的單字（原形或適當變化）：\n${source.replace(new RegExp(`\\b${word.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'ig'), '_____')}`,
           answer: word.word,
           explanation: `${word.exampleEn || ''}${word.exampleZh ? `\n${word.exampleZh}` : ''}`,
         };
@@ -138,7 +183,7 @@ export const VocabAIQuiz: React.FC<Props> = ({ words, onWordsChange }) => {
           id: `${word.id}-speaking-${Date.now()}-${i}`,
           type,
           word,
-          prompt: `請說出英文單字「${word.word}」，並說一個包含它的簡短句子。`,
+          prompt: `請清楚唸出英文單字「${word.word}」的發音，接著用它說一個簡短完整的句子。`,
           explanation: `目標字：${word.word}${word.phonetic ? ` ${word.phonetic}` : ''}`,
         };
       }
@@ -146,7 +191,7 @@ export const VocabAIQuiz: React.FC<Props> = ({ words, onWordsChange }) => {
         id: `${word.id}-writing-${Date.now()}-${i}`,
         type: 'writing' as const,
         word,
-        prompt: `請用「${word.word}」造一個自然、完整的英文句子。`,
+        prompt: `請用「${word.word}」(${word.partOfSpeech || ''}，意思為「${word.translation}」) 造一個自然、完整的英文句子。`,
         explanation: word.translation,
       };
     });

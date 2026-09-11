@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   BookOpen,
   Volume2,
@@ -22,6 +22,11 @@ import {
   Headphones,
   X,
   Send,
+  ChevronLeft,
+  ChevronRight,
+  LayoutGrid,
+  RectangleHorizontal,
+  RotateCw,
 } from 'lucide-react';
 import { VocabWord, SkillTab } from '../types';
 import { speakText } from '../utils/speech';
@@ -31,7 +36,7 @@ import {
   readClipboardTextSafe,
   isWordAddedWithin24Hours,
 } from '../utils/storage';
-import { VocabMasteryCheckModal } from './VocabMasteryCheckModal';
+import { VocabMasteryCheckPanel } from './VocabMasteryCheckPanel';
 import { toTraditionalChinese } from '../utils/chineseConverter';
 import { VocabAIQuiz } from './VocabAIQuiz';
 import { VocabToolbar } from './VocabToolbar';
@@ -85,6 +90,26 @@ const formatAddedTimeAgo = (dateStr?: string): string => {
   return `${Math.floor(diffHours / 24)}天前`;
 };
 
+// 單字「重要度」排序：越需要練習（待複習／新收錄／學習中）的字排越前面，已掌握的排最後；
+// 同一等級內，答對率越低的字視為越重要。目前資料沒有語料頻率欄位，因此以學習需求作為重要度依據。
+const getWordImportanceRank = (word: VocabWord): number => {
+  if (word.examStatus === 'review') return 0;
+  if (word.masteryLevel === 'new') return 1;
+  if (word.masteryLevel === 'learning') return 2;
+  return 3;
+};
+
+const sortWordsByImportance = (list: VocabWord[]): VocabWord[] => {
+  return [...list].sort((a, b) => {
+    const rankDiff = getWordImportanceRank(a) - getWordImportanceRank(b);
+    if (rankDiff !== 0) return rankDiff;
+    const accA = a.examAccuracy ?? 100;
+    const accB = b.examAccuracy ?? 100;
+    if (accA !== accB) return accA - accB;
+    return new Date(b.dateAdded || 0).getTime() - new Date(a.dateAdded || 0).getTime();
+  });
+};
+
 export const VocabularyManager: React.FC<Props> = ({
   words,
   onWordsChange,
@@ -103,8 +128,10 @@ export const VocabularyManager: React.FC<Props> = ({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isFetchingUrl, setIsFetchingUrl] = useState(false);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
-  const [selectedTestWord, setSelectedTestWord] = useState<VocabWord | null>(null);
-  const [isCheckModalOpen, setIsCheckModalOpen] = useState(false);
+  const [cardViewMode, setCardViewMode] = useState<'single' | 'grid'>('single');
+  const [singleCardIndex, setSingleCardIndex] = useState(0);
+  const [flippedWordId, setFlippedWordId] = useState<string | null>(null);
+  const touchStartXRef = useRef<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Inline AI practice panel (造句 / 口說 / 聽力) — generated fresh each time, no tab navigation
@@ -301,7 +328,7 @@ export const VocabularyManager: React.FC<Props> = ({
 
   const filteredWords = useMemo(() => {
     const query = searchTerm.toLowerCase();
-    return words.filter((w) => {
+    const matched = words.filter((w) => {
       const matchesSearch =
         w.word.toLowerCase().includes(query) ||
         w.translation.toLowerCase().includes(query) ||
@@ -313,7 +340,64 @@ export const VocabularyManager: React.FC<Props> = ({
       if (filterLevel === 'review') return w.examStatus === 'review';
       return true;
     });
+    return sortWordsByImportance(matched);
   }, [filterLevel, searchTerm, words]);
+
+  // 篩選條件改變時，單卡瀏覽的位置歸零，避免卡在超出範圍的索引
+  useEffect(() => {
+    setSingleCardIndex(0);
+    setFlippedWordId(null);
+  }, [filterLevel, searchTerm]);
+
+  const singleIndex = Math.min(singleCardIndex, Math.max(0, filteredWords.length - 1));
+  const currentSingleWord = filteredWords[singleIndex];
+
+  const goToCard = (delta: number) => {
+    if (filteredWords.length === 0) return;
+    setFlippedWordId(null);
+    setSingleCardIndex((prev) => {
+      const next = Math.min(prev, filteredWords.length - 1) + delta;
+      if (next < 0) return 0;
+      if (next > filteredWords.length - 1) return filteredWords.length - 1;
+      return next;
+    });
+  };
+
+  // 電腦版鍵盤操作：左右鍵換字卡、Space 翻卡測驗（僅在單卡顯示模式生效）
+  useEffect(() => {
+    if (cardViewMode !== 'single') return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      const isTyping = ['INPUT', 'TEXTAREA'].includes(target.tagName) || target.isContentEditable;
+      if (isTyping) return;
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        goToCard(-1);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        goToCard(1);
+      } else if (e.key === ' ') {
+        e.preventDefault();
+        if (currentSingleWord) {
+          setFlippedWordId((prev) => (prev === currentSingleWord.id ? null : currentSingleWord.id));
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [cardViewMode, currentSingleWord, filteredWords.length]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+  };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartXRef.current;
+    touchStartXRef.current = null;
+    const SWIPE_THRESHOLD = 50;
+    if (deltaX > SWIPE_THRESHOLD) goToCard(-1);
+    else if (deltaX < -SWIPE_THRESHOLD) goToCard(1);
+  };
 
   return (
     <div className="w-full space-y-6 pb-24">
@@ -336,10 +420,39 @@ export const VocabularyManager: React.FC<Props> = ({
                   { id: 'mastered', label: '已掌握', count: masteredWordsCount },
                   { id: 'review', label: '需再學習', count: reviewWordsCount },
                 ].map((tab) => (
-                  <button key={tab.id} onClick={() => setFilterLevel(tab.id as FilterLevel)} className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer ${filterLevel === tab.id ? 'bg-white text-stone-900 shadow-2xs' : 'text-stone-600 hover:text-stone-900'}`}>
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setFilterLevel(tab.id as FilterLevel)}
+                    style={{ touchAction: 'manipulation' }}
+                    className={`px-3 py-2.5 sm:py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer shrink-0 ${filterLevel === tab.id ? 'bg-white text-stone-900 shadow-2xs' : 'text-stone-600 hover:text-stone-900'}`}
+                  >
                     {tab.label} <span className="ml-1 opacity-70">{tab.count}</span>
                   </button>
                 ))}
+              </div>
+            </div>
+
+            {/* 字卡顯示模式：單一字卡（預設） / 全部字卡列表 */}
+            <div className="mt-3 flex items-center gap-2">
+              <span className="text-[11px] font-semibold text-stone-400">字卡檢視：</span>
+              <div className="flex gap-1 p-1 bg-stone-100 rounded-xl border border-stone-200">
+                <button
+                  type="button"
+                  onClick={() => setCardViewMode('single')}
+                  style={{ touchAction: 'manipulation' }}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${cardViewMode === 'single' ? 'bg-white text-stone-900 shadow-2xs' : 'text-stone-600 hover:text-stone-900'}`}
+                >
+                  <RectangleHorizontal className="w-3.5 h-3.5" /> 單一字卡
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCardViewMode('grid')}
+                  style={{ touchAction: 'manipulation' }}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${cardViewMode === 'grid' ? 'bg-white text-stone-900 shadow-2xs' : 'text-stone-600 hover:text-stone-900'}`}
+                >
+                  <LayoutGrid className="w-3.5 h-3.5" /> 全部字卡
+                </button>
               </div>
             </div>
           </section>
@@ -352,18 +465,18 @@ export const VocabularyManager: React.FC<Props> = ({
           )}
 
           {/* Word cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {filteredWords.map((word) => {
+          {(() => {
+            const renderFrontFace = (word: VocabWord) => {
               const examAccuracy = word.examAccuracy ?? 0;
               const examAttempts = word.examAttempts ?? 0;
               return (
-                <article key={word.id} className="bg-white rounded-2xl border border-stone-200 p-5 shadow-xs flex flex-col justify-between hover:border-stone-300 transition">
+                <>
                   <div>
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
                           <h3 className="text-xl font-bold text-stone-900 tracking-tight">{word.word}</h3>
-                          <button onClick={() => speakText(word.word)} className="p-1 rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100 cursor-pointer" title="發音"><Volume2 className="w-4 h-4" /></button>
+                          <button onClick={(e) => { e.stopPropagation(); speakText(word.word); }} className="p-1 rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100 cursor-pointer" title="發音"><Volume2 className="w-4 h-4" /></button>
                           {word.tags?.some((tag) => tag.includes('IELTS') || tag.includes('雅思')) && <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200 font-bold inline-flex items-center gap-1"><GraduationCap className="w-3 h-3" /> IELTS</span>}
                         </div>
                         <div className="flex items-center gap-2 mt-1 text-xs text-stone-500">
@@ -381,15 +494,6 @@ export const VocabularyManager: React.FC<Props> = ({
                         {examAttempts > 0 && <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${word.examStatus === 'learned' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-rose-50 text-rose-800 border-rose-200'}`}>{word.examStatus === 'learned' ? `已學習 ${examAccuracy}%` : `需複習 ${examAccuracy}%`}</span>}
                       </div>
                       {word.definitionEn && <p className="mt-1.5 text-xs text-stone-600 leading-relaxed">{word.definitionEn}</p>}
-                    </div>
-
-                    <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-                      <div className={`rounded-xl border px-3 py-2 ${word.speakingPassed ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-stone-100 border-stone-200 text-stone-600'}`}>
-                        🗣️ 說：{word.speakingPassed ? '通過 ✓' : '待測'}
-                      </div>
-                      <div className={`rounded-xl border px-3 py-2 ${word.writingPassed ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-stone-100 border-stone-200 text-stone-600'}`}>
-                        ✍️ 寫：{word.writingPassed ? '通過 ✓' : '待測'}
-                      </div>
                     </div>
 
                     {word.collocations?.length > 0 && (
@@ -411,10 +515,10 @@ export const VocabularyManager: React.FC<Props> = ({
                           <div className="flex items-start justify-between gap-2">
                             <p className="text-xs text-stone-800 font-medium leading-relaxed">{override?.loading ? 'AI 生成新例句中…' : shownEn}</p>
                             <div className="flex items-center gap-1 shrink-0">
-                              <button onClick={() => regenerateExample(word)} disabled={override?.loading} className="text-stone-400 hover:text-stone-700 cursor-pointer disabled:opacity-40" title="AI 重新生成例句">
+                              <button onClick={(e) => { e.stopPropagation(); regenerateExample(word); }} disabled={override?.loading} className="text-stone-400 hover:text-stone-700 cursor-pointer disabled:opacity-40" title="AI 重新生成例句">
                                 <RefreshCw className={`w-3.5 h-3.5 ${override?.loading ? 'animate-spin' : ''}`} />
                               </button>
-                              <button onClick={() => speakText(shownEn)} className="text-stone-400 hover:text-stone-700 cursor-pointer" title="朗讀例句"><Volume2 className="w-3.5 h-3.5" /></button>
+                              <button onClick={(e) => { e.stopPropagation(); speakText(shownEn); }} className="text-stone-400 hover:text-stone-700 cursor-pointer" title="朗讀例句"><Volume2 className="w-3.5 h-3.5" /></button>
                             </div>
                           </div>
                           {shownZh && !override?.loading && <p className="mt-1 text-xs text-stone-500">{shownZh}</p>}
@@ -426,18 +530,18 @@ export const VocabularyManager: React.FC<Props> = ({
                   <div className="mt-4 pt-3 border-t border-stone-100">
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex gap-1">
-                        <button onClick={() => togglePractice(word, 'sentence')} className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer ${openPractice?.wordId === word.id && openPractice.type === 'sentence' ? 'bg-stone-900 text-white' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'}`}>造句</button>
-                        <button onClick={() => togglePractice(word, 'speaking')} className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer ${openPractice?.wordId === word.id && openPractice.type === 'speaking' ? 'bg-stone-900 text-white' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'}`}>口說</button>
-                        <button onClick={() => togglePractice(word, 'listening')} className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer ${openPractice?.wordId === word.id && openPractice.type === 'listening' ? 'bg-stone-900 text-white' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'}`}>聽力</button>
+                        <button onClick={(e) => { e.stopPropagation(); togglePractice(word, 'sentence'); }} className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer ${openPractice?.wordId === word.id && openPractice.type === 'sentence' ? 'bg-stone-900 text-white' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'}`}>造句</button>
+                        <button onClick={(e) => { e.stopPropagation(); togglePractice(word, 'speaking'); }} className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer ${openPractice?.wordId === word.id && openPractice.type === 'speaking' ? 'bg-stone-900 text-white' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'}`}>口說</button>
+                        <button onClick={(e) => { e.stopPropagation(); togglePractice(word, 'listening'); }} className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer ${openPractice?.wordId === word.id && openPractice.type === 'listening' ? 'bg-stone-900 text-white' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'}`}>聽力</button>
                       </div>
                       <div className="flex gap-1">
-                        <button onClick={() => { setSelectedTestWord(word); setIsCheckModalOpen(true); }} className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-stone-900 text-white text-xs font-bold hover:bg-stone-800 cursor-pointer"><Award className="w-3.5 h-3.5 text-amber-400" />檢測</button>
-                        <button onClick={() => { deleteWord(word.id); onWordsChange(); }} className="p-1.5 rounded-lg text-stone-300 hover:text-rose-500 hover:bg-rose-50 cursor-pointer" title="刪除"><Trash2 className="w-3.5 h-3.5" /></button>
+                        <button onClick={(e) => { e.stopPropagation(); setFlippedWordId(word.id); }} className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-stone-900 text-white text-xs font-bold hover:bg-stone-800 cursor-pointer"><Award className="w-3.5 h-3.5 text-amber-400" />檢測</button>
+                        <button onClick={(e) => { e.stopPropagation(); deleteWord(word.id); onWordsChange(); }} className="p-1.5 rounded-lg text-stone-300 hover:text-rose-500 hover:bg-rose-50 cursor-pointer" title="刪除"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
                     </div>
 
                     {openPractice?.wordId === word.id && (
-                      <div className="mt-3 rounded-xl border border-stone-200 bg-stone-100 p-3">
+                      <div onClick={(e) => e.stopPropagation()} className="mt-3 rounded-xl border border-stone-200 bg-stone-100 p-3">
                         <div className="flex items-center justify-between gap-2 mb-2">
                           <span className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-700">
                             {openPractice.type === 'sentence' && <><Pencil className="w-3.5 h-3.5" />AI 造句練習</>}
@@ -515,25 +619,106 @@ export const VocabularyManager: React.FC<Props> = ({
                       </div>
                     )}
                   </div>
-                </article>
+                </>
               );
-            })}
+            };
 
-            {filteredWords.length === 0 && (
-              <div className="col-span-full py-12 text-center rounded-2xl bg-stone-50 border border-dashed border-stone-200">
-                <BookOpen className="w-8 h-8 text-stone-300 mx-auto mb-2" />
-                <p className="text-sm font-semibold text-stone-700">目前沒有符合條件的單字</p>
-                <p className="text-xs text-stone-500 mt-1">使用「匯入」或上方快速新增功能建立你的第一批單字。</p>
+            const renderBackFace = (word: VocabWord) => (
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <span className="inline-flex items-center gap-1.5 text-sm font-bold text-stone-900">
+                    <Award className="w-4 h-4 text-amber-500" /> {word.word} 檢測
+                  </span>
+                  <button onClick={(e) => { e.stopPropagation(); setFlippedWordId(null); }} className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-stone-500 hover:text-stone-900 hover:bg-stone-100 text-xs font-semibold cursor-pointer">
+                    <RotateCw className="w-3.5 h-3.5" /> 返回單字卡
+                  </button>
+                </div>
+                <VocabMasteryCheckPanel word={word} onWordsChange={onWordsChange} />
               </div>
-            )}
-          </div>
+            );
 
-          <VocabMasteryCheckModal
-            word={selectedTestWord}
-            isOpen={isCheckModalOpen}
-            onClose={() => { setIsCheckModalOpen(false); setSelectedTestWord(null); }}
-            onWordsChange={onWordsChange}
-          />
+            if (cardViewMode === 'grid') {
+              return (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {filteredWords.map((word) => {
+                    const isFlipped = flippedWordId === word.id;
+                    return (
+                      <article
+                        key={word.id}
+                        onClick={() => { if (!isFlipped) setFlippedWordId(word.id); }}
+                        style={{ touchAction: 'manipulation' }}
+                        className={`bg-white rounded-2xl border p-5 shadow-xs flex flex-col justify-between transition cursor-pointer ${isFlipped ? 'border-stone-900' : 'border-stone-200 hover:border-stone-300'}`}
+                      >
+                        {isFlipped ? renderBackFace(word) : renderFrontFace(word)}
+                      </article>
+                    );
+                  })}
+
+                  {filteredWords.length === 0 && (
+                    <div className="col-span-full py-12 text-center rounded-2xl bg-stone-50 border border-dashed border-stone-200">
+                      <BookOpen className="w-8 h-8 text-stone-300 mx-auto mb-2" />
+                      <p className="text-sm font-semibold text-stone-700">目前沒有符合條件的單字</p>
+                      <p className="text-xs text-stone-500 mt-1">使用「匯入」或上方快速新增功能建立你的第一批單字。</p>
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            // 單一字卡顯示（預設）：手機/觸控裝置左右滑動、電腦版按左右鍵換字卡，Space 翻卡測驗
+            if (!currentSingleWord) {
+              return (
+                <div className="py-12 text-center rounded-2xl bg-stone-50 border border-dashed border-stone-200">
+                  <BookOpen className="w-8 h-8 text-stone-300 mx-auto mb-2" />
+                  <p className="text-sm font-semibold text-stone-700">目前沒有符合條件的單字</p>
+                  <p className="text-xs text-stone-500 mt-1">使用「匯入」或上方快速新增功能建立你的第一批單字。</p>
+                </div>
+              );
+            }
+
+            const isFlipped = flippedWordId === currentSingleWord.id;
+
+            return (
+              <div className="flex items-center gap-2 sm:gap-4">
+                <button
+                  onClick={() => goToCard(-1)}
+                  disabled={singleIndex === 0}
+                  style={{ touchAction: 'manipulation' }}
+                  className="hidden sm:inline-flex shrink-0 p-3 rounded-full bg-white border border-stone-200 text-stone-500 hover:text-stone-900 hover:border-stone-300 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                  title="上一張（← 鍵）"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+
+                <div className="flex-1 min-w-0">
+                  <div className="mb-2 flex items-center justify-center gap-2 text-xs font-semibold text-stone-500">
+                    <span>{singleIndex + 1} / {filteredWords.length}</span>
+                  </div>
+                  <article
+                    onClick={() => { if (!isFlipped) setFlippedWordId(currentSingleWord.id); }}
+                    onTouchStart={handleTouchStart}
+                    onTouchEnd={handleTouchEnd}
+                    style={{ touchAction: 'pan-y' }}
+                    className={`bg-white rounded-2xl border p-6 shadow-sm flex flex-col justify-between min-h-[360px] transition cursor-pointer select-none ${isFlipped ? 'border-stone-900' : 'border-stone-200'}`}
+                  >
+                    {isFlipped ? renderBackFace(currentSingleWord) : renderFrontFace(currentSingleWord)}
+                  </article>
+                  <p className="mt-2 text-center text-[11px] text-stone-400 sm:hidden">左右滑動換字卡 · 點卡片翻面檢測</p>
+                  <p className="mt-2 text-center text-[11px] text-stone-400 hidden sm:block">← → 鍵換字卡 · Space 鍵翻面檢測</p>
+                </div>
+
+                <button
+                  onClick={() => goToCard(1)}
+                  disabled={singleIndex >= filteredWords.length - 1}
+                  style={{ touchAction: 'manipulation' }}
+                  className="hidden sm:inline-flex shrink-0 p-3 rounded-full bg-white border border-stone-200 text-stone-500 hover:text-stone-900 hover:border-stone-300 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                  title="下一張（→ 鍵）"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            );
+          })()}
         </>
       )}
 
