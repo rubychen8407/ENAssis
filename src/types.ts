@@ -1,4 +1,4 @@
-export type SkillTab = 'dashboard' | 'vocabulary' | 'speaking' | 'writing' | 'reading' | 'listening';
+export type SkillTab = 'dashboard' | 'vocabulary' | 'speaking' | 'writing' | 'reading' | 'listening' | 'settings';
 
 export interface VocabWord {
   id: string;
@@ -90,6 +90,12 @@ export interface WritingAnalysis {
     coherenceCohesion?: { band: number; feedbackZh?: string; keyMissingElements?: string[] };
     lexicalResource?: { band: number; feedbackZh?: string; keyMissingElements?: string[] };
     grammar?: { band: number; feedbackZh?: string; keyMissingElements?: string[] };
+  };
+  ieltsCriteriaFeedback?: {
+    taskResponse?: string;
+    coherenceCohesion?: string;
+    lexicalResource?: string;
+    grammar?: string;
   };
   ieltsActionPlan?: string[];
 }

@@ -45,6 +45,8 @@ interface Props {
   prefilledWord?: VocabWord | null;
   onRecordSaved?: () => void;
   onAddWord?: (word: Partial<VocabWord>) => void;
+  zenMode?: boolean;
+  onToggleZenMode?: () => void;
 }
 
 export type ListeningMainMode = 'exam' | 'study';
@@ -322,6 +324,8 @@ const LOCAL_STORAGE_KEY_STUDY_ITEMS = 'ielts_study_listening_materials';
 export const ListeningLab: React.FC<Props> = ({
   savedWords,
   onRecordSaved,
+  zenMode,
+  onToggleZenMode,
 }) => {
   // 1. 主模式 (Exam Mode vs Study Mode)
   const [mainMode, setMainMode] = useState<ListeningMainMode>('exam');
@@ -1549,6 +1553,8 @@ export const ListeningLab: React.FC<Props> = ({
           stopAllAudio();
           setWorkflowStage('source');
         }}
+        zenMode={zenMode}
+        onToggleZenMode={onToggleZenMode}
       />
     </div>
   );

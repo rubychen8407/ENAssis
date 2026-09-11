@@ -1,8 +1,5 @@
-// IELTS Liz Writing Methodology, Lessons, Preparation Tips & Essay Types
-// Based on:
-// Task 1: https://ieltsliz.com/ielts-writing-task-1-lessons-and-tips/
-//         https://ieltsliz.com/ielts-writing-task-1-preparation-tips/
-// Task 2: https://ieltsliz.com/types-of-ielts-essays/
+// IELTS Official Writing Methodology, Strategy Guides, Ideas Brainstorming & Lexicon Bank
+// Assessment Criteria: Task Achievement / Task Response, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy
 
 export interface Task1VisualTypeInfo {
   id: 'line_graph' | 'bar_chart' | 'pie_chart' | 'table' | 'multiple_charts' | 'process' | 'map';
@@ -12,7 +9,15 @@ export interface Task1VisualTypeInfo {
   overviewTips: string;
   bodyParagraphTips: string;
   keyVocabulary: { en: string; zh: string }[];
-  lizGoldenRule: string;
+  goldenRule: string;
+  // compatibility alias
+  lizGoldenRule?: string;
+  brainstormingIdeas: string[];
+  synonymAntonymPairs: {
+    theme: string;
+    synonyms: string[];
+    antonyms: string[];
+  }[];
 }
 
 export interface Task2EssayTypeInfo {
@@ -21,17 +26,27 @@ export interface Task2EssayTypeInfo {
   titleEn: string;
   questionKeywords: string[];
   description: string;
-  lizStrategy: string;
+  strategy: string;
+  // compatibility alias
+  lizStrategy?: string;
   paragraphStructure: {
     paragraph: string;
     focus: string;
     tips: string;
   }[];
   sampleTemplatePhrases: { phase: string; phrases: string[] }[];
-  lizGoldenRule: string;
+  goldenRule: string;
+  // compatibility alias
+  lizGoldenRule?: string;
+  brainstormingIdeas: string[];
+  synonymAntonymPairs: {
+    theme: string;
+    synonyms: string[];
+    antonyms: string[];
+  }[];
 }
 
-export const LIZ_TASK1_PREPARATION_STEPS = [
+export const IELTS_TASK1_PREPARATION_STEPS = [
   {
     step: 1,
     titleZh: '熟悉評分標準 (Assessment Criteria)',
@@ -40,7 +55,7 @@ export const LIZ_TASK1_PREPARATION_STEPS = [
   {
     step: 2,
     titleZh: '掌握 Overview 總結段 (The Key to Band 7+)',
-    summaryZh: 'Liz 強調 Overview 是 Task 1 最關鍵段落！若缺少總括性概述，TA 分數最高只能拿 Band 5。Overview 只需 2-3 句概括整體趨勢或最主要特徵，絕對不能包含具體數據！',
+    summaryZh: '官方評分標準強調 Overview 是 Task 1 最關鍵段落！若缺少總括性概述，TA 分數最高只能拿 Band 5。Overview 只需 2-3 句概括整體趨勢或最主要特徵，絕對不能包含具體數據！',
   },
   {
     step: 3,
@@ -59,7 +74,7 @@ export const LIZ_TASK1_PREPARATION_STEPS = [
   },
 ];
 
-export const LIZ_TASK1_FATAL_TRAPS = [
+export const IELTS_TASK1_FATAL_TRAPS = [
   {
     trap: '遺漏 Overview 總結段',
     impact: 'Task Achievement (TA) 評分被限制在 Band 5 以下，無法邁向高分。',
@@ -82,7 +97,7 @@ export const LIZ_TASK1_FATAL_TRAPS = [
   },
 ];
 
-export const LIZ_TASK1_VISUAL_TYPES: Task1VisualTypeInfo[] = [
+export const IELTS_TASK1_VISUAL_TYPES: Task1VisualTypeInfo[] = [
   {
     id: 'line_graph',
     titleZh: '折線圖 (Line Graph)',
@@ -93,11 +108,35 @@ export const LIZ_TASK1_VISUAL_TYPES: Task1VisualTypeInfo[] = [
     keyVocabulary: [
       { en: 'soared / surged', zh: '急劇攀升' },
       { en: 'plummeted / dipped', zh: '暴跌 / 微幅下挫' },
-      { en: 'fluctuated wildy', zh: '劇烈波動' },
+      { en: 'fluctuated wildly', zh: '劇烈波動' },
       { en: 'levelled off / plateaued', zh: '趨於平穩' },
       { en: 'reached a peak of', zh: '達到最高峰' },
     ],
+    goldenRule: '折線圖首重「趨勢與變化程度」（如 dramatically, steadily, gradually），不可單純報數字。',
     lizGoldenRule: '折線圖首重「趨勢與變化程度」（如 dramatically, steadily, gradually），不可單純報數字。',
+    brainstormingIdeas: [
+      '1. 起點與終點差距：哪一條線在整個時間軸中增幅最大？哪一條持續下滑？',
+      '2. 關鍵交叉點 (Crossover)：哪一個年份發生了排名的反超（overtook / surpassed）？',
+      '3. 極值與波動：是否存在明顯的最高點 (peak) 或長期的平穩期 (plateau)？',
+      '4. 邏輯分組：將上升組（上升趨勢項目）放在 Body 1，下降與持平組放在 Body 2。',
+    ],
+    synonymAntonymPairs: [
+      {
+        theme: '上升 (Increase)',
+        synonyms: ['surge', 'soar', 'escalate', 'climb', 'experience an upward trajectory'],
+        antonyms: ['plunge', 'plummet', 'slump', 'dwindle', 'decline markedly'],
+      },
+      {
+        theme: '平穩 (Stability)',
+        synonyms: ['plateau', 'level off', 'remain steady', 'hover around', 'stabilize'],
+        antonyms: ['fluctuate wildly', 'oscillate', 'vary erratically'],
+      },
+      {
+        theme: '程度修飾詞 (Degree Modifiers)',
+        synonyms: ['substantially', 'dramatically', 'considerably', 'markedly', 'exponentially'],
+        antonyms: ['marginally', 'negligibly', 'minimally', 'slightly'],
+      },
+    ],
   },
   {
     id: 'bar_chart',
@@ -113,7 +152,26 @@ export const LIZ_TASK1_VISUAL_TYPES: Task1VisualTypeInfo[] = [
       { en: 'lagged behind', zh: '落後於' },
       { en: 'was roughly equal to', zh: '大致相當於' },
     ],
+    goldenRule: '柱狀圖核心是「比較語言」（more than, twice as much, whereas, compared to），避免單一重複句式。',
     lizGoldenRule: '柱狀圖核心是「比較語言」（more than, twice as much, whereas, compared to），避免單一重複句式。',
+    brainstormingIdeas: [
+      '1. 找出排名前列者：哪個國家/類別在所有項目中都佔據榜首？',
+      '2. 找出極端差距：最大值與最小值的倍數關係（twice as much, three times larger）。',
+      '3. 靜態 vs 動態判定：若是單一年份只比大小；若跨多年份則需兼顧趨勢變化。',
+      '4. 分組對比：Body 1 描寫主導群組 (high performers)；Body 2 描寫落後或特殊群組。',
+    ],
+    synonymAntonymPairs: [
+      {
+        theme: '領先與落後 (Dominance vs Lagging)',
+        synonyms: ['dominate', 'outstrip', 'outnumber', 'exceed', 'take the lead'],
+        antonyms: ['lag behind', 'fall short of', 'trail behind', 'underperform'],
+      },
+      {
+        theme: '對比銜接詞 (Contrast Connectors)',
+        synonyms: ['whereas', 'while', 'in stark contrast to', 'conversely', 'on the contrary'],
+        antonyms: ['likewise', 'similarly', 'in a comparable manner', 'correspondingly'],
+      },
+    ],
   },
   {
     id: 'pie_chart',
@@ -129,7 +187,26 @@ export const LIZ_TASK1_VISUAL_TYPES: Task1VisualTypeInfo[] = [
       { en: 'more than a third', zh: '超過三分之一' },
       { en: 'constituted roughly half', zh: '構成了大約一半' },
     ],
+    goldenRule: '千萬不要只用 "XX% is A, YY% is B"，多轉換分數（a quarter, one in five, the vast majority）。',
     lizGoldenRule: '千萬不要只用 "XX% is A, YY% is B"，多轉換分數（a quarter, one in five, the vast majority）。',
+    brainstormingIdeas: [
+      '1. 佔比最大的份額：哪一個區塊構成了主體（constituted the lion\'s share）？',
+      '2. 最小份額：哪些項目微不足道（a negligible proportion）？',
+      '3. 分數轉換：75% = three quarters, 50% = half, 33% = one third, 20% = one-fifth, 10% = one in ten。',
+      '4. 跨年對比：若有兩個餅圖（如 1990 vs 2020），點出佔比擴張與萎縮最顯著的項目。',
+    ],
+    synonymAntonymPairs: [
+      {
+        theme: '佔比 (Proportion & Share)',
+        synonyms: ['account for', 'represent', 'constitute', 'make up', 'comprise'],
+        antonyms: ['exclude', 'omit'],
+      },
+      {
+        theme: '大多數 vs 少數 (Majority vs Minority)',
+        synonyms: ['the vast majority', 'the lion\'s share', 'predominant segment', 'bulk'],
+        antonyms: ['a mere fraction', 'a negligible minority', 'a trivial proportion'],
+      },
+    ],
   },
   {
     id: 'table',
@@ -144,7 +221,20 @@ export const LIZ_TASK1_VISUAL_TYPES: Task1VisualTypeInfo[] = [
       { en: 'respectively', zh: '分別地（置於句末）' },
       { en: 'outnumbered', zh: '數量超過' },
     ],
+    goldenRule: '表格切忌全報！考官評的是你「選擇主要特徵 (selecting key features)」的能力。',
     lizGoldenRule: '表格切忌全報！考官評的是你「選擇主要特徵 (selecting key features)」的能力。',
+    brainstormingIdeas: [
+      '1. 橫向與縱向掃描：哪一列總計最高？哪一欄均值最低？',
+      '2. 分類篩選：切勿讀報所有數字，選出 4-6 個代表性關鍵數據（最高、最低、差距極值）。',
+      '3. 分組策略：將表格按「高消費國 vs 低消費國」或「城市 vs 鄉村」分兩段描寫。',
+    ],
+    synonymAntonymPairs: [
+      {
+        theme: '範疇與指標 (Category & Metric)',
+        synonyms: ['in terms of', 'with respect to', 'regarding', 'as for', 'in the category of'],
+        antonyms: ['irrespective of', 'regardless of'],
+      },
+    ],
   },
   {
     id: 'multiple_charts',
@@ -158,7 +248,20 @@ export const LIZ_TASK1_VISUAL_TYPES: Task1VisualTypeInfo[] = [
       { en: 'Turning to the accompanying graph', zh: '轉向隨附的圖表' },
       { en: 'correlated with', zh: '與…相關聯' },
     ],
+    goldenRule: '兩幅圖各用一段主體段最安全清晰，切勿在同一段裡跳躍交雜兩圖數據。',
     lizGoldenRule: '兩幅圖各用一段主體段最安全清晰，切勿在同一段裡跳躍交雜兩圖數據。',
+    brainstormingIdeas: [
+      '1. 圖表一的主旨：折線圖或柱狀圖展現了什麼總體趨勢？',
+      '2. 圖表二的主旨：餅圖或表格如何補充更細緻的類別結構？',
+      '3. 銜接詞運用：Body 1 結束時使用 "Turning to..." 或 "Regarding the second visual..." 順暢過渡。',
+    ],
+    synonymAntonymPairs: [
+      {
+        theme: '過渡轉折 (Transitioning between visuals)',
+        synonyms: ['Turning to the subsequent chart', 'In terms of the accompanying data', 'As illustrated by the second diagram'],
+        antonyms: ['Returning to the initial premise'],
+      },
+    ],
   },
   {
     id: 'process',
@@ -173,7 +276,21 @@ export const LIZ_TASK1_VISUAL_TYPES: Task1VisualTypeInfo[] = [
       { en: 'is collected / is processed', zh: '被收集 / 被加工（被動）' },
       { en: 'culminates in / final output', zh: '最終產出為…' },
     ],
+    goldenRule: '人為流程務必用被動語態（is melted, is transported）；自然循環則多為主動語態。',
     lizGoldenRule: '人為流程務必用被動語態（is melted, is transported）；自然循環則多為主動語態。',
+    brainstormingIdeas: [
+      '1. 計算總階段：整個流程共幾步（e.g., The process comprises six distinct stages）？',
+      '2. 辨認起點與終點：起始原料是什麼？最終成品或副產品是什麼？',
+      '3. 時態與語態：人為工業製造嚴格使用「現在被動語態」(is delivered, are crushed, is heated)。',
+      '4. 順序連接詞：First of all -> Following this -> Subsequently -> Simultaneously -> Finally。',
+    ],
+    synonymAntonymPairs: [
+      {
+        theme: '階段與步驟 (Stages & Sequence)',
+        synonyms: ['subsequently', 'following this', 'in the subsequent phase', 'thereafter', 'ultimately'],
+        antonyms: ['initially', 'at the outset', 'in the preliminary stage'],
+      },
+    ],
   },
   {
     id: 'map',
@@ -189,18 +306,38 @@ export const LIZ_TASK1_VISUAL_TYPES: Task1VisualTypeInfo[] = [
       { en: 'to the north-east of', zh: '在…的東北方' },
       { en: 'witnessed dramatic modernization', zh: '見證了劇烈的現代化' },
     ],
+    goldenRule: '方位詞要準確（in the north of vs to the north of），時態依年份判定（過去式或未來被動式）。',
     lizGoldenRule: '方位詞要準確（in the north of vs to the north of），時態依年份判定（過去式或未來被動式）。',
+    brainstormingIdeas: [
+      '1. 整體巨變：綠地是否減少？住宅與商業設施是否大幅擴建？',
+      '2. 建築物更替動詞：demolished (拆除), constructed (興建), expanded (擴建), repurposed (重新利用)。',
+      '3. 方位介系詞：to the north of (在外部北邊), in the northern section (在內部北側)。',
+      '4. 分組描寫：Body 1 描寫北側/東側的變更；Body 2 描寫南側/西側的道路與設施更迭。',
+    ],
+    synonymAntonymPairs: [
+      {
+        theme: '拆除與替換 (Demolition & Replacement)',
+        synonyms: ['demolish', 'knock down', 'tear down', 'flatten', 'make way for'],
+        antonyms: ['construct', 'erect', 'build', 'establish', 'introduce'],
+      },
+      {
+        theme: '擴建與改造 (Expansion & Conversion)',
+        synonyms: ['expand', 'enlarge', 'modernize', 'transform into', 'convert into'],
+        antonyms: ['shrink', 'reduce', 'diminish', 'curtail'],
+      },
+    ],
   },
 ];
 
-export const LIZ_TASK2_ESSAY_TYPES: Task2EssayTypeInfo[] = [
+export const IELTS_TASK2_ESSAY_TYPES: Task2EssayTypeInfo[] = [
   {
     id: 'opinion',
     titleZh: '觀點題 (Opinion / Agree or Disagree)',
     titleEn: 'Opinion Essay (To what extent do you agree or disagree?)',
     questionKeywords: ['agree or disagree', 'to what extent do you agree', 'what is your opinion'],
     description: '題目給出一個單一論點，要求你明確回答贊成、反對或有條件的立場。',
-    lizStrategy: 'Liz 黃金法則：立場必須從頭到尾完全一致！在首段 Introduction 即給出明確 Thesis Statement，主體兩段分別給出兩個支撐你立場的獨立有力論點，結論段再次重申。',
+    strategy: '官方黃金法則：立場必須從頭到尾完全一致！在首段 Introduction 即給出明確 Thesis Statement，主體兩段分別給出兩個支撐你立場的獨立有力論點，結論段再次重申。',
+    lizStrategy: '官方黃金法則：立場必須從頭到尾完全一致！在首段 Introduction 即給出明確 Thesis Statement，主體兩段分別給出兩個支撐你立場的獨立有力論點，結論段再次重申。',
     paragraphStructure: [
       {
         paragraph: 'Paragraph 1: Introduction',
@@ -241,7 +378,31 @@ export const LIZ_TASK2_ESSAY_TYPES: Task2EssayTypeInfo[] = [
         ],
       },
     ],
-    lizGoldenRule: '永遠不要到了結論段才第一次表態！Liz 提醒：若 Introduction 沒有給出 clear position，TA 分數將被拉低。',
+    goldenRule: '永遠不要到了結論段才第一次表態！若 Introduction 沒有給出 clear position，TA/TR 分數將被限制在 Band 6 以下。',
+    lizGoldenRule: '永遠不要到了結論段才第一次表態！若 Introduction 沒有給出 clear position，TA/TR 分數將被限制在 Band 6 以下。',
+    brainstormingIdeas: [
+      '★ 立場選擇：贊成 (Agree) 還是 反對 (Disagree)？選論點容易用英文闡述的那一方！',
+      '★ 維度 1 (個人/心理層面)：個人發展、時間成本、工作技能、心理健康、經濟負擔。',
+      '★ 維度 2 (社會/宏觀層面)：公共資源分配、環境可持續性、國家競爭力、文化多樣性。',
+      '★ 實例發想：具體生活實例、知名國際企業案例（e.g. tech corporations）、各國政策經驗。',
+    ],
+    synonymAntonymPairs: [
+      {
+        theme: '贊同 vs 反對 (Agree vs Disagree)',
+        synonyms: ['advocate', 'endorse', 'concur with', 'support', 'subscribe to'],
+        antonyms: ['dissent', 'oppose', 'dispute', 'refute', 'object to'],
+      },
+      {
+        theme: '關鍵與核心 (Crucial vs Trivial)',
+        synonyms: ['paramount', 'pivotal', 'indispensable', 'vital', 'imperative'],
+        antonyms: ['trivial', 'negligible', 'superficial', 'inconsequential'],
+      },
+      {
+        theme: '促進與阻礙 (Facilitate vs Hinder)',
+        synonyms: ['foster', 'stimulate', 'enhance', 'catalyze', 'cultivate'],
+        antonyms: ['impede', 'hinder', 'inhibit', 'stifle', 'deter'],
+      },
+    ],
   },
   {
     id: 'discussion',
@@ -249,7 +410,8 @@ export const LIZ_TASK2_ESSAY_TYPES: Task2EssayTypeInfo[] = [
     titleEn: 'Discussion Essay (Discuss both views and give your opinion)',
     questionKeywords: ['discuss both views and give your opinion', 'discuss both sides'],
     description: '題幹給出兩種不同（甚至對立）的群體觀點，要求你客觀探討兩造論點，並給出你自己的選擇與立場。',
-    lizStrategy: 'Liz 黃金法則：必須「公平且深入地討論兩方觀點」！不能只花兩句帶過你不贊成的一方。在首段表明立場，Body 1 探討 View A 為何有人支持，Body 2 探討 View B 為何有人支持以及為何你偏向該側，結論段總結。',
+    strategy: '官方黃金法則：必須「公平且深入地討論兩方觀點」！不能只花兩句帶過你不贊成的一方。在首段表明立場，Body 1 探討 View A 為何有人支持，Body 2 探討 View B 為何有人支持以及為何你偏向該側，結論段總結。',
+    lizStrategy: '官方黃金法則：必須「公平且深入地討論兩方觀點」！不能只花兩句帶過你不贊成的一方。在首段表明立場，Body 1 探討 View A 為何有人支持，Body 2 探討 View B 為何有人支持以及為何你偏向該側，結論段總結。',
     paragraphStructure: [
       {
         paragraph: 'Paragraph 1: Introduction',
@@ -288,7 +450,26 @@ export const LIZ_TASK2_ESSAY_TYPES: Task2EssayTypeInfo[] = [
         ],
       },
     ],
+    goldenRule: '「雙邊都必須有充足論證」！若只花篇幅寫自己的一方，考官會判定為未完全回應題目 (Incomplete task response)。',
     lizGoldenRule: '「雙邊都必須有充足論證」！若只花篇幅寫自己的一方，考官會判定為未完全回應題目 (Incomplete task response)。',
+    brainstormingIdeas: [
+      '★ View A 支持者視角：為什麼理性的人會主張這個觀點？其最合理的依據是什麼？',
+      '★ View B 支持者視角：為什麼另一派認為有更深遠的影響？其核心優勢在哪？',
+      '★ 個人立場切入點：你支持哪一方？是因為長遠效益、可持續性還是倫理考量？',
+      '★ 避免假平衡：討論雙方，但必須清楚給出你自己的堅定結論。',
+    ],
+    synonymAntonymPairs: [
+      {
+        theme: '支持者 vs 反對者 (Proponents vs Opponents)',
+        synonyms: ['proponents', 'advocates', 'supporters', 'champions of this view'],
+        antonyms: ['opponents', 'critics', 'detractors', 'skeptics'],
+      },
+      {
+        theme: '合理性 (Validity & Soundness)',
+        synonyms: ['justified', 'legitimate', 'valid', 'well-founded', 'substantiated'],
+        antonyms: ['unfounded', 'spurious', 'flawed', 'untenable'],
+      },
+    ],
   },
   {
     id: 'advantages_disadvantages',
@@ -296,7 +477,8 @@ export const LIZ_TASK2_ESSAY_TYPES: Task2EssayTypeInfo[] = [
     titleEn: 'Advantages and Disadvantages Essay',
     questionKeywords: ['advantages and disadvantages', 'outweigh the disadvantages', 'positive or negative development'],
     description: '探討某種現象或趨勢所帶來的正面與負面效應。分為「單純列舉利弊」與「權衡是否利大於弊」兩種變體。',
-    lizStrategy: 'Liz 黃金法則：如果是 "Do advantages outweigh disadvantages?"，你必須明確選邊（例如利大於弊），並在主體段落透過深度的對比論證，讓讀者看出優勢確實壓倒劣勢。',
+    strategy: '官方黃金法則：如果是 "Do advantages outweigh disadvantages?"，你必須明確選邊（例如利大於弊），並在主體段落透過深度的對比論證，讓讀者看出優勢確實壓倒劣勢。',
+    lizStrategy: '官方黃金法則：如果是 "Do advantages outweigh disadvantages?"，你必須明確選邊（例如利大於弊），並在主體段落透過深度的對比論證，讓讀者看出優勢確實壓倒劣勢。',
     paragraphStructure: [
       {
         paragraph: 'Paragraph 1: Introduction',
@@ -329,7 +511,25 @@ export const LIZ_TASK2_ESSAY_TYPES: Task2EssayTypeInfo[] = [
         ],
       },
     ],
+    goldenRule: '若題目問 "outweigh"，切勿寫成各打五十大板的五五開！必須展現一方重於另一方的論述力量。',
     lizGoldenRule: '若題目問 "outweigh"，切勿寫成各打五十大板的五五開！必須展現一方重於另一方的論述力量。',
+    brainstormingIdeas: [
+      '★ 優點發想 (Merits)：提高效率 (boost efficiency)、節省成本 (cost-effective)、促進全球互聯 (global connectivity)。',
+      '★ 缺點發想 (Drawbacks)：隱私洩漏風險 (data breach)、人際互動疏離 (social isolation)、初期建置成本 (prohibitive initial costs)。',
+      '★ 權衡論證：說明為什麼缺點可以透過規範解決，而優點具有不可替代的戰略價值。',
+    ],
+    synonymAntonymPairs: [
+      {
+        theme: '好處 vs 壞處 (Merits vs Drawbacks)',
+        synonyms: ['advantage', 'merit', 'benefit', 'boon', 'asset', 'upside'],
+        antonyms: ['drawback', 'downside', 'pitfall', 'detriment', 'shortcoming', 'liability'],
+      },
+      {
+        theme: '利大於弊 (Outweighing)',
+        synonyms: ['eclipse', 'surpass', 'outstrip', 'predominate over', 'exceed'],
+        antonyms: ['be overshadowed by', 'be eclipsed by'],
+      },
+    ],
   },
   {
     id: 'problem_solution',
@@ -337,7 +537,8 @@ export const LIZ_TASK2_ESSAY_TYPES: Task2EssayTypeInfo[] = [
     titleEn: 'Problem & Solution / Cause & Effect Essay',
     questionKeywords: ['what problems does this cause', 'what solutions', 'what are the causes', 'how to solve'],
     description: '針對社會問題，要求剖析背後的肇因 (Causes) 或引發的後果 (Problems)，並提出可行的應對策略 (Solutions)。',
-    lizStrategy: 'Liz 黃金法則：Body 2 提出的解決方案，必須「100% 精準對應」Body 1 提到的具體肇因！切勿 Body 1 說原因 A，Body 2 卻提出了解決原因 B 的空泛口號。',
+    strategy: '官方黃金法則：Body 2 提出的解決方案，必須「100% 精準對應」Body 1 提到的具體肇因！切勿 Body 1 說原因 A，Body 2 卻提出了解決原因 B 的空泛口號。',
+    lizStrategy: '官方黃金法則：Body 2 提出的解決方案，必須「100% 精準對應」Body 1 提到的具體肇因！切勿 Body 1 說原因 A，Body 2 卻提出了解決原因 B 的空泛口號。',
     paragraphStructure: [
       {
         paragraph: 'Paragraph 1: Introduction',
@@ -370,7 +571,25 @@ export const LIZ_TASK2_ESSAY_TYPES: Task2EssayTypeInfo[] = [
         ],
       },
     ],
-    lizGoldenRule: '解決方案不可過度天馬行空！Liz 建議提出「務實、可操作、有主詞」（如 local authorities should...）的解方。',
+    goldenRule: '解決方案不可過度天馬行空！建議提出「務實、可操作、有明確主詞」（如 municipal authorities should...）的具體對策。',
+    lizGoldenRule: '解決方案不可過度天馬行空！建議提出「務實、可操作、有明確主詞」（如 municipal authorities should...）的具體對策。',
+    brainstormingIdeas: [
+      '★ 肇因角度 (Causes)：制度法律缺失 (legislative loopholes)、公眾意識薄弱 (insufficient awareness)、快速都市化壓力 (rapid urban sprawl)。',
+      '★ 解方對應 (Solutions)：立法與罰則 (stringent regulations)、財政補貼與課稅 (subsidies & taxation)、宣導與課綱整合 (educational campaigns)。',
+      '★ 邏輯防線：檢查每一個 Solution 是否能直接打消前面提到的 Cause。',
+    ],
+    synonymAntonymPairs: [
+      {
+        theme: '解決與緩解 (Solve & Alleviate)',
+        synonyms: ['tackle', 'address', 'mitigate', 'alleviate', 'rectify', 'combat'],
+        antonyms: ['exacerbate', 'aggravate', 'compound', 'worsen', 'escalate'],
+      },
+      {
+        theme: '導致與引發 (Cause & Trigger)',
+        synonyms: ['trigger', 'precipitate', 'give rise to', 'stem from', 'fuel'],
+        antonyms: ['prevent', 'avert', 'forestall'],
+      },
+    ],
   },
   {
     id: 'direct_questions',
@@ -378,7 +597,8 @@ export const LIZ_TASK2_ESSAY_TYPES: Task2EssayTypeInfo[] = [
     titleEn: 'Two-Part Questions (Double Question Essay)',
     questionKeywords: ['two questions', 'why is this', 'is this a positive', 'how can'],
     description: '題目包含兩個獨立的問號（如「為什麼會發生這種情況？這是一件好事還是壞事？」）。',
-    lizStrategy: 'Liz 黃金法則：一問一段！Body 1 完整回答 Question 1；Body 2 完整回答 Question 2。兩段篇幅務必均等，首尾段都必須簡述兩個問題的解答。',
+    strategy: '官方黃金法則：一問一段！Body 1 完整回答 Question 1；Body 2 完整回答 Question 2。兩段篇幅務必均等，首尾段都必須簡述兩個問題的解答。',
+    lizStrategy: '官方黃金法則：一問一段！Body 1 完整回答 Question 1；Body 2 完整回答 Question 2。兩段篇幅務必均等，首尾段都必須簡述兩個問題的解答。',
     paragraphStructure: [
       {
         paragraph: 'Paragraph 1: Introduction',
@@ -411,15 +631,28 @@ export const LIZ_TASK2_ESSAY_TYPES: Task2EssayTypeInfo[] = [
         ],
       },
     ],
+    goldenRule: '切記不可漏答其中任何一個問號！漏答任何一問，Task Response 將直接被判不及格。',
     lizGoldenRule: '切記不可漏答其中任何一個問號！漏答任何一問，Task Response 將直接被判不及格。',
+    brainstormingIdeas: [
+      '★ Q1 拆解：明確列出 1-2 個回答第一個問號的核心點（e.g. 原因或背後驅動力）。',
+      '★ Q2 拆解：明確列出回答第二個問號的論點（e.g. 這是正向還是負向趨勢，或具體影響為何）。',
+      '★ 均勻分配：確保兩段字數接近（各約 90-110 字），平衡展現回答完整度。',
+    ],
+    synonymAntonymPairs: [
+      {
+        theme: '影響與效應 (Impact & Consequence)',
+        synonyms: ['consequence', 'implication', 'repercussion', 'aftermath', 'ramification'],
+        antonyms: ['origin', 'root cause', 'catalyst'],
+      },
+    ],
   },
 ];
 
-export const LIZ_PLANNING_STEPS = [
+export const IELTS_PLANNING_STEPS = [
   {
     minute: '第 1-2 分鐘',
     titleZh: '審題與劃關鍵字 (Analyze & Highlight)',
-    descZh: '仔細閱讀題幹，圈出核心話題 (Topic)、限制條件 (Focus/Context) 及提問指令 (Question words)。立即判定屬於 Liz 5 大題型中的哪一種！',
+    descZh: '仔細閱讀題幹，圈出核心話題 (Topic)、限制條件 (Focus/Context) 及提問指令 (Question words)。立即判定屬於五大題型中的哪一種！',
   },
   {
     minute: '第 3-4 分鐘',
@@ -433,9 +666,17 @@ export const LIZ_PLANNING_STEPS = [
   },
 ];
 
-export const LIZ_PARAGRAPH_PEEL_FORMULA = {
+export const IELTS_PARAGRAPH_PEEL_FORMULA = {
   p: { letter: 'P', name: 'Point (主題句)', desc: '第一句開門見山，指出該段的核心論點。' },
   e1: { letter: 'E', name: 'Explain (深入解釋)', desc: '第二、三句解釋「為什麼會這樣」、「邏輯因果是什麼」。' },
   e2: { letter: 'E', name: 'Example (具體實例)', desc: '第四句舉出生活、學術或具體調查案例來佐證。' },
   l: { letter: 'L', name: 'Link (小結扣題)', desc: '最後一句將論點重新連結回題目的核心問題。' },
 };
+
+// Aliases for compatibility
+export const LIZ_TASK1_PREPARATION_STEPS = IELTS_TASK1_PREPARATION_STEPS;
+export const LIZ_TASK1_FATAL_TRAPS = IELTS_TASK1_FATAL_TRAPS;
+export const LIZ_TASK1_VISUAL_TYPES = IELTS_TASK1_VISUAL_TYPES;
+export const LIZ_TASK2_ESSAY_TYPES = IELTS_TASK2_ESSAY_TYPES;
+export const LIZ_PLANNING_STEPS = IELTS_PLANNING_STEPS;
+export const LIZ_PARAGRAPH_PEEL_FORMULA = IELTS_PARAGRAPH_PEEL_FORMULA;

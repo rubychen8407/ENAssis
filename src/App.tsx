@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   BookMarked,
   Headphones,
@@ -30,6 +30,9 @@ import { IELTSWritingStudio } from './components/ielts/IELTSWritingStudio';
 import { Dashboard } from './components/Dashboard';
 import { GeneralSettingsModal } from './components/GeneralSettingsModal';
 import { AccountSyncModal } from './components/AccountSyncModal';
+import { UserMenu, SettingsSection } from './components/UserMenu';
+import { SettingsPage } from './components/SettingsPage';
+import { FloatingZenBar } from './components/FloatingZenBar';
 import {
   initAutoSync,
   subscribeSyncState,
@@ -49,13 +52,17 @@ import {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<SkillTab>('dashboard');
+  const [previousTab, setPreviousTab] = useState<SkillTab>('dashboard');
   const [savedWords, setSavedWords] = useState<VocabWord[]>([]);
   const [ieltsRecords, setIeltsRecords] = useState<IELTSRecord[]>([]);
   const [ieltsMistakes, setIeltsMistakes] = useState<IELTSMistakeItem[]>([]);
   const [writingRecords, setWritingRecords] = useState<IELTSWritingRecord[]>([]);
   const [generalSettings, setGeneralSettings] = useState<GeneralSettings>(() => getGeneralSettings());
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [settingsSection, setSettingsSection] = useState<SettingsSection>('goals');
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
+  const userMenuTriggerRef = useRef<HTMLButtonElement>(null);
   const [syncState, setSyncState] = useState<SyncState>(() => ({
     status: 'idle',
     accountId: getSyncAccountId(),
@@ -194,7 +201,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* Navigator Tabs (inline with logo) */}
+          {/* Navigator Tabs (inline with logo on desktop) */}
           <div className="hidden md:flex items-center gap-1 overflow-x-auto whitespace-nowrap">
             <button onClick={() => setActiveTab('dashboard')} className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${activeTab === 'dashboard' ? 'bg-stone-900 text-white' : 'text-stone-500 hover:text-stone-900 hover:bg-stone-100'}`}><LayoutDashboard className="w-3.5 h-3.5 inline mr-1"/>今日進度</button>
             <button onClick={() => setActiveTab('vocabulary')} className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${activeTab === 'vocabulary' ? 'bg-stone-900 text-white' : 'text-stone-500 hover:text-stone-900 hover:bg-stone-100'}`}><BookMarked className="w-3.5 h-3.5 inline mr-1"/>生字庫 (Vocabulary)</button>
@@ -204,57 +211,146 @@ export default function App() {
             <button onClick={() => setActiveTab('writing')} className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${activeTab === 'writing' ? 'bg-stone-900 text-white' : 'text-stone-500 hover:text-stone-900 hover:bg-stone-100'}`}><PenTool className="w-3.5 h-3.5 inline mr-1"/>寫作 (Writing)</button>
           </div>
 
-          {/* Theme + Profile */}
+          {/* Theme + Profile with M3 UserMenu */}
           <div className="flex items-center gap-2 sm:gap-3 ml-auto">
             <button
               id="btn-theme-toggle-navbar"
               onClick={() => setIsDarkMode((value) => !value)}
-              className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-stone-50 hover:bg-stone-100 border border-stone-200 text-stone-700 transition cursor-pointer shadow-2xs"
+              className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-stone-50 hover:bg-stone-100 dark:bg-stone-800 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 transition cursor-pointer shadow-2xs"
               title={isDarkMode ? '切換到淺色模式' : '切換到深色模式'}
               aria-label={isDarkMode ? '切換到淺色模式' : '切換到深色模式'}
             >
-              {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-500" />}
             </button>
 
-            {/* Cloud Sync Status Button */}
-            <button
-              id="btn-cloud-sync-status"
-              onClick={() => setIsSyncModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-stone-50 hover:bg-stone-100 dark:bg-stone-800 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 transition cursor-pointer shadow-2xs text-xs font-semibold"
-              title={`跨裝置同步代碼：${syncState.accountId}`}
-              aria-label="跨裝置同步"
-            >
-              {syncState.status === 'syncing' ? (
-                <RefreshCw className="w-3.5 h-3.5 text-amber-500 animate-spin" />
-              ) : syncState.status === 'error' ? (
-                <Cloud className="w-3.5 h-3.5 text-rose-500" />
-              ) : (
-                <div className="relative flex items-center justify-center">
-                  <Cloud className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
-                  <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-500 ring-1 ring-white" />
-                </div>
-              )}
-              <span className="hidden sm:inline text-[11px] font-medium font-mono text-stone-600 dark:text-stone-400">
-                {syncState.accountId}
-              </span>
-            </button>
+            {/* Profile Avatar Trigger Button with M3 Dropdown Menu */}
+            <div className="relative">
+              <button
+                ref={userMenuTriggerRef}
+                id="btn-user-profile-menu-trigger"
+                type="button"
+                onClick={() => setIsUserMenuOpen((prev) => !prev)}
+                style={{ touchAction: 'manipulation' }}
+                className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-full bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 text-xs font-bold shadow hover:bg-stone-800 dark:hover:bg-stone-200 transition cursor-pointer"
+                aria-label="開啟設定與個人選單"
+                aria-expanded={isUserMenuOpen}
+              >
+                {generalSettings.avatarUrl ? (
+                  <img
+                    src={generalSettings.avatarUrl}
+                    alt="Profile"
+                    className="w-5 h-5 rounded-full object-cover ring-1 ring-white/30"
+                  />
+                ) : (
+                  <span className="w-5 h-5 rounded-full bg-gradient-to-br from-amber-400 to-rose-400 text-stone-950 flex items-center justify-center text-[10px] font-black">
+                    {(generalSettings.profileName || '學').charAt(0)}
+                  </span>
+                )}
+                <span className="hidden sm:inline font-semibold">
+                  {generalSettings.profileName || '目標與設定'}
+                </span>
+                <span className="px-1.5 py-0.2 rounded-full bg-amber-400 text-stone-950 text-[10px] font-black font-mono">
+                  {generalSettings.targetOverallBand.toFixed(1)}
+                </span>
+              </button>
 
-            {/* Profile */}
-            <button
-              onClick={() => setIsSettingsModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-stone-900 text-white text-xs font-bold shadow hover:bg-stone-800 transition cursor-pointer"
-              aria-label="Profile"
-            >
-              {generalSettings.avatarUrl ? (
-                <img src={generalSettings.avatarUrl} alt="Profile" className="w-5 h-5 rounded-full object-cover ring-1 ring-white/30" />
-              ) : (
-                <span className="w-5 h-5 rounded-full bg-gradient-to-br from-amber-400 to-rose-400 flex items-center justify-center text-[10px]">{(generalSettings.profileName || '學').charAt(0)}</span>
-              )}
-              <span className="hidden sm:inline">{generalSettings.profileName || '設定'}</span>
-            </button>
+              {/* Material Design 3 User Menu */}
+              <UserMenu
+                isOpen={isUserMenuOpen}
+                onClose={() => setIsUserMenuOpen(false)}
+                settings={generalSettings}
+                syncState={syncState}
+                zenMode={zenMode}
+                isDarkMode={isDarkMode}
+                onSelectSection={(sec) => {
+                  setSettingsSection(sec);
+                  setPreviousTab(activeTab !== 'settings' ? activeTab : 'dashboard');
+                  setActiveTab('settings');
+                }}
+                onOpenSyncModal={() => setIsSyncModalOpen(true)}
+                onToggleZenMode={() => setZenMode((v) => !v)}
+                onToggleTheme={() => setIsDarkMode((v) => !v)}
+                triggerRef={userMenuTriggerRef}
+              />
+            </div>
           </div>
         </div>
 
+        {/* Mobile Navigation Tabs Bar (Visible on mobile screens < md) */}
+        <div className="md:hidden border-t border-stone-100 dark:border-stone-800 px-2 py-1.5 flex items-center gap-1.5 overflow-x-auto whitespace-nowrap bg-stone-50/90 dark:bg-stone-900/90">
+          <button
+            type="button"
+            onClick={() => setActiveTab('dashboard')}
+            style={{ touchAction: 'manipulation' }}
+            className={`min-h-[40px] px-3 py-2 rounded-xl text-xs font-bold transition shrink-0 cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'dashboard'
+                ? 'bg-stone-900 text-white shadow-xs'
+                : 'text-stone-600 dark:text-stone-300 hover:text-stone-900 hover:bg-stone-200/60 dark:hover:bg-stone-800'
+            }`}
+          >
+            <LayoutDashboard className="w-4 h-4" /> 今日進度
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('vocabulary')}
+            style={{ touchAction: 'manipulation' }}
+            className={`min-h-[40px] px-3 py-2 rounded-xl text-xs font-bold transition shrink-0 cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'vocabulary'
+                ? 'bg-stone-900 text-white shadow-xs'
+                : 'text-stone-600 dark:text-stone-300 hover:text-stone-900 hover:bg-stone-200/60 dark:hover:bg-stone-800'
+            }`}
+          >
+            <BookMarked className="w-4 h-4" /> 生字庫
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('listening')}
+            style={{ touchAction: 'manipulation' }}
+            className={`min-h-[40px] px-3 py-2 rounded-xl text-xs font-bold transition shrink-0 cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'listening'
+                ? 'bg-stone-900 text-white shadow-xs'
+                : 'text-stone-600 dark:text-stone-300 hover:text-stone-900 hover:bg-stone-200/60 dark:hover:bg-stone-800'
+            }`}
+          >
+            <Headphones className="w-4 h-4" /> 聽力
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('speaking')}
+            style={{ touchAction: 'manipulation' }}
+            className={`min-h-[40px] px-3 py-2 rounded-xl text-xs font-bold transition shrink-0 cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'speaking'
+                ? 'bg-stone-900 text-white shadow-xs'
+                : 'text-stone-600 dark:text-stone-300 hover:text-stone-900 hover:bg-stone-200/60 dark:hover:bg-stone-800'
+            }`}
+          >
+            <Mic className="w-4 h-4 text-rose-400" /> 口說
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('reading')}
+            style={{ touchAction: 'manipulation' }}
+            className={`min-h-[40px] px-3 py-2 rounded-xl text-xs font-bold transition shrink-0 cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'reading'
+                ? 'bg-stone-900 text-white shadow-xs'
+                : 'text-stone-600 dark:text-stone-300 hover:text-stone-900 hover:bg-stone-200/60 dark:hover:bg-stone-800'
+            }`}
+          >
+            <BookOpen className="w-4 h-4" /> 閱讀
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('writing')}
+            style={{ touchAction: 'manipulation' }}
+            className={`min-h-[40px] px-3 py-2 rounded-xl text-xs font-bold transition shrink-0 cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'writing'
+                ? 'bg-stone-900 text-white shadow-xs'
+                : 'text-stone-600 dark:text-stone-300 hover:text-stone-900 hover:bg-stone-200/60 dark:hover:bg-stone-800'
+            }`}
+          >
+            <PenTool className="w-4 h-4" /> 寫作
+          </button>
+        </div>
       </header>
 
       {/* Floating Clipboard Notification */}
@@ -274,7 +370,11 @@ export default function App() {
             mistakes={ieltsMistakes}
             writingRecords={writingRecords}
             settings={generalSettings}
-            onOpenSettings={() => setIsSettingsModalOpen(true)}
+            onOpenSettings={() => {
+              setSettingsSection('goals');
+              setPreviousTab('dashboard');
+              setActiveTab('settings');
+            }}
             onNavigate={(tab, promptId) => {
               if (promptId) setSelectedWritingPromptId(promptId);
               setActiveTab(tab);
@@ -288,6 +388,8 @@ export default function App() {
             words={savedWords}
             onWordsChange={refreshWords}
             onSelectWordForPractice={handleSelectWordForPractice}
+            zenMode={zenMode}
+            onToggleZenMode={() => setZenMode((v) => !v)}
           />
         )}
 
@@ -296,11 +398,22 @@ export default function App() {
             savedWords={savedWords}
             prefilledWord={prefilledWord}
             onRecordSaved={refreshWords}
+            zenMode={zenMode}
+            onToggleZenMode={() => setZenMode((v) => !v)}
           />
         )}
 
         {activeTab === 'speaking' && (
-          <VoiceDialogue savedWords={savedWords} prefilledWord={prefilledWord} />
+          <VoiceDialogue
+            savedWords={savedWords}
+            prefilledWord={prefilledWord}
+            settings={generalSettings}
+            onOpenSettings={() => {
+              setSettingsSection('speaking');
+              setPreviousTab('speaking');
+              setActiveTab('settings');
+            }}
+          />
         )}
 
         {activeTab === 'reading' && (
@@ -314,7 +427,40 @@ export default function App() {
           />
         )}
 
+        {activeTab === 'settings' && (
+          <SettingsPage
+            initialSection={settingsSection}
+            settings={generalSettings}
+            onSaveSettings={(newSettings) => {
+              saveGeneralSettings(newSettings);
+              setGeneralSettings(newSettings);
+            }}
+            onBack={() => setActiveTab(previousTab || 'dashboard')}
+            onNavigateToTab={(tab) => setActiveTab(tab)}
+            onSeedSampleWriting={() => {
+              seedSampleWritingRecords();
+              refreshWords();
+            }}
+            onClearWritingRecords={() => {
+              clearAllIELTSWritingRecords();
+              refreshWords();
+            }}
+            onOpenSyncModal={() => setIsSyncModalOpen(true)}
+          />
+        )}
       </main>
+
+      {/* Floating Zen Mode Exit/Toggle Bar (Active when in Zen Mode and outside Vocab/Listening toolbars) */}
+      {zenMode && activeTab !== 'vocabulary' && activeTab !== 'listening' && (
+        <FloatingZenBar
+          zenMode={zenMode}
+          onToggleZenMode={() => setZenMode((v) => !v)}
+          onExitToDashboard={() => {
+            setZenMode(false);
+            setActiveTab('dashboard');
+          }}
+        />
+      )}
 
       {/* Footer */}
       <footer className={`border-t border-stone-200 bg-white/70 py-4 text-center text-xs text-stone-500 ${zenMode ? 'hidden' : ''}`}>

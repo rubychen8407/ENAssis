@@ -30,9 +30,10 @@ html.dark .border-stone-100,
 html.dark .border-stone-200,
 html.dark .border-stone-300 { border-color: #44403c !important; }
 
-/* Emerald / amber / rose semantic surfaces */
+/* Emerald / amber / rose / indigo semantic surfaces */
 html.dark .bg-emerald-50 { background-color: #022c22 !important; }
 html.dark .bg-emerald-100 { background-color: #064e3b !important; }
+html.dark .text-emerald-950,
 html.dark .text-emerald-900,
 html.dark .text-emerald-800,
 html.dark .text-emerald-700 { color: #6ee7b7 !important; }
@@ -40,6 +41,7 @@ html.dark .border-emerald-200,
 html.dark .border-emerald-300 { border-color: #065f46 !important; }
 html.dark .bg-amber-50 { background-color: #422006 !important; }
 html.dark .bg-amber-100 { background-color: #78350f !important; }
+html.dark .text-amber-950,
 html.dark .text-amber-900 { color: #fde68a !important; }
 html.dark .text-amber-800,
 html.dark .text-amber-700,
@@ -47,11 +49,20 @@ html.dark .text-amber-600 { color: #fbbf24 !important; }
 html.dark .border-amber-200,
 html.dark .border-amber-300 { border-color: #92400e !important; }
 html.dark .bg-rose-50 { background-color: #4c0519 !important; }
+html.dark .text-rose-950,
 html.dark .text-rose-900,
 html.dark .text-rose-800,
 html.dark .text-rose-700 { color: #fda4af !important; }
 html.dark .border-rose-200,
 html.dark .border-rose-300 { border-color: #9f1239 !important; }
+html.dark .bg-indigo-50 { background-color: #1e1b4b !important; }
+html.dark .bg-indigo-100 { background-color: #312e81 !important; }
+html.dark .text-indigo-950,
+html.dark .text-indigo-900,
+html.dark .text-indigo-800,
+html.dark .text-indigo-700 { color: #c7d2fe !important; }
+html.dark .border-indigo-200,
+html.dark .border-indigo-300 { border-color: #4338ca !important; }
 
 /* Sky status */
 html.dark .bg-sky-50 { background-color: #082f49 !important; }

@@ -119,6 +119,15 @@ export interface IELTSWritingRecord {
   polishedVersion?: string;
 }
 
+export interface SpeakingSettings {
+  autoSendOnSilence: boolean;
+  silenceDelaySec: number; // 1.5, 2.0, 2.8
+  handsFreeMode: boolean;
+  autoSpeak: boolean;
+  showTranslations: boolean;
+  speechRate: number; // 0.8, 1.0, 1.2
+}
+
 export interface GeneralSettings {
   targetOverallBand: number;
   targetScores: {
@@ -136,4 +145,9 @@ export interface GeneralSettings {
   avatarUrl?: string;
   profileName?: string;
   zenMode?: boolean;
+  dailyGoalVocabCount?: number;
+  targetWeeklyEssays?: number;
+  preferredDialect?: 'british' | 'american';
+  speakingSettings?: SpeakingSettings;
 }
+

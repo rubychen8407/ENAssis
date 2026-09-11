@@ -718,7 +718,7 @@ export const Dashboard: React.FC<Props> = ({
                 </div>
                 <span className="flex-1">
                   <span className="block text-xs font-bold text-stone-900">雅思寫作工坊 (Task 1 & 2)</span>
-                  <span className="block text-[11px] text-stone-500">Liz 零贅詞引導與四項考官批改</span>
+                  <span className="block text-[11px] text-stone-500">官方高分思維引導與四項考官批改</span>
                 </span>
                 <ArrowRight className="h-4 w-4 text-stone-400" />
               </button>

@@ -357,7 +357,28 @@ app.post('/api/gemini/polish-writing', async (req, res) => {
     }
 
     const ai = getAI();
-    const prompt = `You are a professional IELTS writing examiner and coach trained in the official Cambridge/IDP assessment criteria and the widely respected IELTS Liz methodology.
+    const ieltsSection = ieltsTask
+      ? `
+7. Strict IELTS Assessment (0.0-9.0 band scale with 0.5 increments):
+   - Assess all four official criteria independently:
+     a) Task Achievement (Task 1) / Task Response (Task 2)
+     b) Coherence and Cohesion
+     c) Lexical Resource
+     d) Grammatical Range and Accuracy
+   - Calculate realistic overall band (average of the four criteria rounded to the nearest 0.5).
+   - For Task 1 (Academic Report, min 150 words):
+     * Check if there is an explicit OVERVIEW summarizing main trends/features without specific figures. In official criteria, if the overview is missing, Task Achievement is capped at Band 5.0!
+     * Check for logical grouping into 2 body paragraphs with comparisons, rather than a list of every number.
+     * Check that NO personal opinion or speculative reasons are included.
+   - For Task 2 (Academic Essay, min 250 words):
+     * Identify the essay type (Opinion, Discussion, Advantage/Disadvantage, Problem/Solution, Direct Questions).
+     * Check if a clear position/thesis is presented in the introduction and maintained throughout.
+     * Check if each body paragraph has a clear topic sentence and is developed using the PEEL/TEER method (Point, Explain, Example, Link).
+     * Check that conclusion summarizes without introducing new ideas.
+   - Action Plan: Give exactly three specific, actionable, high-impact improvements for the next draft strictly in Traditional Chinese (繁體中文), completely without filler words.`
+      : '';
+
+    const prompt = `You are a professional IELTS writing examiner and coach trained in the official Cambridge/IDP assessment criteria and standard high-scoring essay structure.
 Analyze the following written text from a Traditional Chinese student:
 Topic: "${targetTopic || 'General Writing'}"
 Writing Style: "${style}"
@@ -378,24 +399,7 @@ Provide a comprehensive, high-precision diagnostic report:
 4. Vocabulary enhancements: replace basic or repetitive words with richer academic collocations.
 5. Native Polished Version: a natural, idiomatic, concise rewriting that retains the author's original intended meaning without unnecessary filler words.
 6. Spoken Presentation Outline: since the user also wants to express complete thoughts aloud, extract 3-4 clear bullet points, an opening phrase, closing phrase, and transitional connectors.
-${ieltsTask ? `
-7. Strict IELTS Assessment (0.0-9.0 band scale with 0.5 increments):
-   - Assess all four official criteria independently:
-     a) Task Achievement (Task 1) / Task Response (Task 2)
-     b) Coherence and Cohesion
-     c) Lexical Resource
-     d) Grammatical Range and Accuracy
-   - Calculate realistic overall band (average of the four criteria rounded to the nearest 0.5).
-   - For Task 1 (Academic Report, min 150 words):
-     * Check if there is an explicit OVERVIEW summarizing main trends/features without specific figures. In IELTS Liz methodology, if the overview is missing, Task Achievement is capped at Band 5.0!
-     * Check for logical grouping into 2 body paragraphs with comparisons, rather than a list of every number.
-     * Check that NO personal opinion or speculative reasons are included.
-   - For Task 2 (Academic Essay, min 250 words):
-     * Identify the essay type (Opinion, Discussion, Advantage/Disadvantage, Problem/Solution, Direct Questions).
-     * Check if a clear position/thesis is presented in the introduction and maintained throughout.
-     * Check if each body paragraph has a clear topic sentence and is developed using the PEEL/TEER method (Point, Explain, Example, Link).
-     * Check that conclusion summarizes without introducing new ideas.
-   - Action Plan: Give exactly three specific, actionable, high-impact improvements for the next draft strictly in Traditional Chinese (繁體中文), completely without filler words.` : ''}
+${ieltsSection}
 
 Output strictly JSON:
 {
@@ -494,7 +498,7 @@ app.post('/api/gemini/ielts-mode-b-advice', async (req, res) => {
     const ai = getAI();
 
     if (mode === 'starters') {
-      const promptText = `You are an elite IELTS Writing mentor and IELTS Liz methodology specialist.
+      const promptText = `You are an elite IELTS Writing mentor and Cambridge/IDP assessment standards specialist.
 You are helping a Traditional Chinese student kickstart their writing for STEP ${stepIndex + 1} (${stepName}) of IELTS ${ieltsTask === 'task1' ? 'Task 1' : 'Task 2'}.
 
 EXAM PROMPT:
@@ -538,7 +542,7 @@ Respond strictly in valid JSON:
     }
 
     // mode === 'evaluate'
-    const promptText = `You are an elite IELTS writing examiner and IELTS Liz methodology specialist.
+    const promptText = `You are an elite IELTS writing examiner and Cambridge/IDP assessment standards specialist.
 Evaluate the student's text written for STEP ${stepIndex + 1}: ${stepName} of IELTS ${ieltsTask === 'task1' ? 'Task 1' : 'Task 2'}.
 
 EXAM PROMPT:
@@ -555,7 +559,7 @@ ${
     ? stepIndex === 0
       ? 'Task 1 Intro: Must paraphrase prompt in 1-2 concise sentences without copying prompt verbatim.'
       : stepIndex === 1
-      ? 'Task 1 Overview: CRITICAL LIZ RULE: Must summarize 2-3 main trends/features. ABSOLUTELY NO SPECIFIC FIGURES/NUMBERS. If any numbers appear, it fails the overview requirement!'
+      ? 'Task 1 Overview: CRITICAL RULE: Must summarize 2-3 main trends/features. ABSOLUTELY NO SPECIFIC FIGURES/NUMBERS. If any numbers appear, it fails the overview requirement!'
       : 'Task 1 Body: Logical groupings with key numbers, start values, peaks, and precise comparisons. No personal assumptions or opinions.'
     : stepIndex === 0
     ? 'Task 2 Planning: 5-minute brainstorm. Clear stance and 2 robust main ideas with examples.'
@@ -631,7 +635,98 @@ Respond strictly in valid JSON:
   }
 });
 
-// 5. Voice Dialogue / Speaking Partner
+// 5. Voice Dialogue / Speaking Partner (ElevenLabs Tutor Personality & Dynamic Starter)
+app.post('/api/gemini/voice-dialogue-starter', async (req, res) => {
+  const {
+    scenario = 'daily-cafe',
+    scenarioTitle = '日常漫談與生活社交',
+    scenarioDetails = '輕鬆自然的日常對話',
+    customTopic,
+    targetVocabWords = [],
+  } = req.body;
+
+  try {
+    const ai = getAI();
+    const prompt = `You are "Emma", a warm, encouraging, and friendly English language conversation tutor inspired by the best language practice partners.
+You make practicing spoken English feel like chatting with a close, supportive friend.
+
+Task: Generate a UNIQUE, fresh, and captivating conversational opening question to start today's speaking practice.
+Never use a rigid or repeated greeting. Keep it spontaneous, warm, and inviting.
+
+Scenario: "${scenarioTitle}" (${scenarioDetails})
+${customTopic ? `Custom User Topic: "${customTopic}"` : ''}
+${targetVocabWords.length > 0 ? `Target Vocabulary to naturally weave in if suitable: ${targetVocabWords.join(', ')}` : ''}
+
+Style & Guidelines:
+1. Greet the learner warmly and jump straight into an interesting, accessible open-ended icebreaker question related to this scenario (2-3 sentences max).
+2. The question should spark storytelling, personal thoughts, or daily life sharing (e.g. asking about recent habits, a dilemma, a memorable trip, a funny experience, an opinion on modern trends, or what they're up to today).
+3. Provide 2 natural follow-up starter sentences that the learner could use to answer if they want ideas.
+4. Provide the Traditional Chinese (繁體中文) translation.
+
+Format your output strictly in JSON:
+{
+  "starter": "Emma's unique, friendly spoken opening greeting and question in English",
+  "translationZh": "繁體中文翻譯",
+  "topicTitle": "${scenarioTitle}",
+  "suggestedFollowUps": [
+    "Sample response idea 1",
+    "Sample response idea 2"
+  ],
+  "suggestedVocab": ["word1", "word2"]
+}`;
+
+    const response = await generateContentWithFallback(ai, {
+      preferredModel: 'gemini-3.1-flash-lite',
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json',
+        temperature: 0.9,
+      },
+    });
+
+    const parsed = cleanAndParseJSON(response.text || '{}', {
+      starter: "Hey there! I'm so glad we're chatting today. How has your week been going so far? Anything fun or unexpected happen?",
+      translationZh: "哈囉！很高興今天能和你聊天。這週過得怎麼樣呢？有發生什麼有趣或意想不到的事嗎？",
+      topicTitle: scenarioTitle,
+      suggestedFollowUps: [
+        "It's been pretty busy, but I finally had some time to relax.",
+        "Actually, something quite interesting happened yesterday!",
+      ],
+      suggestedVocab: targetVocabWords.slice(0, 3),
+    });
+
+    res.json(parsed);
+  } catch (error: any) {
+    console.error('Error generating voice dialogue starter:', error);
+    const fallbacks = [
+      {
+        starter: "Hey there! It's so great to practice with you today. What kind of day has it been for you so far?",
+        translationZh: "哈囉！很高興今天能和你一起練習。你今天過得如何呢？",
+        suggestedFollowUps: ["It's been a relaxing day for me.", "I've been quite busy with work and study today."],
+      },
+      {
+        starter: "Hi! I was just thinking about how our daily routines shape our mood. Do you have a favorite part of the day that you always look forward to?",
+        translationZh: "嗨！我剛才在想日常作息如何影響心情。你一天當中有沒有哪段時光是你特別期待的？",
+        suggestedFollowUps: ["I always look forward to my quiet morning coffee.", "Evenings are the best because I get to unwind."],
+      },
+      {
+        starter: "Hello! Welcome in! If you had a completely free afternoon with no obligations today, how would you spend it?",
+        translationZh: "哈囉，歡迎！如果你今天有一個完全自由、沒有任何待辦事項的下午，你會怎麼度過？",
+        suggestedFollowUps: ["I would probably go for a long walk in a park.", "I'd visit a cozy bookstore or cafe to read."],
+      },
+    ];
+    const picked = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+    res.json({
+      starter: picked.starter,
+      translationZh: picked.translationZh,
+      topicTitle: scenarioTitle,
+      suggestedFollowUps: picked.suggestedFollowUps,
+      suggestedVocab: targetVocabWords.slice(0, 3),
+    });
+  }
+});
+
+// 5. Voice Dialogue / Speaking Partner (ElevenLabs Real-time Adaptive Persona & Direct Verbal Coaching)
 app.post('/api/gemini/voice-dialogue', async (req, res) => {
   const {
     scenario = 'daily-conversation',
@@ -643,19 +738,30 @@ app.post('/api/gemini/voice-dialogue', async (req, res) => {
 
   try {
     const ai = getAI();
-    const systemInstruction = `You are "Emma", a warm, encouraging, native English speaking conversation partner and language coach.
-Your mission is to help a Traditional Chinese learner practice spoken English in real-time.
-Current Scenario: ${scenario} (${scenarioDetails || 'Casual real-world dialogue'}).
-Target vocabulary to naturally weave in if appropriate: ${targetVocabWords.join(', ')}.
+    const vocabList = Array.isArray(targetVocabWords) ? targetVocabWords.join(', ') : '';
+    const systemInstruction = `You are "Emma", an expert, warm, and encouraging English conversation tutor.
+Your mission is to help the learner speak English naturally and accurately through authentic conversation.
 
-Guidelines:
-1. Reply in spoken, conversational English (2-4 sentences max per turn). Keep the conversation dynamic by reacting naturally to the Learner's latest message and asking an engaging follow-up question.
-2. In the coaching section, provide gentle, practical feedback ONLY on what the user said in their latest message (do not analyze past turns):
-   - Identify any grammar or tense slips in their latest message and show the correct way with a brief Traditional Chinese (繁體中文) explanation.
-   - Suggest a "Native Expression" (how a native speaker would say what the user meant in their latest message).
-   - Point out 1-2 words from their latest message that might be tricky to pronounce.
-3. Provide 2 natural follow-up response ideas that the user could choose to say next.
-4. Provide the Traditional Chinese translation of your reply for easy reference.`;
+# CRITICAL 2-STEP SPOKEN TEACHING PATTERN (You MUST follow this on EVERY turn):
+Whenever the learner says something, your spoken "reply" MUST ALWAYS follow this two-part structure:
+
+PART 1: DIRECT, GENTLE FEEDBACK / CORRECTION FIRST (Out loud in your spoken reply)
+- Analyze what the learner just said:
+  * If there is ANY grammatical error, wrong tense, missing preposition, or awkward word choice: GENTLY point it out directly and show them the correct/natural phrasing before moving on (e.g., "Good effort! Just a quick tip: instead of 'I go yesterday', remember to say 'I went yesterday'." or "Nice thought! A more natural way native speakers say that is '...'").
+  * If their grammar is correct but could sound more native/fluent: offer a quick, polished phrasing upgrade (e.g., "Well said! You can also say '...' to sound even more natural.").
+  * If their sentence is already perfect and natural: warmly praise their specific word choice or fluency (e.g., "Spot on! I love how smoothly you phrased that!").
+
+PART 2: NATURAL CONVERSATIONAL REACTION & NEXT OPEN-ENDED QUESTION
+- After giving the quick verbal feedback, immediately react to the meaning of what they said with genuine interest and ask a compelling open-ended question to continue the dialogue smoothly.
+
+# Personality & Style Guidelines:
+- Keep the overall spoken reply concise, natural, and conversational (3-4 spoken sentences total).
+- Never sound robotic, rigid, or like a test evaluator. Be like an encouraging, native-speaking best friend who genuinely cares about helping them improve.
+- Adapt difficulty in real-time based on the learner's vocabulary and fluency.
+- Target vocabulary to naturally weave into conversation if suitable: ${vocabList}.
+
+# Scenario Context:
+Scenario: ${scenario} (${scenarioDetails || 'Casual real-world dialogue'}).`;
 
     const recentHistoryText = (history || [])
       .filter((m: any) => m && m.text && !m.text.includes("trouble connecting"))
@@ -663,28 +769,32 @@ Guidelines:
       .map((m: any) => `${m.sender === 'user' ? 'Learner' : 'Emma'}: ${m.text.trim()}`)
       .join('\n');
 
-    const prompt = `Context:
-${recentHistoryText ? `Recent dialogue flow:\n${recentHistoryText}` : 'Starting a new conversation.'}
+    const prompt = `Dialogue History:
+${recentHistoryText ? `${recentHistoryText}` : 'Starting a new conversation.'}
 
 Learner's latest message: "${userMessage}"
 
-Important: Directly respond to the Learner's latest message above while keeping natural continuity and remembering details or preferences mentioned in earlier turns so they influence this conversation. Focus your coaching and native alternative strictly on this latest message.
+Remember:
+1. In your spoken "reply", you MUST directly tell the learner what to correct/improve (grammar or native phrasing tip) FIRST.
+2. Then react to their idea and ask the next open-ended question to continue the topic!
 
-Respond in JSON format:
+Output JSON format strictly:
 {
-  "reply": "Emma's conversational spoken English reply directly answering what learner just said",
-  "translationZh": "Emma's reply translated into Traditional Chinese 繁體中文",
+  "reply": "Emma's spoken English response following the 2-step pattern: (1) Direct feedback/correction/phrasing tip spoken out loud first, followed by (2) conversational reaction and the next open-ended question.",
+  "translationZh": "Emma's complete spoken reply in Traditional Chinese 繁體中文",
   "coaching": {
     "pronunciationTrickyWords": ["word1", "word2"],
-    "grammarCorrection": "Corrected sentence if learner made a mistake in their latest message, or null if great",
-    "grammarRuleZh": "Grammar rule explanation in 繁體中文, or praise if correct",
-    "nativeAlternative": "More idiomatic way to express what the learner just said",
-    "confidenceScore": 90
+    "grammarCorrection": "Specific correction of the learner's sentence (e.g. 'I go yesterday' -> 'I went yesterday'), or null if completely flawless",
+    "grammarRuleZh": "Clear Traditional Chinese explanation of the correction and advice",
+    "nativeAlternative": "A natural, native way an English speaker would express the learner's exact thought",
+    "confidenceScore": 92
   },
   "suggestedFollowUps": [
-    "Suggested sentence 1 user could say",
-    "Suggested sentence 2 user could say"
-  ]
+    "Natural response idea 1",
+    "Natural response idea 2"
+  ],
+  "isFarewell": false,
+  "sessionSummary": null
 }`;
 
     const response = await generateContentWithFallback(ai, {
@@ -693,49 +803,52 @@ Respond in JSON format:
       config: {
         systemInstruction,
         responseMimeType: 'application/json',
-        temperature: 0.7,
+        temperature: 0.75,
       },
     });
 
     const parsed = cleanAndParseJSON(response.text || '{}', {
-      reply: "That's great! Could you tell me a little bit more about that?",
-      translationZh: '太棒了！你能多跟我聊聊這個嗎？',
+      reply: "That's really interesting! I love hearing your thoughts on that. Could you tell me a little more about what made you feel that way?",
+      translationZh: '這真的很有趣！我很喜歡聽你的想法。能多告訴我一些是什麼讓你產生這種感覺嗎？',
       coaching: {
         pronunciationTrickyWords: [],
         grammarCorrection: null,
-        grammarRuleZh: '句子結構通順自然！',
+        grammarRuleZh: '表達自然且切合語意！',
         nativeAlternative: userMessage,
-        confidenceScore: 88,
+        confidenceScore: 90,
       },
       suggestedFollowUps: [
-        'Sure, let me explain in more detail.',
-        'Well, for example...',
+        'Sure, let me give you a quick example.',
+        'Well, for instance, in my own experience...',
       ],
+      isFarewell: false,
+      sessionSummary: null,
     });
 
     res.json(parsed);
   } catch (error: any) {
     console.log('Providing graceful conversational fallback in voice-dialogue');
     const safeText = (userMessage || '').trim();
-    // Provide a natural conversational response even if all remote model endpoints temporarily fail
     const fallbackReply = {
       reply: safeText
-        ? `That is really interesting! Could you tell me a little bit more about that, or share a specific example from your experience?`
-        : `I'm right here and listening! What would you like to talk about next?`,
+        ? `I totally see what you mean! That's a great point. How did that experience impact your perspective afterwards?`
+        : `I'm right here with you! What's something interesting you'd like to share today?`,
       translationZh: safeText
-        ? `這真的很棒！你能多告訴我一些細節，或是舉個生活中的具體例子嗎？`
-        : `我正在聽！接下來想跟我聊些什麼呢？`,
+        ? `我完全明白你的意思！這真是個很好的切入點。那次經驗之後對你的想法有什麼影響呢？`
+        : `我一直在這聽著！今天有什麼有趣的事情想和我聊聊嗎？`,
       coaching: {
         pronunciationTrickyWords: [],
         grammarCorrection: null,
-        grammarRuleZh: '表達通順且符合情境！',
-        nativeAlternative: safeText || 'That makes a lot of sense.',
+        grammarRuleZh: '表達通順，語意明確！',
+        nativeAlternative: safeText || 'That makes complete sense.',
         confidenceScore: 88,
       },
       suggestedFollowUps: [
-        'Sure, let me give you a quick example.',
-        'Actually, in my daily life, I find that very common.',
+        'It really changed the way I look at things.',
+        'To be honest, it was quite a memorable moment.',
       ],
+      isFarewell: false,
+      sessionSummary: null,
     };
 
     res.json(fallbackReply);

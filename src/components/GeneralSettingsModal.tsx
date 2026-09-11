@@ -16,9 +16,14 @@ import {
   Copy,
   Smartphone,
   RefreshCw,
+  Mic,
+  Volume2,
+  VolumeX,
+  Radio,
+  Languages,
 } from 'lucide-react';
-import { GeneralSettings } from '../types/ielts';
-import { DEFAULT_GENERAL_SETTINGS } from '../utils/ielts';
+import { GeneralSettings, SpeakingSettings } from '../types/ielts';
+import { DEFAULT_GENERAL_SETTINGS, DEFAULT_SPEAKING_SETTINGS } from '../utils/ielts';
 import {
   getSyncAccountId,
   performCrossDeviceSync,
@@ -44,7 +49,7 @@ export const GeneralSettingsModal: React.FC<Props> = ({
 }) => {
   const [formData, setFormData] = useState<GeneralSettings>({ ...settings });
   const [savedSuccess, setSavedSuccess] = useState(false);
-  const [activeTab, setActiveTab] = useState<'goals' | 'exam' | 'examiner' | 'data' | 'profile' | 'shortcuts'>('goals');
+  const [activeTab, setActiveTab] = useState<'goals' | 'exam' | 'speaking' | 'examiner' | 'data' | 'profile' | 'shortcuts'>('goals');
 
   if (!isOpen) return null;
 
@@ -70,6 +75,18 @@ export const GeneralSettingsModal: React.FC<Props> = ({
 
   const handleResetToDefault = () => {
     setFormData({ ...DEFAULT_GENERAL_SETTINGS });
+  };
+
+  const speaking: SpeakingSettings = formData.speakingSettings || DEFAULT_SPEAKING_SETTINGS;
+
+  const updateSpeaking = (partial: Partial<SpeakingSettings>) => {
+    setFormData({
+      ...formData,
+      speakingSettings: {
+        ...speaking,
+        ...partial,
+      },
+    });
   };
 
   const BAND_OPTIONS = [6.0, 6.5, 7.0, 7.5, 8.0, 8.5];
@@ -127,6 +144,16 @@ export const GeneralSettingsModal: React.FC<Props> = ({
             }`}
           >
             📅 考期與進度目標
+          </button>
+          <button
+            onClick={() => setActiveTab('speaking')}
+            className={`px-3.5 py-2 text-xs font-semibold rounded-t-xl transition border-b-2 cursor-pointer ${
+              activeTab === 'speaking'
+                ? 'border-stone-900 text-stone-900 bg-stone-50/80'
+                : 'border-transparent text-stone-500 hover:text-stone-800'
+            }`}
+          >
+            🎙️ 口說與語音偏好
           </button>
           <button
             onClick={() => setActiveTab('examiner')}
@@ -408,6 +435,145 @@ export const GeneralSettingsModal: React.FC<Props> = ({
             </div>
           )}
 
+          {activeTab === 'speaking' && (
+            <div className="space-y-4 animate-fade-in">
+              <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-4">
+                <div className="flex items-center justify-between pb-2 border-b border-stone-200">
+                  <div>
+                    <h4 className="text-xs font-bold text-stone-900">語音與自動送出設定</h4>
+                    <p className="text-[11px] text-stone-500">免手動點擊送出，提供擬真即時口語對話體驗</p>
+                  </div>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    即時生效
+                  </span>
+                </div>
+
+                {/* Auto-send on silence toggle */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-xs font-bold text-stone-800 block">自動偵測停頓送出</span>
+                      <p className="text-[11px] text-stone-400">說完話靜音自動發送，不需手動按送出</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => updateSpeaking({ autoSendOnSilence: !speaking.autoSendOnSilence })}
+                      className={`w-10 h-6 flex items-center rounded-full p-1 transition cursor-pointer ${
+                        speaking.autoSendOnSilence ? 'bg-stone-900 justify-end' : 'bg-stone-200 justify-start'
+                      }`}
+                    >
+                      <span className="bg-white w-4 h-4 rounded-full shadow-xs"></span>
+                    </button>
+                  </div>
+
+                  {speaking.autoSendOnSilence && (
+                    <div className="space-y-1.5 p-2.5 rounded-xl bg-white border border-stone-200 animate-fade-in">
+                      <div className="flex justify-between text-xs text-stone-600">
+                        <span className="flex items-center gap-1 font-medium">
+                          <Clock className="w-3.5 h-3.5 text-stone-400" />
+                          停頓偵測時間 (Pause Duration)
+                        </span>
+                        <span className="font-mono font-bold text-stone-900">{speaking.silenceDelaySec} 秒</span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-1.5">
+                        {[
+                          { sec: 1.5, label: '1.5s 敏捷' },
+                          { sec: 2.0, label: '2.0s 標準' },
+                          { sec: 2.8, label: '2.8s 充裕' },
+                        ].map(({ sec, label }) => (
+                          <button
+                            key={sec}
+                            type="button"
+                            onClick={() => updateSpeaking({ silenceDelaySec: sec })}
+                            className={`py-1.5 rounded-lg border text-xs font-medium cursor-pointer transition ${
+                              speaking.silenceDelaySec === sec
+                                ? 'border-stone-900 bg-stone-900 text-white'
+                                : 'border-stone-200 bg-stone-50 text-stone-600 hover:bg-stone-100'
+                            }`}
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Hands-free mode */}
+                <div className="flex items-center justify-between pt-2 border-t border-stone-200">
+                  <div>
+                    <span className="flex items-center gap-1 text-xs font-bold text-stone-800">
+                      <Radio className="w-3.5 h-3.5 text-rose-500" />
+                      免動手連續對話 (Hands-free Mode)
+                    </span>
+                    <p className="text-[11px] text-stone-400">AI 回答完後自動重啟麥克風聆聽</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => updateSpeaking({ handsFreeMode: !speaking.handsFreeMode })}
+                    className={`w-10 h-6 flex items-center rounded-full p-1 transition cursor-pointer ${
+                      speaking.handsFreeMode ? 'bg-rose-500 justify-end' : 'bg-stone-200 justify-start'
+                    }`}
+                  >
+                    <span className="bg-white w-4 h-4 rounded-full shadow-xs"></span>
+                  </button>
+                </div>
+
+                {/* Auto speak */}
+                <div className="flex items-center justify-between pt-2 border-t border-stone-200">
+                  <span className="text-xs font-bold text-stone-800">AI 自動語音朗讀 (Auto Speak)</span>
+                  <button
+                    type="button"
+                    onClick={() => updateSpeaking({ autoSpeak: !speaking.autoSpeak })}
+                    className={`p-1.5 rounded-lg transition cursor-pointer ${
+                      speaking.autoSpeak ? 'bg-emerald-100 text-emerald-800' : 'bg-stone-100 text-stone-400'
+                    }`}
+                  >
+                    {speaking.autoSpeak ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+                  </button>
+                </div>
+
+                {/* Show translation */}
+                <div className="flex items-center justify-between pt-2 border-t border-stone-200">
+                  <span className="text-xs font-bold text-stone-800">顯示中文對照翻譯</span>
+                  <button
+                    type="button"
+                    onClick={() => updateSpeaking({ showTranslations: !speaking.showTranslations })}
+                    className={`p-1.5 rounded-lg transition cursor-pointer ${
+                      speaking.showTranslations ? 'bg-stone-900 text-white' : 'bg-stone-100 text-stone-400'
+                    }`}
+                  >
+                    <Languages className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* Speech rate */}
+                <div className="space-y-1 text-xs text-stone-700 pt-2 border-t border-stone-200">
+                  <div className="flex justify-between">
+                    <span className="font-bold">AI 語速 (Speech Rate)</span>
+                    <span className="font-mono font-medium">{speaking.speechRate}x</span>
+                  </div>
+                  <div className="flex gap-2">
+                    {[0.8, 1.0, 1.2].map((rate) => (
+                      <button
+                        key={rate}
+                        type="button"
+                        onClick={() => updateSpeaking({ speechRate: rate })}
+                        className={`flex-1 py-1 rounded-lg border text-xs font-medium cursor-pointer ${
+                          speaking.speechRate === rate
+                            ? 'border-stone-900 bg-stone-900 text-white'
+                            : 'border-stone-200 bg-white text-stone-600 hover:bg-stone-100'
+                        }`}
+                      >
+                        {rate}x
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {activeTab === 'examiner' && (
             <div className="space-y-5 animate-fade-in">
               <div>
@@ -432,10 +598,10 @@ export const GeneralSettingsModal: React.FC<Props> = ({
                     <div className="text-xs">
                       <p className="font-bold text-stone-900 flex items-center gap-1.5">
                         <ShieldCheck className="w-4 h-4 text-amber-600" />
-                        IELTS Liz 頂級嚴格標準（推薦）
+                        雅思高分頂級嚴格標準（推薦）
                       </p>
                       <p className="text-stone-500 mt-0.5">
-                        嚴格剔除所有無效空話與陳舊模板詞；Task 1 檢驗 Overview 是否避開具體數字，Task 2 檢驗 PEEL 邏輯。
+                        嚴格剔除所有無效空話與陳舊模板詞；Task 1 檢驗 Overview 是否避開具體數字，Task 2 檢驗論點推展深度。
                       </p>
                     </div>
                   </label>
@@ -535,7 +701,7 @@ export const GeneralSettingsModal: React.FC<Props> = ({
                   寫作評分示範紀錄
                 </h4>
                 <p className="text-xs text-stone-500 mb-3">
-                  若您尚未在寫作練習室送出批改，可一鍵載入官方 Liz 標準的 Task 1 與 Task 2 示範評分紀錄，在 Dashboard 立即查看成績與平均分走勢。
+                  若您尚未在寫作練習室送出批改，可一鍵載入官方標準的 Task 1 與 Task 2 示範評分紀錄，在 Dashboard 立即查看成績與平均分走勢。
                 </p>
                 <button
                   type="button"
@@ -549,7 +715,7 @@ export const GeneralSettingsModal: React.FC<Props> = ({
                   className="px-4 py-2 rounded-xl bg-white border border-stone-300 hover:bg-stone-100 text-xs font-bold text-stone-800 transition cursor-pointer inline-flex items-center gap-1.5 shadow-2xs"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  載入官方 Liz 示範寫作紀錄
+                  載入官方示範寫作紀錄
                 </button>
               </div>
 

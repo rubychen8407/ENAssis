@@ -15,6 +15,7 @@ import { ReadingItem, VocabWord } from '../types';
 import { speakText } from '../utils/speech';
 import { addWordToVocabulary } from '../utils/storage';
 import { IELTSPracticeHub } from './ielts/IELTSPracticeHub';
+import { ReadingToolbar } from './ReadingToolbar';
 
 interface Props {
   savedWords: VocabWord[];
@@ -192,34 +193,6 @@ export const ReadingHub: React.FC<Props> = ({ savedWords, onWordsChange }) => {
 
   return (
     <div className="space-y-6">
-      {/* Reading Mode Switch: AI generated reading vs. curated IELTS mock exams */}
-      <div className="bg-white rounded-2xl border border-stone-200 p-2 shadow-xs flex items-center gap-2">
-        <button
-          id="btn-reading-mode-ai"
-          onClick={() => setReadingMode('ai')}
-          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer ${
-            readingMode === 'ai'
-              ? 'bg-stone-900 text-white shadow-2xs'
-              : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
-          }`}
-        >
-          <PenLine className="w-4 h-4" />
-          AI 情境閱讀與查詞
-        </button>
-        <button
-          id="btn-reading-mode-ielts"
-          onClick={() => setReadingMode('ielts')}
-          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition cursor-pointer ${
-            readingMode === 'ielts'
-              ? 'bg-amber-500 text-stone-950 shadow-2xs'
-              : 'text-stone-700 hover:text-stone-900 hover:bg-amber-50/70 border border-amber-200/60'
-          }`}
-        >
-          <GraduationCap className="w-4 h-4" />
-          雅思全真模考與題庫
-        </button>
-      </div>
-
       {readingMode === 'ielts' ? (
         <IELTSPracticeHub onWordAdded={onWordsChange} />
       ) : (
@@ -413,6 +386,15 @@ export const ReadingHub: React.FC<Props> = ({ savedWords, onWordsChange }) => {
       </div>
       </>
       )}
+
+      {/* Floating M3 Reading Toolbar */}
+      <ReadingToolbar
+        readingMode={readingMode}
+        onToggleMode={(newMode) => setReadingMode(newMode)}
+        onGenerateReading={handleGenerateReading}
+        onSpeakAll={() => speakText(currentArticle.content)}
+        isGenerating={isGenerating}
+      />
     </div>
   );
 };

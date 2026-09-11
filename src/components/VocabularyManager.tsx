@@ -45,6 +45,8 @@ interface Props {
   words: VocabWord[];
   onWordsChange: () => void;
   onSelectWordForPractice: (word: VocabWord, targetTab: SkillTab) => void;
+  zenMode?: boolean;
+  onToggleZenMode?: () => void;
 }
 
 type FilterLevel = 'all' | 'new' | 'learning' | 'mastered' | 'review';
@@ -114,6 +116,8 @@ export const VocabularyManager: React.FC<Props> = ({
   words,
   onWordsChange,
   onSelectWordForPractice,
+  zenMode,
+  onToggleZenMode,
 }) => {
   const [studyMode, setStudyMode] = useState<StudyMode>(() => {
     if (typeof window === 'undefined') return 'study';
@@ -789,6 +793,8 @@ export const VocabularyManager: React.FC<Props> = ({
         onToggleMode={() => setMode(studyMode === 'study' ? 'exam' : 'study')}
         onBatchImport={() => openImport('clipboard')}
         newWordsCount={newWordsCount}
+        zenMode={zenMode}
+        onToggleZenMode={onToggleZenMode}
       />
     </div>
   );

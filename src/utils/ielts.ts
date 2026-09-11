@@ -4,6 +4,7 @@ import {
   IELTSExam,
   IELTSWritingRecord,
   GeneralSettings,
+  SpeakingSettings,
 } from '../types/ielts';
 
 const IELTS_RECORDS_KEY = 'linguacraft_ielts_records_v1';
@@ -11,6 +12,15 @@ const IELTS_MISTAKES_KEY = 'linguacraft_ielts_mistakes_v1';
 const IELTS_CUSTOM_EXAMS_KEY = 'linguacraft_ielts_custom_exams_v1';
 const IELTS_WRITING_RECORDS_KEY = 'linguacraft_ielts_writing_records_v1';
 const GENERAL_SETTINGS_KEY = 'linguacraft_general_settings_v1';
+
+export const DEFAULT_SPEAKING_SETTINGS: SpeakingSettings = {
+  autoSendOnSilence: true,
+  silenceDelaySec: 2.0,
+  handsFreeMode: true,
+  autoSpeak: true,
+  showTranslations: true,
+  speechRate: 0.8,
+};
 
 export const DEFAULT_GENERAL_SETTINGS: GeneralSettings = {
   targetOverallBand: 7.0,
@@ -29,6 +39,10 @@ export const DEFAULT_GENERAL_SETTINGS: GeneralSettings = {
   avatarUrl: '',
   profileName: '學員',
   zenMode: false,
+  dailyGoalVocabCount: 15,
+  targetWeeklyEssays: 3,
+  preferredDialect: 'british',
+  speakingSettings: DEFAULT_SPEAKING_SETTINGS,
 };
 
 export const INITIAL_SAMPLE_WRITING_RECORDS: IELTSWritingRecord[] = [
@@ -56,7 +70,7 @@ export const INITIAL_SAMPLE_WRITING_RECORDS: IELTSWritingRecord[] = [
     },
     wordCount: 284,
     timeSpentSeconds: 2100,
-    generalFeedbackZh: '這是一篇架構非常扎實的 Band 7.0 Task 2 佳作。立場明確，論點拓展充分，完全符合 IELTS Liz 的論證要求。下一步請微調文法多樣性，力求邁向 7.5。',
+    generalFeedbackZh: '這是一篇架構非常扎實的 Band 7.0 Task 2 佳作。立場明確，論點拓展充分，完全符合雅思官方論證要求。下一步請微調文法多樣性，力求邁向 7.5。',
     strengths: ['明確提出 Thesis Statement 並在各段貫徹', '避免空泛模板套話，直切論點核心', 'PEEL 結構非常鮮明'],
     weaknesses: ['GRA 需增加更多非限定關係子句與分詞構句以衝擊 7.5+'],
     ieltsActionPlan: ['在 Body 段落第二句嘗試使用分詞構句替代連續的 Simple Sentences', '持續保持零贅詞的寫作風格'],
@@ -87,8 +101,8 @@ export const INITIAL_SAMPLE_WRITING_RECORDS: IELTSWritingRecord[] = [
     },
     wordCount: 178,
     timeSpentSeconds: 1140,
-    generalFeedbackZh: '這是一篇標準的 Task 1 報告。Overview 遵守了 Liz 準則（無提及任何具體數字），整體結構分明。若能在 Body 段落中加入更多對比表達（如 whereas, in stark contrast），即可穩固達到 Band 7.0。',
-    strengths: ['Overview 總結段完全沒有誤寫具體數字，符合 Liz 核心要求', '四國數據分組合理，沒有流水帳'],
+    generalFeedbackZh: '這是一篇標準的 Task 1 報告。Overview 遵守了官方評分準則（無提及任何具體數字），整體結構分明。若能在 Body 段落中加入更多對比表達（如 whereas, in stark contrast），即可穩固達到 Band 7.0。',
+    strengths: ['Overview 總結段完全沒有誤寫具體數字，符合官方核心要求', '四國數據分組合理，沒有流水帳'],
     weaknesses: ['對兩條線交叉點 (surpassed) 的描述可以更精確'],
     ieltsActionPlan: ['精練「相比、超越、保持穩定」的多種變體句型', '檢查數據描寫時的介系詞（at, by, to）精準度'],
     userDraft: 'The line graph illustrates the percentage of energy generated from renewable sources in four European nations between 2000 and 2020.\n\nOverall, renewable energy consumption experienced an upward trend across all surveyed countries over the twenty-year period. Furthermore, Sweden consistently recorded the highest proportion of renewable generation throughout the timeline, whereas Germany saw the most significant rate of increase.\n\nLooking at the higher-consumption nations, Sweden began at 38% in 2000 and rose steadily to peak at approximately 54% in 2020. Similarly, Norway started at 28% and climbed progressively, reaching 42% by the final year.\n\nIn contrast, Germany and the UK commenced at substantially lower figures, standing at 8% and 5% respectively in 2000. Germany witnessed continuous growth, surging sharply after 2010 to reach 29% in 2020, thereby overtaking Norway\'s early baseline. Finally, the UK showed modest progression until 2012, after which it escalated noticeably to conclude at 21%.',
@@ -260,7 +274,18 @@ export function getGeneralSettings(): GeneralSettings {
     const raw = localStorage.getItem(GENERAL_SETTINGS_KEY);
     if (!raw) return DEFAULT_GENERAL_SETTINGS;
     const parsed = JSON.parse(raw);
-    return { ...DEFAULT_GENERAL_SETTINGS, ...parsed };
+    return {
+      ...DEFAULT_GENERAL_SETTINGS,
+      ...parsed,
+      targetScores: {
+        ...DEFAULT_GENERAL_SETTINGS.targetScores,
+        ...(parsed.targetScores || {}),
+      },
+      speakingSettings: {
+        ...DEFAULT_SPEAKING_SETTINGS,
+        ...(parsed.speakingSettings || {}),
+      },
+    };
   } catch {
     return DEFAULT_GENERAL_SETTINGS;
   }
