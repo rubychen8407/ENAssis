@@ -2,8 +2,11 @@
  * Speech synthesis & recognition utilities
  */
 
-// Play browser native speech
-export function speakText(
+let currentAudioElement: HTMLAudioElement | null = null;
+let ttsRequestToken = 0; // guards against a stale/slow request resolving after a newer speakText() call
+
+// Play browser native speech synthesis (used as the final fallback)
+function speakTextBrowser(
   text: string,
   options: {
     rate?: number;
@@ -19,7 +22,6 @@ export function speakText(
     return;
   }
 
-  // Cancel any ongoing speech
   window.speechSynthesis.cancel();
 
   if (!text || text.trim() === '') return;
@@ -55,9 +57,86 @@ export function speakText(
   window.speechSynthesis.speak(utterance);
 }
 
+/**
+ * Speak text using the most natural available voice.
+ * Order: ElevenLabs (server picks the first model that isn't out of quota) → browser speech synthesis.
+ * Callable exactly like before (fire-and-forget, no await needed at call sites) — the ElevenLabs
+ * attempt happens asynchronously in the background and falls back automatically on any failure.
+ */
+export function speakText(
+  text: string,
+  options: {
+    rate?: number;
+    pitch?: number;
+    lang?: string;
+    voiceId?: string;
+    onEnd?: () => void;
+    onError?: (err: any) => void;
+  } = {}
+): void {
+  if (!text || text.trim() === '') return;
+
+  // Stop whatever is currently playing (either engine) before starting the new one
+  stopSpeaking();
+  const myToken = ++ttsRequestToken;
+
+  // Only route English text through ElevenLabs for now (matches the browser fallback's default
+  // 'en-US' lang) — non-English text still uses the browser voice directly.
+  const isLikelyEnglish = !options.lang || options.lang.startsWith('en');
+
+  if (!isLikelyEnglish || typeof window === 'undefined' || typeof fetch === 'undefined') {
+    speakTextBrowser(text, options);
+    return;
+  }
+
+  fetch('/api/elevenlabs/tts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, voiceId: options.voiceId }),
+  })
+    .then(async (res) => {
+      if (myToken !== ttsRequestToken) return; // superseded by a newer speakText() call
+      const contentType = res.headers.get('Content-Type') || '';
+      if (!res.ok || !contentType.includes('audio')) {
+        // ElevenLabs unavailable (no key / quota exhausted on every model) — fall back
+        speakTextBrowser(text, options);
+        return;
+      }
+      const blob = await res.blob();
+      if (myToken !== ttsRequestToken) return;
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audio.playbackRate = options.rate || 1.0;
+      currentAudioElement = audio;
+      audio.onended = () => {
+        URL.revokeObjectURL(url);
+        if (myToken === ttsRequestToken) currentAudioElement = null;
+        options.onEnd?.();
+      };
+      audio.onerror = (e) => {
+        URL.revokeObjectURL(url);
+        if (myToken === ttsRequestToken) currentAudioElement = null;
+        // Playback itself failed after all — fall back to browser voice
+        speakTextBrowser(text, options);
+      };
+      audio.play().catch(() => {
+        URL.revokeObjectURL(url);
+        speakTextBrowser(text, options);
+      });
+    })
+    .catch(() => {
+      if (myToken !== ttsRequestToken) return;
+      speakTextBrowser(text, options);
+    });
+}
+
 export function stopSpeaking(): void {
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
     window.speechSynthesis.cancel();
+  }
+  if (currentAudioElement) {
+    currentAudioElement.pause();
+    currentAudioElement = null;
   }
 }
 

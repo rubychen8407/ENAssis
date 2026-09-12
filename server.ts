@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI, Type } from '@google/genai';
+import { ElevenLabsClient } from '@elevenlabs/elevenlabs-js';
 import dotenv from 'dotenv';
 import { syncAccount, getAccount, readStore } from './server/syncStore';
 
@@ -28,11 +29,27 @@ function getAI() {
   return aiClient;
 }
 
+// Initialize ElevenLabs client (optional — only used if ELEVENLABS_API_KEY is set)
+let elevenLabsClient: ElevenLabsClient | null = null;
+function getElevenLabs(): ElevenLabsClient | null {
+  if (!process.env.ELEVENLABS_API_KEY) return null;
+  if (!elevenLabsClient) {
+    elevenLabsClient = new ElevenLabsClient({ apiKey: process.env.ELEVENLABS_API_KEY });
+  }
+  return elevenLabsClient;
+}
+
+// ElevenLabs text-to-speech: tried in this model order, cheapest/fastest first. If a model's
+// account quota is exhausted (or any other error), the next model in the chain is tried.
+const ELEVENLABS_MODEL_CHAIN = ['eleven_turbo_v2_5', 'eleven_flash_v2_5', 'eleven_multilingual_v2'];
+const ELEVENLABS_DEFAULT_VOICE_ID = '21m00Tcm4TlvDq8ikWAM'; // "Rachel" — natural English voice
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     hasApiKey: Boolean(process.env.GEMINI_API_KEY),
+    hasElevenLabsKey: Boolean(process.env.ELEVENLABS_API_KEY),
     time: new Date().toISOString(),
   });
 });
@@ -1766,6 +1783,60 @@ Output strictly JSON:
 });
 
 // 8. Gemini High Quality TTS Endpoint (with fallback)
+// ElevenLabs text-to-speech: more natural-sounding voices for Speaking/Listening playback.
+// Tries each model in ELEVENLABS_MODEL_CHAIN in order; if one is out of quota (or errors for any
+// other reason), the next model is tried automatically. If no ElevenLabs key is configured, or
+// every model in the chain fails, responds with { available: false } so the client can fall back
+// seamlessly to the existing Gemini TTS / browser speech synthesis — never a hard error.
+app.post('/api/elevenlabs/tts', async (req, res) => {
+  const { text, voiceId } = req.body;
+  if (!text || typeof text !== 'string') {
+    return res.status(400).json({ error: 'Text is required' });
+  }
+
+  const client = getElevenLabs();
+  if (!client) {
+    return res.json({ available: false, reason: 'no_api_key' });
+  }
+
+  for (const modelId of ELEVENLABS_MODEL_CHAIN) {
+    try {
+      const audioStream = await client.textToSpeech.convert(voiceId || ELEVENLABS_DEFAULT_VOICE_ID, {
+        text,
+        modelId,
+        outputFormat: 'mp3_44100_128',
+      });
+
+      const chunks: Uint8Array[] = [];
+      for await (const chunk of audioStream as any) {
+        chunks.push(chunk);
+      }
+      const audioBuffer = Buffer.concat(chunks);
+
+      if (audioBuffer.length === 0) {
+        continue; // Empty response — try the next model in the chain
+      }
+
+      res.set('Content-Type', 'audio/mpeg');
+      res.set('X-TTS-Model', modelId);
+      return res.send(audioBuffer);
+    } catch (error: any) {
+      const status = error?.statusCode || error?.status;
+      const message = String(error?.message || error?.body?.detail?.message || '');
+      const isQuotaIssue =
+        status === 401 || status === 429 || /quota|credits|limit/i.test(message);
+      console.log(
+        `ElevenLabs model "${modelId}" unavailable (${isQuotaIssue ? 'quota/limit' : 'error'}: ${message || status}), trying next model...`
+      );
+      // Whether it's a quota issue or any other error, move on to the next model in the chain.
+      continue;
+    }
+  }
+
+  // Every model in the chain failed — let the client fall back seamlessly.
+  res.json({ available: false, reason: 'all_models_exhausted' });
+});
+
 app.post('/api/gemini/tts', async (req, res) => {
   try {
     const { text, voice = 'Zephyr' } = req.body;
