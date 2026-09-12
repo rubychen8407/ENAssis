@@ -131,6 +131,10 @@ export function speakText(
 }
 
 export function stopSpeaking(): void {
+  if (activeAudioElement) {
+    activeAudioElement.pause();
+    activeAudioElement = null;
+  }
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
     window.speechSynthesis.cancel();
   }

@@ -1,10 +1,10 @@
+import { ElevenLabsClient } from '@elevenlabs/elevenlabs-js';
+import { GoogleGenAI } from '@google/genai';
+import dotenv from 'dotenv';
 import express from 'express';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
-import { GoogleGenAI, Type } from '@google/genai';
-import { ElevenLabsClient } from '@elevenlabs/elevenlabs-js';
-import dotenv from 'dotenv';
-import { syncAccount, getAccount, readStore } from './server/syncStore';
+import { getAccount, readStore, syncAccount } from './server/syncStore';
 
 dotenv.config();
 
@@ -161,7 +161,109 @@ Please return ONLY valid JSON array with no markdown wrappings if possible.`;
   }
 });
 
-// 2. Quick single-word lookup
+// 2. Quick single-word lookup and authoritative dictionary lookup
+app.post('/api/dictionary/lookup', async (req, res) => {
+  try {
+    const { word, contextSentence } = req.body;
+    if (!word) {
+      return res.status(400).json({ error: 'Word is required' });
+    }
+
+    const ai = getAI();
+    const prompt = `You are an authoritative English lexicographer for Oxford Advanced Learner's Dictionary and Cambridge Academic Dictionary.
+Look up and provide comprehensive, authentic dictionary and lexicographical learning information for "${word}"${contextSentence ? ` in this context: "${contextSentence}"` : ''} for a Traditional Chinese (繁體中文) learner preparing for IELTS.
+
+CRITICAL REQUIREMENTS:
+1. "partOfSpeech" MUST be clean standard POS abbreviation ONLY (e.g. "n.", "v.", "adj.", "adv.", "prep.", "conj."). NEVER include Chinese characters in "partOfSpeech".
+2. NEVER generate meta-sentences like "IELTS learners often encounter the word '...' in practice exercises" or generic template text. Provide authentic, high-caliber academic / IELTS sentences.
+3. If the word has multiple senses or parts of speech, break them down in "senses".
+4. Provide comprehensive morphological etymology breakdown (prefix, root, suffix, and a memorable mnemonic hook).
+5. Provide a rich semantic mind map (derivatives with POS, Band 7+ synonyms, antonyms, collocations, root cognates, and IELTS thematic topics).
+6. Provide pronunciation diagnosis (syllable segmentation, primary stress, pronunciation tips, and common mistakes for Chinese speakers).
+
+Return ONLY valid JSON matching this exact structure:
+{
+  "word": "${word}",
+  "phonetic": "Standard IPA with stress mark e.g. /dɪˈlɪŋ.kwən.si/",
+  "partOfSpeech": "n.",
+  "translation": "繁體中文核心釋義",
+  "definitionEn": "Concise authentic Oxford/Cambridge English definition",
+  "senses": [
+    {
+      "partOfSpeech": "n.",
+      "definitionZh": "第一釋義 (繁體中文)",
+      "definitionEn": "First English definition",
+      "collocations": ["Collocation 1", "Collocation 2"],
+      "exampleEn": "Authentic academic sentence",
+      "exampleZh": "繁體中文翻譯"
+    }
+  ],
+  "collocations": ["Common collocation 1", "Common collocation 2", "Common collocation 3"],
+  "exampleEn": "Authentic high-quality academic IELTS sentence",
+  "exampleZh": "繁體中文翻譯",
+  "grammarNotes": "Grammatical advice and preposition usages",
+  "etymology": {
+    "prefix": "Prefix or empty",
+    "prefixMeaning": "Meaning of prefix",
+    "root": "Core Latin/Greek root",
+    "rootMeaning": "Meaning of root",
+    "suffix": "Suffix or empty",
+    "suffixMeaning": "Meaning of suffix",
+    "breakdown": "e.g. de- (away) + linqu- (abandon) + -ency (noun)",
+    "memoryHook": "Memorable mnemonic rule in 繁體中文",
+    "origin": "Etymological origin"
+  },
+  "mindMap": {
+    "derivatives": [
+      { "word": "derivative1", "pos": "adj.", "meaningZh": "中文意思" }
+    ],
+    "synonyms": ["synonym1", "synonym2", "synonym3"],
+    "antonyms": ["antonym1", "antonym2"],
+    "collocations": ["collocation1", "collocation2", "collocation3"],
+    "rootFamily": [
+      { "word": "cognateWord", "meaningZh": "同根字中文意思" }
+    ],
+    "thematicTopics": ["Crime & Society", "Education & Youth"]
+  },
+  "pronunciation": {
+    "syllables": "de · LIN · quen · cy",
+    "primaryStress": "LIN (第2音節)",
+    "ipa": "/dɪˈlɪŋ.kwən.si/",
+    "tips": ["發音技巧 1", "發音技巧 2"],
+    "commonMistakes": ["常見盲點 1"]
+  },
+  "dictionarySource": "Oxford & Cambridge Academic Standard"
+}`;
+
+    const response = await generateContentWithFallback(ai, {
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json',
+        temperature: 0.2,
+      },
+    });
+
+    const parsed = cleanAndParseJSON(response.text || '{}', {
+      word,
+      phonetic: '',
+      partOfSpeech: 'n.',
+      translation: '字典解析中',
+      definitionEn: '',
+      senses: [],
+      collocations: [],
+      exampleEn: `Scholars have examined the role of ${word} in modern research.`,
+      exampleZh: `學者們在現代研究中探討了「${word}」的作用。`,
+      grammarNotes: '',
+      dictionarySource: 'Oxford & Cambridge Academic Lexicon',
+    });
+
+    res.json(parsed);
+  } catch (error: any) {
+    console.error('Error in dictionary lookup:', error);
+    res.status(500).json({ error: error?.message || 'Dictionary lookup failed' });
+  }
+});
+
 app.post('/api/gemini/quick-lookup', async (req, res) => {
   try {
     const { word, contextSentence } = req.body;
@@ -170,18 +272,36 @@ app.post('/api/gemini/quick-lookup', async (req, res) => {
     }
 
     const ai = getAI();
-    const prompt = `Provide detailed English-learning info for the word/phrase "${word}"${contextSentence ? ` in this context: "${contextSentence}"` : ''} for a Traditional Chinese learner.
-Return JSON with the exact structure:
+    const prompt = `Provide detailed, authentic English-learning dictionary info for the word/phrase "${word}"${contextSentence ? ` in this context: "${contextSentence}"` : ''} for a Traditional Chinese (繁體中文) learner.
+CRITICAL:
+1. "partOfSpeech" MUST be a clean standard abbreviation only (e.g. "n.", "v.", "adj.", "adv."). NEVER include Chinese text in "partOfSpeech".
+2. NEVER output "IELTS learners often encounter the word '...' in practice exercises" or meta placeholder sentences. Provide real, natural academic sentences.
+3. Provide senses if there are multiple meanings, plus etymology breakdown and semantic associations.
+
+Return JSON with this structure:
 {
   "word": "${word}",
   "phonetic": "IPA phonetic transcription",
-  "partOfSpeech": "n., v., adj., etc.",
+  "partOfSpeech": "n., v., adj., or adv.",
   "translation": "Traditional Chinese (繁體中文)",
   "definitionEn": "Concise English definition",
   "collocations": ["Collocation 1", "Collocation 2", "Collocation 3"],
-  "exampleEn": "Natural example sentence",
+  "exampleEn": "Natural, authentic IELTS academic example sentence",
   "exampleZh": "Traditional Chinese translation of example sentence",
-  "grammarNotes": "Grammar advice, prepositions, or typical sentence structures"
+  "grammarNotes": "Grammar advice, prepositions, or typical sentence structures",
+  "etymology": {
+    "prefix": "prefix",
+    "root": "root",
+    "suffix": "suffix",
+    "breakdown": "morphological breakdown",
+    "memoryHook": "Mnemonic in Traditional Chinese"
+  },
+  "mindMap": {
+    "derivatives": [{ "word": "word", "pos": "pos", "meaningZh": "zh" }],
+    "synonyms": ["syn1", "syn2"],
+    "antonyms": ["ant1", "ant2"],
+    "collocations": ["col1", "col2"]
+  }
 }`;
 
     const response = await generateContentWithFallback(ai, {
@@ -1839,34 +1959,87 @@ app.post('/api/elevenlabs/tts', async (req, res) => {
 
 app.post('/api/gemini/tts', async (req, res) => {
   try {
-    const { text, voice = 'Zephyr' } = req.body;
+    const { text, voice = 'Elena' } = req.body;
     if (!text) {
       return res.status(400).json({ error: 'Text is required' });
     }
 
-    const ai = getAI();
-    const response = await ai.models.generateContent({
-      model: 'gemini-3.1-flash-tts-preview',
-      contents: [{ parts: [{ text: `Read naturally and clearly in English: ${text}` }] }],
-      config: {
-        responseModalities: ['AUDIO' as any],
-        speechConfig: {
-          voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: voice || 'Zephyr' },
+    const cleanText = String(text).slice(0, 1200);
+
+    // 1. Try ElevenLabs voice first (Elena's human-like voice)
+    const elevenKey = process.env.ELEVENLABS_API_KEY;
+    const elevenVoiceId = process.env.ELEVENLABS_VOICE_ID || 'MF3mGyEYCl7XYWbV9V6O'; // Elena's Voice ID
+
+    if (elevenKey) {
+      try {
+        const elevenRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${elevenVoiceId}`, {
+          method: 'POST',
+          headers: {
+            'xi-api-key': elevenKey,
+            'Content-Type': 'application/json',
+            'Accept': 'audio/mpeg',
+          },
+          body: JSON.stringify({
+            text: cleanText,
+            model_id: 'eleven_multilingual_v2',
+            voice_settings: {
+              stability: 0.5,
+              similarity_boost: 0.8,
+              style: 0.0,
+              use_speaker_boost: true,
+            },
+          }),
+        });
+
+        if (elevenRes.ok) {
+          const buffer = await elevenRes.arrayBuffer();
+          const base64Audio = Buffer.from(buffer).toString('base64');
+          return res.json({
+            audioBase64: base64Audio,
+            mimeType: 'audio/mpeg',
+            provider: 'elevenlabs-elena',
+          });
+        }
+
+        console.warn(`ElevenLabs TTS response status ${elevenRes.status} (free tier quota or key limit). Falling back to Gemini TTS.`);
+      } catch (elevenErr) {
+        console.warn('ElevenLabs TTS failed, proceeding to fallback model:', elevenErr);
+      }
+    }
+
+    // 2. Fallback to Gemini High Quality TTS
+    try {
+      const ai = getAI();
+      const response = await ai.models.generateContent({
+        model: 'gemini-3.1-flash-tts-preview',
+        contents: [{ parts: [{ text: `Read naturally, clearly and human-like in English: ${cleanText}` }] }],
+        config: {
+          responseModalities: ['AUDIO' as any],
+          speechConfig: {
+            voiceConfig: {
+              prebuiltVoiceConfig: { voiceName: 'Zephyr' },
+            },
           },
         },
-      },
-    });
+      });
 
-    const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-    if (base64Audio) {
-      return res.json({ audioBase64: base64Audio, mimeType: 'audio/pcm;rate=24000' });
+      const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+      if (base64Audio) {
+        return res.json({
+          audioBase64: base64Audio,
+          mimeType: 'audio/pcm;rate=24000',
+          provider: 'gemini-tts',
+        });
+      }
+    } catch (geminiTtsErr) {
+      console.warn('Gemini TTS preview unavailable or quota exhausted, falling back to Web Speech Synthesis');
     }
-    res.json({ audioBase64: null });
+
+    // 3. Fallback to client Web Speech Synthesis
+    res.json({ audioBase64: null, provider: 'webspeech' });
   } catch (error: any) {
-    // If TTS model has limit or is unavailable, return null so client falls back seamlessly to browser SpeechSynthesis
-    console.log('Gemini TTS unavailable, falling back seamlessly to Web Speech Synthesis');
-    res.json({ audioBase64: null });
+    console.warn('TTS router error:', error);
+    res.json({ audioBase64: null, provider: 'webspeech' });
   }
 });
 

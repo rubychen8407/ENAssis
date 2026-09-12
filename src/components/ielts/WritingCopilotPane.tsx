@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import {
   AlertTriangle,
   ArrowRight,
+  Award,
   BookOpen,
   Check,
   CheckCircle2,
   ChevronRight,
+  Clock,
   Copy,
   HelpCircle,
   Layers,
@@ -38,7 +40,7 @@ export interface StepMeta {
   goldenRule: string;
 }
 
-export type CopilotTab = 'steps' | 'ideas' | 'vocab' | 'outline';
+export type CopilotTab = 'steps' | 'ideas' | 'guide' | 'vocab' | 'outline';
 
 interface WritingCopilotPaneProps {
   task: WritingPromptTask;
@@ -61,6 +63,8 @@ interface WritingCopilotPaneProps {
   onClose: () => void;
   onMergeAll: () => void;
   defaultTab?: CopilotTab;
+  currentTab?: CopilotTab;
+  onTabChange?: (tab: CopilotTab) => void;
 }
 
 export const WritingCopilotPane: React.FC<WritingCopilotPaneProps> = ({
@@ -84,8 +88,15 @@ export const WritingCopilotPane: React.FC<WritingCopilotPaneProps> = ({
   onClose,
   onMergeAll,
   defaultTab = 'steps',
+  currentTab,
+  onTabChange,
 }) => {
-  const [activeTab, setActiveTab] = useState<CopilotTab>(defaultTab);
+  const [internalTab, setInternalTab] = useState<CopilotTab>(defaultTab);
+  const activeTab = currentTab || internalTab;
+  const setActiveTab = (tab: CopilotTab) => {
+    setInternalTab(tab);
+    if (onTabChange) onTabChange(tab);
+  };
 
   const currentTask1Info =
     IELTS_TASK1_VISUAL_TYPES.find((v) => v.id === activeCategory) || IELTS_TASK1_VISUAL_TYPES[0];
@@ -111,14 +122,14 @@ export const WritingCopilotPane: React.FC<WritingCopilotPaneProps> = ({
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <h2 className="text-xs sm:text-sm font-bold text-stone-900 dark:text-stone-100 truncate">
-                寫作智囊與分步工坊 (Writing Copilot)
+                雅思寫作智庫與引導工坊 (Writing Master Hub)
               </h2>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-800 shrink-0">
                 {task === 'task1' ? `Task 1 · ${currentTask1Info.titleZh.split(' ')[0]}` : `Task 2 · ${currentTask2Info.titleZh.split(' ')[0]}`}
               </span>
             </div>
             <p className="text-[11px] text-stone-500 dark:text-stone-400 truncate">
-              整合分步構思、思路發想 (Ideas)、同反義詞庫 (Vocab) 與高分架構
+              整合寫作指南 · 靈感素材庫 · 分步打造工坊 · 詞彙搭配與避坑
             </p>
           </div>
         </div>
@@ -126,15 +137,16 @@ export const WritingCopilotPane: React.FC<WritingCopilotPaneProps> = ({
         <button
           type="button"
           onClick={onClose}
-          className="p-1.5 rounded-xl bg-stone-200/70 dark:bg-stone-800 hover:bg-stone-300 dark:hover:bg-stone-700 text-stone-600 dark:text-stone-300 transition cursor-pointer shrink-0"
-          title="收合輔助面板"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-200/80 hover:bg-stone-300 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 text-xs font-bold transition cursor-pointer shrink-0 shadow-2xs"
+          title="收合智庫面板以檢視固定題目"
         >
-          <X className="w-4 h-4" />
+          <X className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">收合智庫 (檢視題目)</span>
         </button>
       </div>
 
       {/* 2. Unified Navigation Sub-tabs */}
-      <div className="px-4 py-2.5 bg-stone-100/70 dark:bg-stone-800/60 border-b border-stone-200 dark:border-stone-800 flex items-center gap-1.5 overflow-x-auto shrink-0 scrollbar-none">
+      <div className="px-4 py-2 bg-stone-100/70 dark:bg-stone-800/60 border-b border-stone-200 dark:border-stone-800 flex items-center gap-1.5 overflow-x-auto shrink-0 scrollbar-none">
         <button
           type="button"
           onClick={() => setActiveTab('steps')}
@@ -145,7 +157,7 @@ export const WritingCopilotPane: React.FC<WritingCopilotPaneProps> = ({
           }`}
         >
           <Layers className="w-3.5 h-3.5 text-amber-400" />
-          分步打造草稿
+          分步工坊
           <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-md bg-amber-400/30 text-amber-900 dark:text-amber-300 font-bold">
             {completedCount}/{stepMetas.length}
           </span>
@@ -161,7 +173,20 @@ export const WritingCopilotPane: React.FC<WritingCopilotPaneProps> = ({
           }`}
         >
           <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
-          思路與論點發想 (Ideas)
+          思維與靈感庫 (Ideas)
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('guide')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 shrink-0 border ${
+            activeTab === 'guide'
+              ? 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 border-stone-900 dark:border-white shadow-xs'
+              : 'bg-white dark:bg-stone-900 text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-700 hover:bg-stone-50'
+          }`}
+        >
+          <BookOpen className="w-3.5 h-3.5 text-amber-500" />
+          官方指南 (Guide)
         </button>
 
         <button
@@ -174,7 +199,7 @@ export const WritingCopilotPane: React.FC<WritingCopilotPaneProps> = ({
           }`}
         >
           <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-          同反義詞與搭配詞 (Vocab)
+          詞彙搭配 (Vocab)
         </button>
 
         <button
@@ -187,7 +212,7 @@ export const WritingCopilotPane: React.FC<WritingCopilotPaneProps> = ({
           }`}
         >
           <Target className="w-3.5 h-3.5 text-amber-500" />
-          架構與避坑守則 (Outline)
+          架構避坑 (Outline)
         </button>
       </div>
 
@@ -480,6 +505,144 @@ export const WritingCopilotPane: React.FC<WritingCopilotPaneProps> = ({
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* SUB-TAB: OFFICIAL WRITING GUIDE */}
+        {activeTab === 'guide' && (
+          <div className="space-y-4 animate-fade-in text-xs">
+            {/* Header Banner */}
+            <div className="rounded-2xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 p-4 space-y-1.5">
+              <div className="flex items-center justify-between">
+                <h3 className="font-bold text-amber-950 dark:text-amber-200 text-sm flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-amber-600" />
+                  {task === 'task1' ? 'IELTS Task 1 官方高分寫作指南' : 'IELTS Task 2 官方學術議論文指南'}
+                </h3>
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-stone-950 font-bold text-[10px]">
+                  官方評分標準對齊
+                </span>
+              </div>
+              <p className="text-stone-700 dark:text-stone-300 text-[11px] leading-relaxed">
+                {task === 'task1'
+                  ? '學術類 Task 1 是一篇客觀報告。核心目標是在 20 分鐘內挑選重要特徵 (select main features) 並清楚呈現趨勢對比。'
+                  : 'Task 2 佔總分 2/3 (雙倍分值)。核心在於建立明確的立場 (Clear Position Throughout) 並展開充分的因果論證。'}
+              </p>
+            </div>
+
+            {/* 5-Step Planning Process */}
+            <div className="rounded-2xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 p-4 space-y-3 shadow-xs">
+              <h4 className="font-bold text-stone-900 dark:text-stone-100 flex items-center gap-1.5">
+                <Target className="w-4 h-4 text-amber-500" />
+                考官推薦破題 5 步驟 (Planning Workflow)：
+              </h4>
+
+              <div className="space-y-2">
+                {(task === 'task1' ? IELTS_TASK1_PREPARATION_STEPS : IELTS_PLANNING_STEPS).map((stepItem: any, idx: number) => (
+                  <div
+                    key={idx}
+                    className="p-3 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 flex items-start gap-3"
+                  >
+                    <span className="w-6 h-6 rounded-lg bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 font-mono font-bold text-xs flex items-center justify-center shrink-0">
+                      {stepItem.step || idx + 1}
+                    </span>
+                    <div className="space-y-0.5 min-w-0">
+                      <p className="font-bold text-stone-900 dark:text-stone-100 text-[11px]">
+                        {stepItem.titleZh || stepItem.title}
+                      </p>
+                      <p className="text-stone-600 dark:text-stone-400 text-[11px] leading-relaxed">
+                        {stepItem.summaryZh || stepItem.desc || stepItem.details}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Time Allocation */}
+            <div className="rounded-2xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 p-4 space-y-3 shadow-xs">
+              <h4 className="font-bold text-stone-900 dark:text-stone-100 flex items-center gap-1.5">
+                <Clock className="w-4 h-4 text-amber-500" />
+                {task === 'task1' ? '20 分鐘限時精準分配節奏' : '40 分鐘全真節奏分配黃金表'}
+              </h4>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                {task === 'task1' ? (
+                  <>
+                    <div className="p-2.5 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700">
+                      <span className="font-bold text-amber-700 dark:text-amber-400">0–3 分鐘：</span>
+                      <p className="text-stone-700 dark:text-stone-300 mt-0.5">審題、理解座標軸/單位、圈出最高點與宏觀趨勢。</p>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700">
+                      <span className="font-bold text-amber-700 dark:text-amber-400">3–7 分鐘：</span>
+                      <p className="text-stone-700 dark:text-stone-300 mt-0.5">改寫題幹 (Introduction) + 撰寫 2 句 Overview 總結段。</p>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700">
+                      <span className="font-bold text-amber-700 dark:text-amber-400">7–17 分鐘：</span>
+                      <p className="text-stone-700 dark:text-stone-300 mt-0.5">撰寫 Body 1 與 Body 2，嚴謹加入關鍵數據與倍數對比。</p>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700">
+                      <span className="font-bold text-amber-700 dark:text-amber-400">17–20 分鐘：</span>
+                      <p className="text-stone-700 dark:text-stone-300 mt-0.5">檢查單複數、介係詞 (in/by/at/to) 與數據抄寫正確性。</p>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="p-2.5 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700">
+                      <span className="font-bold text-amber-700 dark:text-amber-400">0–5 分鐘：</span>
+                      <p className="text-stone-700 dark:text-stone-300 mt-0.5">審題、畫出關鍵限制字、構思立場與 2 大核心論點。</p>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700">
+                      <span className="font-bold text-amber-700 dark:text-amber-400">5–10 分鐘：</span>
+                      <p className="text-stone-700 dark:text-stone-300 mt-0.5">引言段：改寫題目背景句 + 堅定清楚宣示 Thesis 立場。</p>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700">
+                      <span className="font-bold text-amber-700 dark:text-amber-400">10–32 分鐘：</span>
+                      <p className="text-stone-700 dark:text-stone-300 mt-0.5">主體兩大段 (Body 1 & 2)：依 PEEL 鏈深入因果推導與例證。</p>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700">
+                      <span className="font-bold text-amber-700 dark:text-amber-400">32–40 分鐘：</span>
+                      <p className="text-stone-700 dark:text-stone-300 mt-0.5">結論段重申立場 (不加新論點) + 3分鐘快速除錯防粗心。</p>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Official 4 Criteria Requirements */}
+            <div className="rounded-2xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 p-4 space-y-3 shadow-xs">
+              <h4 className="font-bold text-stone-900 dark:text-stone-100 flex items-center gap-1.5">
+                <Award className="w-4 h-4 text-amber-500" />
+                官方四項評分準則 Band 7.5+ 達標關鍵：
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                <div className="p-3 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 space-y-1">
+                  <span className="font-bold text-stone-900 dark:text-stone-100">1. {task === 'task1' ? 'Task Achievement (TA)' : 'Task Response (TR)'}</span>
+                  <p className="text-stone-600 dark:text-stone-400 leading-relaxed">
+                    {task === 'task1'
+                      ? '必須有清晰 Overview！準確挑選最大特徵，不漏掉關鍵趨勢，且不臆測原因。'
+                      : '必須完整回應題目所有問句，全文維持清晰統一的立場 (Clear Position Throughout)。'}
+                  </p>
+                </div>
+                <div className="p-3 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 space-y-1">
+                  <span className="font-bold text-stone-900 dark:text-stone-100">2. Coherence & Cohesion (CC)</span>
+                  <p className="text-stone-600 dark:text-stone-400 leading-relaxed">
+                    邏輯推進自然流暢。段落分明，連接詞使用得當（避免過度或機械式堆疊 On the one hand/Secondly）。
+                  </p>
+                </div>
+                <div className="p-3 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 space-y-1">
+                  <span className="font-bold text-stone-900 dark:text-stone-100">3. Lexical Resource (LR)</span>
+                  <p className="text-stone-600 dark:text-stone-400 leading-relaxed">
+                    精準學術搭配詞 (Collocations) 與同義改寫能力，詞彙使用自然，不硬塞生僻冷門詞。
+                  </p>
+                </div>
+                <div className="p-3 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 space-y-1">
+                  <span className="font-bold text-stone-900 dark:text-stone-100">4. Grammatical Range & Accuracy (GRA)</span>
+                  <p className="text-stone-600 dark:text-stone-400 leading-relaxed">
+                    靈活運用複合句、條件句、分詞構句與被動語態，大部分句子無拼寫與時態錯誤。
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 

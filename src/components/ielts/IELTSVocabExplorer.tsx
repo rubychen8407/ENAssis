@@ -17,6 +17,7 @@ import { loadFullIELTSCoreVocab } from '../../data/ielts/vocabLoader';
 import { addWordToVocabulary, getSavedVocabulary } from '../../utils/storage';
 import { speakText } from '../../utils/speech';
 import { toTraditionalChinese } from '../../utils/chineseConverter';
+import { cleanPartOfSpeech, cleanTranslation } from '../../utils/dictionaryService';
 
 interface Props {
   onWordAdded?: () => void;
@@ -69,17 +70,14 @@ export const IELTSVocabExplorer: React.FC<Props> = ({ onWordAdded }) => {
 
   // Handle single word import
   const handleAddWord = (item: IELTSCoreVocab) => {
+    const cleanPos = cleanPartOfSpeech(undefined, item.meaning);
+    const cleanTrans = cleanTranslation(item.meaning);
+
     const newWord: Omit<VocabWord, 'id' | 'dateAdded'> = {
       word: item.word,
       phonetic: item.phonetic ? `/${item.phonetic}/` : '',
-      partOfSpeech: item.meaning.startsWith('n.')
-        ? 'n.'
-        : item.meaning.startsWith('v.') || item.meaning.startsWith('vt.')
-        ? 'v.'
-        : item.meaning.startsWith('a.') || item.meaning.startsWith('adj.')
-        ? 'adj.'
-        : 'adv.',
-      translation: toTraditionalChinese(item.meaning),
+      partOfSpeech: cleanPos,
+      translation: cleanTrans || toTraditionalChinese(item.meaning),
       definitionEn: '',
       collocations: [],
       exampleEn: item.example || '',
@@ -101,11 +99,14 @@ export const IELTSVocabExplorer: React.FC<Props> = ({ onWordAdded }) => {
       .slice(0, count);
 
     toAdd.forEach((item) => {
+      const cleanPos = cleanPartOfSpeech(undefined, item.meaning);
+      const cleanTrans = cleanTranslation(item.meaning);
+
       addWordToVocabulary({
         word: item.word,
         phonetic: item.phonetic ? `/${item.phonetic}/` : '',
-        partOfSpeech: item.meaning.slice(0, 4),
-        translation: toTraditionalChinese(item.meaning),
+        partOfSpeech: cleanPos,
+        translation: cleanTrans || toTraditionalChinese(item.meaning),
         definitionEn: '',
         collocations: [],
         exampleEn: item.example || '',

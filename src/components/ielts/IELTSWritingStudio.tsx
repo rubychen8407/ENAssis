@@ -62,7 +62,7 @@ import {
 import { toTraditionalChinese } from '../../utils/chineseConverter';
 import { saveIELTSWritingRecord, getGeneralSettings } from '../../utils/ielts';
 import { IELTSWritingRecord } from '../../types/ielts';
-import { WritingCopilotPane, StepMeta } from './WritingCopilotPane';
+import { WritingCopilotPane, StepMeta, CopilotTab } from './WritingCopilotPane';
 
 export interface ModeBStepAdvice {
   stepIndex: number;
@@ -118,6 +118,7 @@ export const IELTSWritingStudio: React.FC<Props> = ({ selectedPromptId, onPrompt
   const [currentStage, setCurrentStage] = useState<WritingStage>('select-task');
   const [task, setTask] = useState<WritingPromptTask>('task1');
   const [isCopilotOpen, setIsCopilotOpen] = useState(false); // Default collapsed toolbar
+  const [copilotActiveTab, setCopilotActiveTab] = useState<CopilotTab>('steps');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -1143,7 +1144,7 @@ export const IELTSWritingStudio: React.FC<Props> = ({ selectedPromptId, onPrompt
                 }`}
               >
                 <Lightbulb className="w-4 h-4" />
-                {isCopilotOpen ? '收合寫作智囊' : '展開寫作智囊 (Ideas/分步草稿)'}
+                {isCopilotOpen ? '收合智庫 (顯示題目)' : '展開寫作智庫與引導工坊'}
                 <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-md bg-stone-900/15 dark:bg-white/15 font-bold">
                   {completedStepsCount}/{stepMetas.length}
                 </span>
@@ -1166,158 +1167,130 @@ export const IELTSWritingStudio: React.FC<Props> = ({ selectedPromptId, onPrompt
           </div>
 
           {/* 2-Pane Split View: Fixed Left Prompt Pane + Right Full Writing Area */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* LEFT COLUMN: Fixed Prompt Card (Or Overlaid with WritingCopilotPane when open) */}
-            <div className="lg:col-span-5 relative min-h-[550px]">
-              {/* When Copilot is open, overlay and cover the prompt pane */}
-              {isCopilotOpen ? (
-                <div className="h-full">
-                  <WritingCopilotPane
-                    task={task}
-                    activeCategory={activePrompt.lizCategory}
-                    activeStep={activeGuidedStep}
-                    onStepChange={setActiveGuidedStep}
-                    stepMetas={stepMetas}
-                    stepDrafts={task === 'task1' ? task1Steps : task2Steps}
-                    onUpdateStepDraft={updateCurrentStepText}
-                    stepAdvices={modeBAdvices}
-                    stepStarters={modeBStarters}
-                    isLoadingAdvice={isModeBAdviceLoading}
-                    isLoadingStarters={isModeBStartersLoading}
-                    onGetStepAdvice={handleGetModeBAdvice}
-                    onGetStepStarters={handleGetModeBStarters}
-                    onRemoveFillers={handleRemoveFillers}
-                    onApplyPolished={handleApplyPolishedVersion}
-                    onApplyStarter={handleApplyStarter}
-                    onSyncStepToFullDraft={handleSyncStepToFullDraft}
-                    onClose={() => setIsCopilotOpen(false)}
-                    onMergeAll={handleMergeGuidedDrafts}
-                  />
-                </div>
-              ) : (
-                /* Fixed Left Prompt Details Card */
-                <div className="rounded-3xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-5 sm:p-6 shadow-sm space-y-4">
-                  {/* Topic Header */}
-                  <div className="space-y-2 border-b border-stone-100 dark:border-stone-800 pb-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="rounded-full bg-stone-900 dark:bg-stone-100 px-2.5 py-0.5 text-[10px] font-bold text-white dark:text-stone-900 uppercase">
-                          {activePrompt.task}
-                        </span>
-                        <span className="rounded-full bg-amber-100 dark:bg-amber-950 px-2.5 py-0.5 text-[10px] font-bold text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-800">
-                          {activePrompt.lizCategory}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-2 text-[11px]">
-                        <a
-                          href={activePrompt.sourceUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-1 font-semibold text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200"
-                        >
-                          官方來源 <ExternalLink className="w-3 h-3" />
-                        </a>
-                        {activePrompt.sampleUrl && (
-                          <a
-                            href={activePrompt.sampleUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex items-center gap-1 font-bold text-emerald-800 dark:text-emerald-300 hover:underline"
-                          >
-                            Band {activePrompt.sampleBand || 8.5} 範文 <ExternalLink className="w-3 h-3" />
-                          </a>
-                        )}
-                      </div>
-                    </div>
-
-                    <h3 className="text-sm sm:text-base font-bold text-stone-900 dark:text-stone-100">
-                      {isCustomPrompt ? customPromptTitle : activePrompt.title}
-                    </h3>
-                  </div>
-
-                  {/* Full Prompt Text Quote */}
-                  <div className="space-y-1.5">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
-                      題目完整英文題幹 (Prompt)
-                    </span>
-                    <div className="rounded-2xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200/80 dark:border-stone-700 p-4 font-serif text-xs sm:text-sm leading-relaxed text-stone-800 dark:text-stone-200">
-                      "{isCustomPrompt ? customPromptText : activePrompt.prompt}"
-                    </div>
-                  </div>
-
-                  {/* Task 1 Chart Image Preview */}
-                  {task === 'task1' && activePrompt.imageUrl && (
-                    <div className="space-y-1.5">
-                      <div className="flex items-center justify-between text-[11px] font-bold text-stone-500 dark:text-stone-400">
-                        <span>圖表原圖 (Chart Visual)</span>
-                        <button
-                          type="button"
-                          onClick={() => setIsImageModalOpen(true)}
-                          className="text-amber-700 dark:text-amber-400 hover:underline flex items-center gap-1 cursor-pointer"
-                        >
-                          <Maximize2 className="w-3 h-3" /> 放大檢視
-                        </button>
-                      </div>
-                      <div className="overflow-hidden rounded-2xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-950 p-2 relative group flex items-center justify-center max-h-56">
-                        <img
-                          src={activePrompt.imageUrl}
-                          alt={activePrompt.title}
-                          className="max-h-52 w-full object-contain cursor-zoom-in"
-                          onClick={() => setIsImageModalOpen(true)}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setIsImageModalOpen(true)}
-                          className="absolute bottom-2 right-2 rounded-xl bg-stone-900/80 hover:bg-stone-900 text-white px-2.5 py-1 text-xs font-bold flex items-center gap-1 backdrop-blur-xs cursor-pointer shadow-md"
-                        >
-                          <ZoomIn className="w-3.5 h-3.5" /> 放大圖表
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* PDF Reference Note */}
-                  {task === 'task1' && !activePrompt.imageUrl && activePrompt.pdfPage && (
-                    <div className="flex items-center justify-between rounded-xl bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 px-3 py-2 text-[11px] text-amber-950 dark:text-amber-200">
-                      <span className="flex items-center gap-1.5">
-                        <Info className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                        收錄於劍橋圖表題大全 PDF 第 {activePrompt.pdfPage} 頁
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative">
+            {/* LEFT COLUMN: Fixed Prompt Card (Always Rendered on the Left) */}
+            <div className="lg:col-span-5 space-y-4">
+              <div className="rounded-3xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-5 sm:p-6 shadow-sm space-y-4">
+                {/* Topic Header */}
+                <div className="space-y-2 border-b border-stone-100 dark:border-stone-800 pb-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="rounded-full bg-stone-900 dark:bg-stone-100 px-2.5 py-0.5 text-[10px] font-bold text-white dark:text-stone-900 uppercase">
+                        {activePrompt.task}
                       </span>
+                      <span className="rounded-full bg-amber-100 dark:bg-amber-950 px-2.5 py-0.5 text-[10px] font-bold text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-800">
+                        {activePrompt.lizCategory}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-[11px]">
                       <a
-                        href={`${activePrompt.sourceUrl}#page=${activePrompt.pdfPage}`}
+                        href={activePrompt.sourceUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="font-bold underline text-amber-800 dark:text-amber-300 hover:text-amber-950 inline-flex items-center gap-1"
+                        className="inline-flex items-center gap-1 font-semibold text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200"
                       >
-                        開啟第 {activePrompt.pdfPage} 頁 <ExternalLink className="w-3 h-3" />
+                        官方來源 <ExternalLink className="w-3 h-3" />
                       </a>
+                      {activePrompt.sampleUrl && (
+                        <a
+                          href={activePrompt.sampleUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 font-bold text-emerald-800 dark:text-emerald-300 hover:underline"
+                        >
+                          Band {activePrompt.sampleBand || 8.5} 範文 <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
                     </div>
-                  )}
-
-                  {/* Golden Rule Tip Card */}
-                  <div className="rounded-2xl bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/80 p-3.5 text-xs text-amber-950 dark:text-amber-200 space-y-1">
-                    <div className="font-bold flex items-center gap-1.5">
-                      <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                      考官高分破題守則：
-                    </div>
-                    <p className="leading-relaxed text-[11px]">
-                      {task === 'task1' ? currentTask1Info.goldenRule : currentTask2Info.goldenRule}
-                    </p>
                   </div>
 
-                  {/* Quick trigger for Copilot */}
-                  <button
-                    type="button"
-                    onClick={() => setIsCopilotOpen(true)}
-                    className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-2xl bg-stone-100 dark:bg-stone-800 hover:bg-amber-400 hover:text-stone-950 text-stone-800 dark:text-stone-200 text-xs font-bold border border-stone-200 dark:border-stone-700 transition cursor-pointer shadow-2xs"
-                  >
-                    <Lightbulb className="w-4 h-4 text-amber-500" />
-                    展開寫作智囊與分步工坊 (覆蓋左側)
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
+                  <h3 className="text-sm sm:text-base font-bold text-stone-900 dark:text-stone-100">
+                    {isCustomPrompt ? customPromptTitle : activePrompt.title}
+                  </h3>
                 </div>
-              )}
+
+                {/* Full Prompt Text Quote */}
+                <div className="space-y-1.5">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
+                    題目完整英文題幹 (Prompt)
+                  </span>
+                  <div className="rounded-2xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200/80 dark:border-stone-700 p-4 font-serif text-xs sm:text-sm leading-relaxed text-stone-800 dark:text-stone-200">
+                    "{isCustomPrompt ? customPromptText : activePrompt.prompt}"
+                  </div>
+                </div>
+
+                {/* Task 1 Chart Image Preview */}
+                {task === 'task1' && activePrompt.imageUrl && (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between text-[11px] font-bold text-stone-500 dark:text-stone-400">
+                      <span>圖表原圖 (Chart Visual)</span>
+                      <button
+                        type="button"
+                        onClick={() => setIsImageModalOpen(true)}
+                        className="text-amber-700 dark:text-amber-400 hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <Maximize2 className="w-3 h-3" /> 放大檢視
+                      </button>
+                    </div>
+                    <div className="overflow-hidden rounded-2xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-950 p-2 relative group flex items-center justify-center max-h-56">
+                      <img
+                        src={activePrompt.imageUrl}
+                        alt={activePrompt.title}
+                        className="max-h-52 w-full object-contain cursor-zoom-in"
+                        onClick={() => setIsImageModalOpen(true)}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setIsImageModalOpen(true)}
+                        className="absolute bottom-2 right-2 rounded-xl bg-stone-900/80 hover:bg-stone-900 text-white px-2.5 py-1 text-xs font-bold flex items-center gap-1 backdrop-blur-xs cursor-pointer shadow-md"
+                      >
+                        <ZoomIn className="w-3.5 h-3.5" /> 放大圖表
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* PDF Reference Note */}
+                {task === 'task1' && !activePrompt.imageUrl && activePrompt.pdfPage && (
+                  <div className="flex items-center justify-between rounded-xl bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 px-3 py-2 text-[11px] text-amber-950 dark:text-amber-200">
+                    <span className="flex items-center gap-1.5">
+                      <Info className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                      收錄於劍橋圖表題大全 PDF 第 {activePrompt.pdfPage} 頁
+                    </span>
+                    <a
+                      href={`${activePrompt.sourceUrl}#page=${activePrompt.pdfPage}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-bold underline text-amber-800 dark:text-amber-300 hover:text-amber-950 inline-flex items-center gap-1"
+                    >
+                      開啟第 {activePrompt.pdfPage} 頁 <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                )}
+
+                {/* Golden Rule Tip Card */}
+                <div className="rounded-2xl bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/80 p-3.5 text-xs text-amber-950 dark:text-amber-200 space-y-1">
+                  <div className="font-bold flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                    考官高分破題守則：
+                  </div>
+                  <p className="leading-relaxed text-[11px]">
+                    {task === 'task1' ? currentTask1Info.goldenRule : currentTask2Info.goldenRule}
+                  </p>
+                </div>
+
+                {/* Quick trigger for Copilot */}
+                <button
+                  type="button"
+                  onClick={() => setIsCopilotOpen(true)}
+                  className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-2xl bg-stone-100 dark:bg-stone-800 hover:bg-amber-400 hover:text-stone-950 text-stone-800 dark:text-stone-200 text-xs font-bold border border-stone-200 dark:border-stone-700 transition cursor-pointer shadow-2xs"
+                >
+                  <Lightbulb className="w-4 h-4 text-amber-500" />
+                  展開寫作智庫與引導工坊 (覆蓋此處)
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
             {/* RIGHT COLUMN: Full Timed Writing Area */}
@@ -1460,17 +1433,135 @@ export const IELTSWritingStudio: React.FC<Props> = ({ selectedPromptId, onPrompt
             </div>
           </div>
 
-          {/* Bottom-Right Collapsible Toolbars Floating Widget (Default collapsed) */}
-          <div className="fixed bottom-6 right-6 z-40 flex items-center gap-2">
+          {/* COLLAPSIBLE AUXILIARY WRITING PANE: Slides in from the left, overlaying and covering the prompt pane */}
+          {isCopilotOpen && (
+            <>
+              {/* Backdrop for mobile & small screens */}
+              <div
+                onClick={() => setIsCopilotOpen(false)}
+                className="fixed inset-0 bg-stone-950/40 z-40 backdrop-blur-2xs lg:hidden animate-fade-in"
+              />
+
+              {/* The Slide-in Master Hub Pane (Covers the left prompt pane on desktop, allowing user to write on the right) */}
+              <div
+                className="fixed inset-y-0 left-0 z-50 w-full sm:w-[540px] lg:w-[46%] xl:w-[42%] max-w-2xl bg-white dark:bg-stone-900 border-r border-amber-300 dark:border-amber-800/80 shadow-2xl overflow-hidden flex flex-col animate-slide-left"
+              >
+                <WritingCopilotPane
+                  task={task}
+                  activeCategory={activePrompt.lizCategory}
+                  activeStep={activeGuidedStep}
+                  onStepChange={setActiveGuidedStep}
+                  stepMetas={stepMetas}
+                  stepDrafts={task === 'task1' ? task1Steps : task2Steps}
+                  onUpdateStepDraft={updateCurrentStepText}
+                  stepAdvices={modeBAdvices}
+                  stepStarters={modeBStarters}
+                  isLoadingAdvice={isModeBAdviceLoading}
+                  isLoadingStarters={isModeBStartersLoading}
+                  onGetStepAdvice={handleGetModeBAdvice}
+                  onGetStepStarters={handleGetModeBStarters}
+                  onRemoveFillers={handleRemoveFillers}
+                  onApplyPolished={handleApplyPolishedVersion}
+                  onApplyStarter={handleApplyStarter}
+                  onSyncStepToFullDraft={handleSyncStepToFullDraft}
+                  onClose={() => setIsCopilotOpen(false)}
+                  onMergeAll={handleMergeGuidedDrafts}
+                  currentTab={copilotActiveTab}
+                  onTabChange={setCopilotActiveTab}
+                />
+              </div>
+            </>
+          )}
+
+          {/* RIGHT-BOTTOM FLOATING TOOLBARS (輔助寫作可收合右下 Toolbars) */}
+          <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 flex items-center gap-2">
+            {/* Quick Tab Jump Chips (Visible on sm+ screens) */}
+            <div className="hidden sm:flex items-center gap-1.5 p-1.5 rounded-full bg-white/95 dark:bg-stone-900/95 backdrop-blur-md border border-stone-200 dark:border-stone-700 shadow-xl">
+              <button
+                type="button"
+                onClick={() => {
+                  setCopilotActiveTab('steps');
+                  setIsCopilotOpen(true);
+                }}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  isCopilotOpen && copilotActiveTab === 'steps'
+                    ? 'bg-amber-400 text-stone-950 font-bold shadow-xs'
+                    : 'text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800'
+                }`}
+                title="開啟分步工坊草稿"
+              >
+                <Layers className="w-3.5 h-3.5 text-amber-500" />
+                分步工坊
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setCopilotActiveTab('ideas');
+                  setIsCopilotOpen(true);
+                }}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  isCopilotOpen && copilotActiveTab === 'ideas'
+                    ? 'bg-amber-400 text-stone-950 font-bold shadow-xs'
+                    : 'text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800'
+                }`}
+                title="開啟思路與靈感庫"
+              >
+                <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
+                靈感庫
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setCopilotActiveTab('guide');
+                  setIsCopilotOpen(true);
+                }}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  isCopilotOpen && copilotActiveTab === 'guide'
+                    ? 'bg-amber-400 text-stone-950 font-bold shadow-xs'
+                    : 'text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800'
+                }`}
+                title="開啟官方寫作指南"
+              >
+                <BookOpen className="w-3.5 h-3.5 text-amber-500" />
+                寫作指南
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setCopilotActiveTab('vocab');
+                  setIsCopilotOpen(true);
+                }}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  isCopilotOpen && copilotActiveTab === 'vocab'
+                    ? 'bg-amber-400 text-stone-950 font-bold shadow-xs'
+                    : 'text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800'
+                }`}
+                title="開啟高分詞彙搭配"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                詞彙搭配
+              </button>
+            </div>
+
+            {/* Main Hub Toggle Capsule Button */}
             <button
               type="button"
               onClick={() => setIsCopilotOpen(!isCopilotOpen)}
-              className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-stone-950 dark:bg-white text-white dark:text-stone-950 font-bold text-xs shadow-2xl hover:scale-105 active:scale-95 transition-all cursor-pointer border border-amber-400/60 ring-2 ring-amber-400/30"
-              title="展開或收合左側輔助智囊工坊"
+              className={`flex items-center gap-2.5 px-4 py-3 rounded-full font-bold text-xs shadow-2xl transition-all cursor-pointer border ${
+                isCopilotOpen
+                  ? 'bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-950 border-stone-800 dark:border-stone-200 ring-2 ring-amber-400/40'
+                  : 'bg-amber-400 hover:bg-amber-300 text-stone-950 border-amber-500 ring-2 ring-amber-400/30'
+              }`}
+              title="展開或收合左側寫作智庫與引導工坊"
             >
-              <Lightbulb className="w-4 h-4 text-amber-400 dark:text-amber-600" />
-              <span>{isCopilotOpen ? '收合寫作智囊' : '寫作智囊與分步工坊'}</span>
-              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-amber-400 text-stone-950 font-bold">
+              <Lightbulb className="w-4 h-4 text-amber-500 dark:text-amber-600" />
+              <span className="whitespace-nowrap">
+                {isCopilotOpen ? '收合智庫 (顯示題目)' : '💡 寫作智庫與引導工坊'}
+              </span>
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-stone-950/15 dark:bg-white/20 font-bold">
                 {completedStepsCount}/{stepMetas.length}
               </span>
               {isCopilotOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}

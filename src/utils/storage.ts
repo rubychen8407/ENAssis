@@ -1,5 +1,6 @@
 import { VocabWord } from '../types';
 import { triggerDebouncedSync } from './syncManager';
+import { sanitizeVocabWord } from './dictionaryService';
 
 const VOCAB_STORAGE_KEY = 'linguacraft_vocab_v1';
 const HISTORY_STORAGE_KEY = 'linguacraft_history_v1';
@@ -149,12 +150,13 @@ export function getSavedVocabulary(): VocabWord[] {
     list = JSON.parse(raw);
     let hasChanges = false;
     const synchronized = list.map((w) => {
-      const calculated = computeWordMastery(w);
-      if (w.masteryLevel !== calculated) {
+      const sanitized = sanitizeVocabWord(w);
+      const calculated = computeWordMastery(sanitized);
+      if (w.masteryLevel !== calculated || sanitized.partOfSpeech !== w.partOfSpeech || sanitized.exampleEn !== w.exampleEn) {
         hasChanges = true;
-        return { ...w, masteryLevel: calculated };
+        return { ...sanitized, masteryLevel: calculated };
       }
-      return w;
+      return sanitized;
     });
 
     if (hasChanges) {
@@ -166,7 +168,7 @@ export function getSavedVocabulary(): VocabWord[] {
     return synchronized;
   } catch (err) {
     console.error('Failed to load vocabulary from storage:', err);
-    return INITIAL_WORDS;
+    return INITIAL_WORDS.map(sanitizeVocabWord);
   }
 }
 
@@ -182,11 +184,26 @@ export function saveVocabularyList(words: VocabWord[], syncCloud = true): void {
   }
 }
 
+export function updateWord(id: string, updates: Partial<VocabWord>): VocabWord | null {
+  const current = getSavedVocabulary();
+  let updatedWord: VocabWord | null = null;
+  const updated = current.map((w) => {
+    if (w.id === id || w.word.toLowerCase() === id.toLowerCase()) {
+      updatedWord = sanitizeVocabWord({ ...w, ...updates });
+      return updatedWord;
+    }
+    return w;
+  });
+
+  if (updatedWord) saveVocabularyList(updated);
+  return updatedWord;
+}
+
 export function addWordToVocabulary(newWord: Omit<VocabWord, 'id' | 'dateAdded'>): VocabWord {
   const current = getSavedVocabulary();
   const existingIndex = current.findIndex((w) => w.word.toLowerCase() === newWord.word.toLowerCase());
 
-  const wordObj: VocabWord = {
+  const wordObj: VocabWord = sanitizeVocabWord({
     ...newWord,
     id: `w_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
     dateAdded: new Date().toISOString(),
@@ -197,12 +214,12 @@ export function addWordToVocabulary(newWord: Omit<VocabWord, 'id' | 'dateAdded'>
     examCorrect: 0,
     examAccuracy: 0,
     examStatus: 'review',
-  };
+  });
 
   let updated: VocabWord[];
   if (existingIndex >= 0) {
     const previous = current[existingIndex];
-    const refreshed: VocabWord = {
+    const refreshed: VocabWord = sanitizeVocabWord({
       ...previous,
       ...newWord,
       dateAdded: new Date().toISOString(),
@@ -212,7 +229,7 @@ export function addWordToVocabulary(newWord: Omit<VocabWord, 'id' | 'dateAdded'>
       examCorrect: previous.examCorrect ?? 0,
       examAccuracy: previous.examAccuracy ?? 0,
       examStatus: previous.examStatus ?? 'review',
-    };
+    });
     refreshed.masteryLevel = computeWordMastery(refreshed);
     updated = [...current];
     updated[existingIndex] = refreshed;
