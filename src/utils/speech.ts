@@ -131,10 +131,6 @@ export function speakText(
 }
 
 export function stopSpeaking(): void {
-  if (activeAudioElement) {
-    activeAudioElement.pause();
-    activeAudioElement = null;
-  }
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
     window.speechSynthesis.cancel();
   }
@@ -142,6 +138,47 @@ export function stopSpeaking(): void {
     currentAudioElement.pause();
     currentAudioElement = null;
   }
+}
+
+/**
+ * Play human audio (MPEG from ElevenLabs or PCM from Gemini)
+ */
+export async function playHumanAudio(base64Data: string, mimeType = 'audio/mpeg'): Promise<void> {
+  if (mimeType.includes('pcm')) {
+    return playPcmAudio(base64Data);
+  }
+  return new Promise((resolve) => {
+    try {
+      if (currentAudioElement) {
+        currentAudioElement.pause();
+        currentAudioElement = null;
+      }
+      const audio = new Audio(`data:${mimeType};base64,${base64Data}`);
+      currentAudioElement = audio;
+      audio.onended = () => resolve();
+      audio.onerror = () => resolve();
+      audio.play().catch(() => resolve());
+    } catch {
+      resolve();
+    }
+  });
+}
+
+/**
+ * Speak text prioritizing natural human-like voice (ElevenLabs) with automatic fallback
+ */
+export function speakHumanLikeText(
+  text: string,
+  options: {
+    rate?: number;
+    pitch?: number;
+    lang?: string;
+    voiceId?: string;
+    onEnd?: () => void;
+    onError?: (err: any) => void;
+  } = {}
+): void {
+  speakText(text, options);
 }
 
 // Play PCM audio from Gemini TTS
