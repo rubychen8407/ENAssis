@@ -55,7 +55,73 @@ export function speakText(
   window.speechSynthesis.speak(utterance);
 }
 
+let activeAudioElement: HTMLAudioElement | null = null;
+
+/**
+ * Play human audio (MPEG from ElevenLabs or PCM from Gemini)
+ */
+export async function playHumanAudio(base64Data: string, mimeType = 'audio/mpeg'): Promise<void> {
+  if (mimeType.includes('pcm')) {
+    return playPcmAudio(base64Data);
+  }
+  return new Promise((resolve) => {
+    try {
+      if (activeAudioElement) {
+        activeAudioElement.pause();
+        activeAudioElement = null;
+      }
+      const audio = new Audio(`data:${mimeType};base64,${base64Data}`);
+      activeAudioElement = audio;
+      audio.onended = () => resolve();
+      audio.onerror = () => resolve();
+      audio.play().catch(() => resolve());
+    } catch {
+      resolve();
+    }
+  });
+}
+
+/**
+ * Speak text prioritizing ElevenLabs Elena voice -> Gemini TTS -> Native Web Speech
+ */
+export async function speakHumanLikeText(
+  text: string,
+  options: {
+    rate?: number;
+    lang?: string;
+    onEnd?: () => void;
+  } = {}
+): Promise<void> {
+  if (!text || !text.trim()) return;
+
+  try {
+    const res = await fetch('/api/gemini/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: text.trim(), voice: 'Elena' }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data.audioBase64) {
+        await playHumanAudio(data.audioBase64, data.mimeType || 'audio/mpeg');
+        options.onEnd?.();
+        return;
+      }
+    }
+  } catch (err) {
+    console.warn('Advanced TTS failed, falling back to Web Speech:', err);
+  }
+
+  // Graceful fallback to browser speech synthesis
+  speakText(text, options);
+}
+
 export function stopSpeaking(): void {
+  if (activeAudioElement) {
+    activeAudioElement.pause();
+    activeAudioElement = null;
+  }
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
     window.speechSynthesis.cancel();
   }

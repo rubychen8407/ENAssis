@@ -27,16 +27,26 @@ import {
   LayoutGrid,
   RectangleHorizontal,
   RotateCw,
+  Edit3,
+  Network,
+  Layers,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import { VocabWord, SkillTab } from '../types';
-import { speakText } from '../utils/speech';
+import { speakText, speakHumanLikeText } from '../utils/speech';
 import {
   addWordToVocabulary,
   deleteWord,
+  updateWord,
   readClipboardTextSafe,
   isWordAddedWithin24Hours,
 } from '../utils/storage';
 import { VocabMasteryCheckPanel } from './VocabMasteryCheckPanel';
+import { WordAssociationMindMap } from './WordAssociationMindMap';
+import { WordEtymologyPanel } from './WordEtymologyPanel';
+import { WordExampleEditorModal } from './WordExampleEditorModal';
+import { fetchAuthoritativeDictionaryWord, isPlaceholderExample } from '../utils/dictionaryService';
 import { toTraditionalChinese } from '../utils/chineseConverter';
 import { VocabAIQuiz } from './VocabAIQuiz';
 import { VocabToolbar } from './VocabToolbar';
@@ -146,6 +156,31 @@ export const VocabularyManager: React.FC<Props> = ({
 
   // Example sentence regenerated fresh by AI, per word (session-only, not persisted over the saved example)
   const [exampleOverrides, setExampleOverrides] = useState<Record<string, { en: string; zh: string; loading: boolean }>>({});
+
+  // Active feature panels: mindmap / etymology per word
+  const [activeFeaturePanel, setActiveFeaturePanel] = useState<{ wordId: string; panel: 'mindmap' | 'etymology' } | null>(null);
+  const [editingExampleWord, setEditingExampleWord] = useState<VocabWord | null>(null);
+  const [calibratingWordId, setCalibratingWordId] = useState<string | null>(null);
+
+  const handleCalibrateDictionary = async (word: VocabWord) => {
+    setCalibratingWordId(word.id);
+    try {
+      const enriched = await fetchAuthoritativeDictionaryWord(word.word);
+      if (enriched) {
+        updateWord(word.id, {
+          ...enriched,
+          masteryLevel: word.masteryLevel,
+          speakingPassed: word.speakingPassed,
+          writingPassed: word.writingPassed,
+        });
+        onWordsChange();
+      }
+    } catch (err) {
+      console.error('Dictionary calibration failed', err);
+    } finally {
+      setCalibratingWordId(null);
+    }
+  };
 
   const loadPractice = async (word: VocabWord, type: PracticeType, userSentence?: string) => {
     setPracticeLoading(true);
@@ -473,18 +508,49 @@ export const VocabularyManager: React.FC<Props> = ({
             const renderFrontFace = (word: VocabWord) => {
               const examAccuracy = word.examAccuracy ?? 0;
               const examAttempts = word.examAttempts ?? 0;
+              const isEtymologyOpen = activeFeaturePanel?.wordId === word.id && activeFeaturePanel.panel === 'etymology';
+              const isMindMapOpen = activeFeaturePanel?.wordId === word.id && activeFeaturePanel.panel === 'mindmap';
+
               return (
                 <>
                   <div>
+                    {/* Header */}
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
                           <h3 className="text-xl font-bold text-stone-900 tracking-tight">{word.word}</h3>
-                          <button onClick={(e) => { e.stopPropagation(); speakText(word.word); }} className="p-1 rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100 cursor-pointer" title="發音"><Volume2 className="w-4 h-4" /></button>
-                          {word.tags?.some((tag) => tag.includes('IELTS') || tag.includes('雅思')) && <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200 font-bold inline-flex items-center gap-1"><GraduationCap className="w-3 h-3" /> IELTS</span>}
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); speakHumanLikeText(word.word); }}
+                            className="p-1.5 rounded-lg text-stone-400 hover:text-stone-800 hover:bg-stone-100 cursor-pointer"
+                            title="真人擬真發音 (Elena / ElevenLabs)"
+                          >
+                            <Volume2 className="w-4 h-4" />
+                          </button>
+                          {word.tags?.some((tag) => tag.includes('IELTS') || tag.includes('雅思')) && (
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200 font-bold inline-flex items-center gap-1">
+                              <GraduationCap className="w-3 h-3" /> IELTS
+                            </span>
+                          )}
+                          <span className="text-[10px] px-2 py-0.5 rounded-md bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 font-mono inline-flex items-center gap-1">
+                            <BookOpen className="w-2.5 h-2.5 text-stone-400" />
+                            {word.dictionarySource || 'Oxford / IELTS'}
+                          </span>
                         </div>
-                        <div className="flex items-center gap-2 mt-1 text-xs text-stone-500">
-                          <span>{word.phonetic}</span><span>•</span><span className="italic">{word.partOfSpeech}</span>
+                        <div className="flex items-center gap-2 mt-1 text-xs text-stone-500 flex-wrap">
+                          {word.phonetic && <span>{word.phonetic}</span>}
+                          {word.phonetic && word.partOfSpeech && <span>•</span>}
+                          {word.partOfSpeech && <span className="italic font-semibold">{word.partOfSpeech}</span>}
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); handleCalibrateDictionary(word); }}
+                            disabled={calibratingWordId === word.id}
+                            className="text-[10px] px-1.5 py-0.5 rounded border border-stone-200 hover:border-amber-300 hover:text-amber-700 hover:bg-amber-50 cursor-pointer transition inline-flex items-center gap-1 text-stone-400"
+                            title="從牛津權威字典校對釋義與完整例句"
+                          >
+                            <RefreshCw className={`w-2.5 h-2.5 ${calibratingWordId === word.id ? 'animate-spin text-amber-600' : ''}`} />
+                            {calibratingWordId === word.id ? '校準中…' : '字典校對'}
+                          </button>
                         </div>
                       </div>
                       <span className={`text-[11px] px-2.5 py-1 rounded-full font-bold border shrink-0 ${word.masteryLevel === 'mastered' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : word.masteryLevel === 'new' || isWordAddedWithin24Hours(word) ? 'bg-sky-50 text-sky-800 border-sky-200' : 'bg-amber-50 text-amber-800 border-amber-200'}`}>
@@ -492,55 +558,230 @@ export const VocabularyManager: React.FC<Props> = ({
                       </span>
                     </div>
 
-                    <div className="mt-3 rounded-xl border border-stone-200 bg-stone-100 p-3">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-sm font-semibold text-stone-900">{word.translation}</span>
-                        {examAttempts > 0 && <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${word.examStatus === 'learned' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-rose-50 text-rose-800 border-rose-200'}`}>{word.examStatus === 'learned' ? `已學習 ${examAccuracy}%` : `需複習 ${examAccuracy}%`}</span>}
+                    {/* Senses / Definitions (No Truncation) */}
+                    {word.senses && word.senses.length > 1 ? (
+                      <div className="mt-3 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <p className="text-[11px] font-bold text-stone-400 uppercase tracking-wide flex items-center gap-1">
+                            <BookOpen className="w-3 h-3 text-amber-600" /> 多重語義拆解與獨立例句 ({word.senses.length} 個釋義)
+                          </p>
+                        </div>
+                        <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
+                          {word.senses.map((sense, sIdx) => (
+                            <div key={sIdx} className="rounded-xl border border-stone-200 bg-stone-50/80 dark:bg-stone-800/80 p-2.5 text-xs space-y-1">
+                              <div className="flex items-baseline gap-2 flex-wrap">
+                                <span className="font-bold text-amber-700 dark:text-amber-400 font-mono text-[11px]">#{sIdx + 1}</span>
+                                {sense.partOfSpeech && (
+                                  <span className="px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 font-bold text-[10px] italic">
+                                    {sense.partOfSpeech}
+                                  </span>
+                                )}
+                                <span className="font-semibold text-stone-900 dark:text-stone-100 break-words leading-relaxed">
+                                  {sense.definitionZh || sense.translation}
+                                </span>
+                              </div>
+                              {sense.definitionEn && (
+                                <p className="text-[11px] text-stone-500 italic pl-5 leading-relaxed">{sense.definitionEn}</p>
+                              )}
+                              {sense.exampleEn && (
+                                <div className="pl-5 pt-0.5 flex items-start justify-between gap-2 text-stone-700 dark:text-stone-300">
+                                  <div className="leading-relaxed">
+                                    <p className="text-[11px] font-medium text-stone-800 dark:text-stone-200">"{sense.exampleEn}"</p>
+                                    {sense.exampleZh && <p className="text-stone-500 text-[10px] mt-0.5">{sense.exampleZh}</p>}
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => { e.stopPropagation(); speakHumanLikeText(sense.exampleEn); }}
+                                    className="text-stone-400 hover:text-stone-700 p-0.5 shrink-0 cursor-pointer"
+                                    title="朗讀此釋義例句"
+                                  >
+                                    <Volume2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                      {word.definitionEn && <p className="mt-1.5 text-xs text-stone-600 leading-relaxed">{word.definitionEn}</p>}
-                    </div>
+                    ) : (
+                      <div className="mt-3 rounded-xl border border-stone-200 bg-stone-50 dark:bg-stone-800/60 p-3">
+                        <div className="flex items-baseline justify-between gap-2 flex-wrap">
+                          <span className="text-sm font-semibold text-stone-900 dark:text-stone-100 break-words leading-relaxed">
+                            {word.translation}
+                          </span>
+                          {examAttempts > 0 && (
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${word.examStatus === 'learned' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-rose-50 text-rose-800 border-rose-200'}`}>
+                              {word.examStatus === 'learned' ? `已學習 ${examAccuracy}%` : `需複習 ${examAccuracy}%`}
+                            </span>
+                          )}
+                        </div>
+                        {word.definitionEn && (
+                          <p className="mt-1.5 text-xs text-stone-600 dark:text-stone-400 leading-relaxed break-words">
+                            {word.definitionEn}
+                          </p>
+                        )}
+                      </div>
+                    )}
 
+                    {/* Collocations */}
                     {word.collocations?.length > 0 && (
-                      <div className="mt-3">
-                        <p className="text-[11px] font-bold text-stone-400 uppercase tracking-wide">搭配字詞</p>
+                      <div className="mt-2.5">
+                        <p className="text-[11px] font-bold text-stone-400 uppercase tracking-wide">常用搭配詞 (Collocations)</p>
                         <div className="flex flex-wrap gap-1.5 mt-1">
-                          {word.collocations.slice(0, 4).map((item, index) => <span key={index} className="text-xs px-2 py-1 rounded-md bg-stone-100 border border-stone-200 text-stone-700">{item}</span>)}
+                          {word.collocations.slice(0, 5).map((item, index) => (
+                            <span key={index} className="text-xs px-2 py-0.5 rounded-md bg-stone-100 border border-stone-200 text-stone-700">
+                              {item}
+                            </span>
+                          ))}
                         </div>
                       </div>
                     )}
 
+                    {/* Primary Example Sentence with Edit Button */}
                     {(() => {
                       const override = exampleOverrides[word.id];
                       const shownEn = override?.en || word.exampleEn;
                       const shownZh = override?.zh || word.exampleZh;
                       if (!shownEn && !override?.loading) return null;
                       return (
-                        <div className="mt-3 rounded-xl bg-stone-100 border border-stone-200 p-3">
+                        <div className="mt-2.5 rounded-xl bg-stone-100 border border-stone-200 p-3">
                           <div className="flex items-start justify-between gap-2">
-                            <p className="text-xs text-stone-800 font-medium leading-relaxed">{override?.loading ? 'AI 生成新例句中…' : shownEn}</p>
+                            <p className="text-xs text-stone-800 font-medium leading-relaxed">
+                              {override?.loading ? 'AI 生成新例句中…' : shownEn}
+                            </p>
                             <div className="flex items-center gap-1 shrink-0">
-                              <button onClick={(e) => { e.stopPropagation(); regenerateExample(word); }} disabled={override?.loading} className="text-stone-400 hover:text-stone-700 cursor-pointer disabled:opacity-40" title="AI 重新生成例句">
+                              <button
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); setEditingExampleWord(word); }}
+                                className="p-1 text-stone-400 hover:text-stone-700 cursor-pointer rounded hover:bg-stone-200"
+                                title="自訂 / 編輯例句"
+                              >
+                                <Edit3 className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); regenerateExample(word); }}
+                                disabled={override?.loading}
+                                className="p-1 text-stone-400 hover:text-stone-700 cursor-pointer disabled:opacity-40 rounded hover:bg-stone-200"
+                                title="AI 重新生成例句"
+                              >
                                 <RefreshCw className={`w-3.5 h-3.5 ${override?.loading ? 'animate-spin' : ''}`} />
                               </button>
-                              <button onClick={(e) => { e.stopPropagation(); speakText(shownEn); }} className="text-stone-400 hover:text-stone-700 cursor-pointer" title="朗讀例句"><Volume2 className="w-3.5 h-3.5" /></button>
+                              <button
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); speakHumanLikeText(shownEn); }}
+                                className="p-1 text-stone-400 hover:text-stone-700 cursor-pointer rounded hover:bg-stone-200"
+                                title="真人朗讀例句"
+                              >
+                                <Volume2 className="w-3.5 h-3.5" />
+                              </button>
                             </div>
                           </div>
                           {shownZh && !override?.loading && <p className="mt-1 text-xs text-stone-500">{shownZh}</p>}
                         </div>
                       );
                     })()}
+
+                    {/* Etymology & Mind Map Feature Buttons */}
+                    <div className="mt-3 flex items-center gap-2 flex-wrap">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveFeaturePanel((prev) =>
+                            prev?.wordId === word.id && prev.panel === 'etymology' ? null : { wordId: word.id, panel: 'etymology' }
+                          );
+                        }}
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold cursor-pointer border transition ${
+                          isEtymologyOpen
+                            ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs'
+                            : 'bg-white text-stone-700 border-stone-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200'
+                        }`}
+                      >
+                        <Layers className="w-3 h-3 text-indigo-500" />
+                        字根字尾拆解
+                        {isEtymologyOpen ? <ChevronUp className="w-3 h-3 ml-0.5" /> : <ChevronDown className="w-3 h-3 ml-0.5" />}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveFeaturePanel((prev) =>
+                            prev?.wordId === word.id && prev.panel === 'mindmap' ? null : { wordId: word.id, panel: 'mindmap' }
+                          );
+                        }}
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold cursor-pointer border transition ${
+                          isMindMapOpen
+                            ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xs'
+                            : 'bg-white text-stone-700 border-stone-200 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200'
+                        }`}
+                      >
+                        <Network className="w-3 h-3 text-emerald-500" />
+                        關聯心智圖
+                        {isMindMapOpen ? <ChevronUp className="w-3 h-3 ml-0.5" /> : <ChevronDown className="w-3 h-3 ml-0.5" />}
+                      </button>
+                    </div>
+
+                    {/* Expandable Etymology Panel */}
+                    {isEtymologyOpen && (
+                      <div className="mt-3 p-3.5 bg-stone-50 dark:bg-stone-900 rounded-2xl border border-indigo-200 dark:border-indigo-900/50">
+                        <WordEtymologyPanel word={word} />
+                      </div>
+                    )}
+
+                    {/* Expandable Mind Map Panel */}
+                    {isMindMapOpen && (
+                      <div className="mt-3 p-3.5 bg-stone-50 dark:bg-stone-900 rounded-2xl border border-emerald-200 dark:border-emerald-900/50">
+                        <WordAssociationMindMap word={word} />
+                      </div>
+                    )}
                   </div>
 
+                  {/* Card Bottom Controls */}
                   <div className="mt-4 pt-3 border-t border-stone-100">
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex gap-1">
-                        <button onClick={(e) => { e.stopPropagation(); togglePractice(word, 'sentence'); }} className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer ${openPractice?.wordId === word.id && openPractice.type === 'sentence' ? 'bg-stone-900 text-white' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'}`}>造句</button>
-                        <button onClick={(e) => { e.stopPropagation(); togglePractice(word, 'speaking'); }} className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer ${openPractice?.wordId === word.id && openPractice.type === 'speaking' ? 'bg-stone-900 text-white' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'}`}>口說</button>
-                        <button onClick={(e) => { e.stopPropagation(); togglePractice(word, 'listening'); }} className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer ${openPractice?.wordId === word.id && openPractice.type === 'listening' ? 'bg-stone-900 text-white' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'}`}>聽力</button>
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                      <div className="flex gap-1 flex-wrap">
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); togglePractice(word, 'sentence'); }}
+                          className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${openPractice?.wordId === word.id && openPractice.type === 'sentence' ? 'bg-stone-900 text-white' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'}`}
+                        >
+                          造句
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); togglePractice(word, 'speaking'); }}
+                          className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${openPractice?.wordId === word.id && openPractice.type === 'speaking' ? 'bg-stone-900 text-white' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'}`}
+                        >
+                          口說
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); togglePractice(word, 'listening'); }}
+                          className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${openPractice?.wordId === word.id && openPractice.type === 'listening' ? 'bg-stone-900 text-white' : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'}`}
+                        >
+                          聽力
+                        </button>
                       </div>
                       <div className="flex gap-1">
-                        <button onClick={(e) => { e.stopPropagation(); setFlippedWordId(word.id); }} className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-stone-900 text-white text-xs font-bold hover:bg-stone-800 cursor-pointer"><Award className="w-3.5 h-3.5 text-amber-400" />檢測</button>
-                        <button onClick={(e) => { e.stopPropagation(); deleteWord(word.id); onWordsChange(); }} className="p-1.5 rounded-lg text-stone-300 hover:text-rose-500 hover:bg-rose-50 cursor-pointer" title="刪除"><Trash2 className="w-3.5 h-3.5" /></button>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setFlippedWordId(word.id); }}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-900 text-white text-xs font-bold hover:bg-stone-800 cursor-pointer shadow-xs"
+                          title="翻面進行單字掌握度檢測"
+                        >
+                          <Award className="w-3.5 h-3.5 text-amber-400" />
+                          檢測 (翻面)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); deleteWord(word.id); onWordsChange(); }}
+                          className="p-1.5 rounded-lg text-stone-300 hover:text-rose-500 hover:bg-rose-50 cursor-pointer transition"
+                          title="刪除"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
                       </div>
                     </div>
 
@@ -549,7 +790,7 @@ export const VocabularyManager: React.FC<Props> = ({
                         <div className="flex items-center justify-between gap-2 mb-2">
                           <span className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-700">
                             {openPractice.type === 'sentence' && <><Pencil className="w-3.5 h-3.5" />AI 造句練習</>}
-                            {openPractice.type === 'speaking' && <><Mic className="w-3.5 h-3.5" />AI 口說練習</>}
+                            {openPractice.type === 'speaking' && <><Mic className="w-3.5 h-3.5" />AI 口說練習（含發音糾正建議）</>}
                             {openPractice.type === 'listening' && <><Headphones className="w-3.5 h-3.5" />AI 聽力練習</>}
                           </span>
                           <div className="flex items-center gap-1">
@@ -600,7 +841,7 @@ export const VocabularyManager: React.FC<Props> = ({
                           <div className="space-y-2 text-xs">
                             <div className="flex items-start justify-between gap-2 rounded-lg bg-white border border-stone-200 px-2.5 py-1.5">
                               <p className="text-stone-800">{(practiceData as SpeakingPracticeData).reply}</p>
-                              <button onClick={() => speakText((practiceData as SpeakingPracticeData).reply || '')} className="text-stone-400 hover:text-stone-700 cursor-pointer shrink-0"><Volume2 className="w-3.5 h-3.5" /></button>
+                              <button onClick={() => speakHumanLikeText((practiceData as SpeakingPracticeData).reply || '')} className="text-stone-400 hover:text-stone-700 cursor-pointer shrink-0"><Volume2 className="w-3.5 h-3.5" /></button>
                             </div>
                             {(practiceData as SpeakingPracticeData).translationZh && <p className="text-stone-500">{(practiceData as SpeakingPracticeData).translationZh}</p>}
                             {(practiceData as SpeakingPracticeData).suggestedFollowUps?.map((s, i) => (
@@ -613,7 +854,7 @@ export const VocabularyManager: React.FC<Props> = ({
                           <div className="space-y-2 text-xs">
                             <div className="flex items-start justify-between gap-2 rounded-lg bg-white border border-stone-200 px-2.5 py-1.5">
                               <p className="text-stone-800 leading-relaxed">{(practiceData as ListeningPracticeData).audioScript}</p>
-                              <button onClick={() => speakText((practiceData as ListeningPracticeData).audioScript || '')} className="text-stone-400 hover:text-stone-700 cursor-pointer shrink-0"><Volume2 className="w-3.5 h-3.5" /></button>
+                              <button onClick={() => speakHumanLikeText((practiceData as ListeningPracticeData).audioScript || '')} className="text-stone-400 hover:text-stone-700 cursor-pointer shrink-0"><Volume2 className="w-3.5 h-3.5" /></button>
                             </div>
                             {(practiceData as ListeningPracticeData).sentences?.slice(0, 3).map((s, i) => (
                               <p key={i} className="text-stone-500">{s.zh}</p>
@@ -628,16 +869,35 @@ export const VocabularyManager: React.FC<Props> = ({
             };
 
             const renderBackFace = (word: VocabWord) => (
-              <div>
-                <div className="flex items-center justify-between gap-2 mb-3">
+              <div
+                className="space-y-3"
+                onClick={(e) => {
+                  const target = e.target as HTMLElement;
+                  if (!target.closest('button, input, textarea, a, select, [role="button"]')) {
+                    setFlippedWordId(null);
+                  }
+                }}
+              >
+                <div className="flex items-center justify-between gap-2 mb-2">
                   <span className="inline-flex items-center gap-1.5 text-sm font-bold text-stone-900">
                     <Award className="w-4 h-4 text-amber-500" /> {word.word} 檢測
                   </span>
-                  <button onClick={(e) => { e.stopPropagation(); setFlippedWordId(null); }} className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-stone-500 hover:text-stone-900 hover:bg-stone-100 text-xs font-semibold cursor-pointer">
-                    <RotateCw className="w-3.5 h-3.5" /> 返回單字卡
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setFlippedWordId(null);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 text-stone-700 dark:text-stone-200 text-xs font-semibold cursor-pointer shadow-xs transition"
+                  >
+                    <RotateCw className="w-3.5 h-3.5 text-stone-500" /> 點此翻回單字卡正面
                   </button>
                 </div>
-                <VocabMasteryCheckPanel word={word} onWordsChange={onWordsChange} />
+                <VocabMasteryCheckPanel
+                  word={word}
+                  onWordsChange={onWordsChange}
+                  onFlipBack={() => setFlippedWordId(null)}
+                />
               </div>
             );
 
@@ -649,9 +909,13 @@ export const VocabularyManager: React.FC<Props> = ({
                     return (
                       <article
                         key={word.id}
-                        onClick={() => { if (!isFlipped) setFlippedWordId(word.id); }}
+                        onClick={(e) => {
+                          const target = e.target as HTMLElement;
+                          if (target.closest('button, input, textarea, a, select, [role="button"]')) return;
+                          setFlippedWordId(isFlipped ? null : word.id);
+                        }}
                         style={{ touchAction: 'manipulation' }}
-                        className={`bg-white rounded-2xl border p-5 shadow-xs flex flex-col justify-between transition cursor-pointer ${isFlipped ? 'border-stone-900' : 'border-stone-200 hover:border-stone-300'}`}
+                        className={`bg-white rounded-2xl border p-5 shadow-xs flex flex-col justify-between transition cursor-pointer ${isFlipped ? 'border-amber-500 ring-2 ring-amber-100' : 'border-stone-200 hover:border-stone-300'}`}
                       >
                         {isFlipped ? renderBackFace(word) : renderFrontFace(word)}
                       </article>
@@ -699,16 +963,20 @@ export const VocabularyManager: React.FC<Props> = ({
                     <span>{singleIndex + 1} / {filteredWords.length}</span>
                   </div>
                   <article
-                    onClick={() => { if (!isFlipped) setFlippedWordId(currentSingleWord.id); }}
+                    onClick={(e) => {
+                      const target = e.target as HTMLElement;
+                      if (target.closest('button, input, textarea, a, select, [role="button"]')) return;
+                      setFlippedWordId(isFlipped ? null : currentSingleWord.id);
+                    }}
                     onTouchStart={handleTouchStart}
                     onTouchEnd={handleTouchEnd}
                     style={{ touchAction: 'pan-y' }}
-                    className={`bg-white rounded-2xl border p-6 shadow-sm flex flex-col justify-between min-h-[360px] transition cursor-pointer select-none ${isFlipped ? 'border-stone-900' : 'border-stone-200'}`}
+                    className={`bg-white rounded-2xl border p-6 shadow-sm flex flex-col justify-between min-h-[360px] transition cursor-pointer select-none ${isFlipped ? 'border-amber-500 ring-2 ring-amber-100' : 'border-stone-200 hover:border-stone-300'}`}
                   >
                     {isFlipped ? renderBackFace(currentSingleWord) : renderFrontFace(currentSingleWord)}
                   </article>
-                  <p className="mt-2 text-center text-[11px] text-stone-400 sm:hidden">左右滑動換字卡 · 點卡片翻面檢測</p>
-                  <p className="mt-2 text-center text-[11px] text-stone-400 hidden sm:block">← → 鍵換字卡 · Space 鍵翻面檢測</p>
+                  <p className="mt-2 text-center text-[11px] text-stone-400 sm:hidden">左右滑動換字卡 · 點卡片任意處翻面/翻回</p>
+                  <p className="mt-2 text-center text-[11px] text-stone-400 hidden sm:block">← → 鍵換字卡 · 點卡片或按 Space 鍵翻面/翻回</p>
                 </div>
 
                 <button
@@ -785,6 +1053,18 @@ export const VocabularyManager: React.FC<Props> = ({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Word Example Editor Modal */}
+      {editingExampleWord && (
+        <WordExampleEditorModal
+          word={editingExampleWord}
+          onClose={() => setEditingExampleWord(null)}
+          onSaved={() => {
+            setEditingExampleWord(null);
+            onWordsChange();
+          }}
+        />
       )}
 
       {/* Bottom-Right Toolbar */}

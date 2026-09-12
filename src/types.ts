@@ -1,5 +1,45 @@
 export type SkillTab = 'dashboard' | 'vocabulary' | 'speaking' | 'writing' | 'reading' | 'listening' | 'settings';
 
+export interface WordSense {
+  partOfSpeech: string;
+  definitionZh: string;
+  translation?: string;
+  definitionEn?: string;
+  collocations?: string[];
+  exampleEn?: string;
+  exampleZh?: string;
+}
+
+export interface WordEtymology {
+  prefix?: string;
+  prefixMeaning?: string;
+  root?: string;
+  rootMeaning?: string;
+  suffix?: string;
+  suffixMeaning?: string;
+  breakdown?: string;
+  memoryHook?: string;
+  origin?: string;
+}
+
+export interface WordMindMap {
+  derivatives?: { word: string; pos: string; meaningZh?: string }[];
+  synonyms?: string[];
+  antonyms?: string[];
+  collocations?: string[];
+  rootFamily?: { word: string; meaningZh?: string }[];
+  thematicTopics?: string[];
+}
+
+export interface PronunciationDiagnosis {
+  syllables?: string;
+  primaryStress?: string;
+  ipa?: string;
+  audioUrl?: string;
+  tips?: string[];
+  commonMistakes?: string[];
+}
+
 export interface VocabWord {
   id: string;
   word: string;
@@ -21,6 +61,12 @@ export interface VocabWord {
   examCorrect?: number;
   examAccuracy?: number;
   examStatus?: 'learned' | 'review';
+  // Rich dictionary & association extensions
+  senses?: WordSense[];
+  etymology?: WordEtymology;
+  mindMap?: WordMindMap;
+  pronunciation?: PronunciationDiagnosis;
+  dictionarySource?: string;
 }
 
 export interface GrammarPattern {

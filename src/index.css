@@ -102,3 +102,18 @@ html.dark option { background: #292524; color: #fafaf9; }
 html.dark [class*="bg-white"] { background-color: #292524 !important; }
 html.dark [class*="bg-stone-900"] { color: #fff !important; }
 html.dark ::selection { background: #57534e; color: #fff; }
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-left {
+  animation: slideInLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
